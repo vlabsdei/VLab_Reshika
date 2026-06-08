@@ -1,5 +1,5 @@
 * {
-  box-sizing: border-box; /* Ensures padding is included in the width */
+  box-sizing: border-box;
   margin: 0;
   padding: 0;
   font-family: 'Times New Roman', serif;
@@ -24,7 +24,7 @@ header {
   position: sticky;
   top: 0;
   z-index: 200;
-  width: 100%; /* Ensures it covers the full width */
+  width: 100%; 
 }
 
 header h1 { 
@@ -516,7 +516,7 @@ button:disabled { opacity: 0.5; cursor: not-allowed; }
   flex-direction: column;
   gap: 6px;
   box-sizing: border-box;
-  overflow: hidden; /* Prevent content from overflowing on mobile */
+  overflow: hidden; /* Prevents content from overflowing on mobile */
 }
 
 .math-formula { color: #2f5d50; font-size: 1.1rem; }
@@ -664,7 +664,7 @@ button:disabled { opacity: 0.5; cursor: not-allowed; }
 }
 .isolation-barrier.dropped { opacity: 1; transform: translate(-50%, 0); }
 
-/* 10. Below the Fold (Event Log) & Footer*/
+/* Below the Fold (Event Log) & Footer*/
 .below-fold { 
   padding: 1.5rem; 
   background: #fff; 
