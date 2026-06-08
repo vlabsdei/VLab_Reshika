@@ -1,0 +1,175 @@
+{
+  "version": 2.0,
+  "questions": [
+    {
+      "question": "What is the main function of a battery pack in an electric vehicle?",
+      "answers": {
+        "a": "To store and supply electrical energy ",
+        "b": "To control vehicle speed",
+        "c": "To cool the motor",
+        "d": "To support the suspension system"
+      },
+      "explanations": {
+        "a": "Correct. The battery pack stores electrical energy and supplies power to the electric motor.",
+        "b": "Vehicle speed is controlled by the motor and controller, not the battery pack.",
+        "c": "Motor cooling is handled by a separate cooling system.",
+        "d": "The suspension system supports vehicle stability and ride comfort."
+      },
+      "correctAnswer": "a",
+      "difficulty": "beginner"
+    },
+    {
+      "question": "Which of the following parameters is commonly monitored in an EV battery system?",
+      "answers": {
+        "a": "Temperature",
+        "b": "Tyre tread depth",
+        "c": "Wheel alignment angle",
+        "d": "Road gradient"
+      },
+      "explanations": {
+        "a": "Correct. Battery temperature is monitored to ensure safe operation.",
+        "b": "Tyre tread depth is checked during vehicle maintenance.",
+        "c": "Wheel alignment is related to vehicle handling, not battery condition.",
+        "d": "Road gradient affects driving performance but is not monitored by the battery system."
+      },
+      "correctAnswer": "a",
+      "difficulty": "beginner"
+    },
+    {
+      "question": "Why is heat generated inside a battery during charging and discharging?",
+      "answers": {
+        "a": "Due to internal resistance",
+        "b": "Due to road friction",
+        "c": "Due to air pressure",
+        "d": "Due to vehicle weight"
+      },
+      "explanations": {
+        "a": "Correct. Internal resistance causes some electrical energy to be converted into heat.",
+        "b": "Road friction does not generate heat inside the battery cells.",
+        "c": "Air pressure has very little effect on battery heat generation.",
+        "d": "Vehicle weight affects energy consumption but not battery heating directly."
+      },
+      "correctAnswer": "a",
+      "difficulty": "beginner"
+    },
+    {
+      "question": "The main purpose of a Battery Management System (BMS)?",
+      "answers": {
+        "a": "To increase vehicle speed",
+        "b": "To monitor and protect the battery pack",
+        "c": "To control steering",
+        "d": "To improve road grip"
+      },
+      "explanations": {
+        "a": "The BMS does not directly increase vehicle speed.",
+        "b": "Correct. The BMS monitors battery voltage, current, and temperature and protects the battery from unsafe conditions.",
+        "c": "Steering is controlled by the vehicle steering system.",
+        "d": "Road grip depends on tyres and road conditions."
+      },
+      "correctAnswer": "b",
+      "difficulty": "beginner"
+    },
+    {
+      "question": "What is meant by thermal runaway in a battery?",
+      "answers": {
+        "a": "A condition where the battery cools rapidly",
+        "b": "A condition where heat generation becomes uncontrollable",
+        "c": "A condition where charging stops automatically",
+        "d": "A condition where battery voltage becomes zero"
+      },
+      "explanations": {
+        "a": "Thermal runaway happens because of excessive heating, not cooling.",
+        "b": "Correct. The battery starts generating heat faster than it can remove it, causing a rapid rise in temperature.",
+        "c": "Charging may stop for safety reasons, but that is not thermal runaway.",
+        "d": "A drop in voltage can happen, but it is not the main reason for thermal runaway."
+      },
+      "correctAnswer": "b",
+      "difficulty": "beginner"
+    },
+    {
+      "question": "What is thermal runaway propagation?",
+      "answers": {
+        "a": "Charging multiple battery modules together",
+        "b": "Heat spreading from one failed cell to neighbouring cells",
+        "c": "Cooling of battery cells",
+        "d": "Balancing battery voltage"
+      },
+      "explanations": {
+        "a": "This is not related to thermal runaway propagation.",
+        "b": "Correct. Heat from a faulty cell can spread to nearby cells and trigger further failures.",
+        "c": "Propagation refers to heat spreading, not cooling.",
+        "d": "Voltage balancing is a different battery management process."
+      },
+      "correctAnswer": "b",
+      "difficulty": "beginner"
+    },
+    {
+      "question": "What can happen if a battery cell reaches a critical temperature?",
+      "answers": {
+        "a": "The cell may enter thermal runaway",
+        "b": "The battery capacity doubles",
+        "c": "The motor speed increases automatically",
+        "d": "The battery becomes fully charged"
+      },
+      "explanations": {
+        "a": "Correct. Excessive temperature can trigger thermal runaway inside the cell.",
+        "b": "Battery capacity does not increase because of temperature rise.",
+        "c": "Motor speed is not directly increased by battery temperature.",
+        "d": "Temperature and state of charge are different battery parameters."
+      },
+      "correctAnswer": "a",
+      "difficulty": "beginner"
+    },
+    {
+      "question": "Why is an Emergency Battery Isolation System (EBIS) used in EV battery packs?",
+      "answers": {
+        "a": "To increase battery capacity",
+        "b": "To disconnect the faulty battery section during unsafe conditions",
+        "c": "To improve charging speed",
+        "d": "To reduce vehicle weight"
+      },
+      "explanations": {
+        "a": "Battery isolation does not increase capacity.",
+        "b": "Correct. EBIS isolates the affected section to reduce damage and prevent fault spread.",
+        "c": "Improving charging speed is not the purpose of EBIS.",
+        "d": "Isolation has no effect on vehicle weight."
+      },
+      "correctAnswer": "b",
+      "difficulty": "beginner"
+    },
+    {
+      "question": "Why is fast battery isolation important during a thermal fault?",
+      "answers": {
+        "a": "To increase motor power",
+        "b": "To reduce thermal propagation and battery damage",
+        "c": "To improve suspension performance",
+        "d": "To increase driving range"
+      },
+      "explanations": {
+        "a": "Motor power is not the focus during a battery fault.",
+        "b": "Correct. Faster isolation helps stop the fault from affecting more battery cells.",
+        "c": "Suspension performance is unrelated to battery isolation.",
+        "d": "Driving range is not the main concern during a thermal emergency."
+      },
+      "correctAnswer": "b",
+      "difficulty": "beginner"
+    },
+    {
+      "question": "What is the main outcome observed in this simulation?",
+      "answers": {
+        "a": "Fuel consumption of the vehicle",
+        "b": "Temperature distribution and affected battery cells",
+        "c": "Vehicle top speed",
+        "d": "Tyre wear rate"
+      },
+      "explanations": {
+        "a": "Electric vehicles do not use conventional fuel.",
+        "b": "Correct. The simulation shows how temperature spreads and how many cells are affected.",
+        "c": "Vehicle speed is not the focus of this experiment.",
+        "d": "Tyre wear is unrelated to thermal runaway analysis."
+      },
+      "correctAnswer": "b",
+      "difficulty": "beginner"
+    }
+  ]
+}
