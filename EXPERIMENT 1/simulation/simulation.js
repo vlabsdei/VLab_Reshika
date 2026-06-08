@@ -1,12 +1,11 @@
 document.addEventListener('DOMContentLoaded', function() {
 
 // GLOBAL VARIABLES FROM MILESTONE 1
-let chosenBarrierConductivity = 0.015;     // Thermal conductivity (k). Default is Aerogel.
+let chosenBarrierConductivity = 0.015;     
 let chosenBarrierName         = 'Aerogel'; // The name of the material.
 let chosenBarrierSpecificHeat = 700;       // Specific heat capacity (c). Default is Aerogel.
 
 // MILESTONE NAVIGATION
-
 function switchMilestone(milestoneNumber) {
   let milestone1Page = document.getElementById('milestone-1');
   let milestone2Page = document.getElementById('milestone-2');
@@ -43,7 +42,7 @@ proceedButton.addEventListener('click', function() {
   // 3. Update the UI in Milestone 2 to show selected material properties
   updateInheritedDisplay();
   
-  // 4. Reset the simulation completely so it starts fresh with the new material
+  // 4. Reset the simulation 
   resetSimulation();
   
   // 5. Show the Milestone 2 screen
@@ -60,13 +59,13 @@ if (backToMs1Button) {
 }
 
 
-// MILESTONE 1 — Thermal Conductivity (k) Explorer
+// MILESTONE 1 — Thermal Conductivity (k) 
 let isTestRunning   = false;
 let testTimer       = 0;
 let normalCellTemp  = 25;
 let testInterval    = null;
 
-// Find all the HTML elements we need for the Testing Rig
+//All the HTML elements we need for the Testing Rig
 const materialDropdown     = document.getElementById('ms1-mat-select');
 const runTestButton        = document.getElementById('ms1-run-test-btn');
 const normalCellDisplay    = document.getElementById('ms1-rig-cool-cell');
@@ -78,10 +77,10 @@ const heatTransferArrows   = document.getElementById('ms1-rig-arrows');
 // Color change in cell based on Temperature
 function getCellColorBasedOnTemperature(temperature) {
   if (temperature <= 25) {
-    return '#add8e6'; // Light Blue for cool
+    return '#add8e6'; 
   }
   if (temperature >= 80) {
-    return '#dc3545'; // Red for critical danger!
+    return '#dc3545'; 
   }
   
   // Calculate the ratio between 25 and 80 degrees
@@ -135,11 +134,9 @@ runTestButton.addEventListener('click', function() {
   // Get the Thermal Conductivity (k) of the material chosen
   var thermalConductivity = parseFloat(materialDropdown.value);
   
-  // Start a loop that runs every 50 milliseconds to simulate time passing
   testInterval = setInterval(function() {
     testTimer += 0.05; // Add 0.05 seconds to our clock
     
-    // THE PHYSICS FORMULA: Fourier's Law of Heat Conduction
     // Heat Transfer Rate depends on conductivity (k) and the temperature difference.
     // The hot cell is stuck at 120 degrees, so the difference is (120 - normalCellTemp)
     var tempDifference = 120 - normalCellTemp;
@@ -170,7 +167,7 @@ runTestButton.addEventListener('click', function() {
       runTestButton.innerText = 'Reset Test';
       heatTransferArrows.style.opacity = 0;
       
-      // Update results to show success!
+      // Update results to show success
       testTimeResult.innerText = '> 10.0 s';
       testVerdictResult.innerText  = 'SAFE\nGood Insulator';
       testVerdictResult.style.color = '#2f5d50'; 
@@ -226,7 +223,6 @@ var historyBreachText  = document.getElementById('hist-breach');
 var historyCoolingText = document.getElementById('hist-cooling');
 
 // Core State Variables
-
 var currentInitialTemp = 35;
 var currentCoolingEff  = 50;
 var currentFaultDuration = 7; // How long the short-circuit lasts in seconds
@@ -240,7 +236,7 @@ var peakCellTemperatures    = [25, 25, 25]; // Keeps track of the highest temp e
 // Physics Constants
 var TICK_RATE_MS = 50;  // The simulation updates every 50 milliseconds
 var TIME_STEP    = 0.05; // 50ms is 0.05 seconds
-var CRITICAL_TEMPERATURE = 80; // The threshold where thermal runaway begins
+var CRITICAL_TEMPERATURE = 80;
 
 var isMainSimActive      = false;
 var hasBarrierDropped    = false;
@@ -514,7 +510,7 @@ function updateVisualInterface() {
 }
 
 // ---The Core Physics Engine ---
-// Calculating the flow of heat,recurrsion .
+// Calculating the flow of heat,recurrsively .
 
 function runPhysicsTick() {
   activeFaultTimer += TIME_STEP; // Time moves forward by 0.05 seconds
@@ -534,10 +530,10 @@ function runPhysicsTick() {
     }
   }
 
-  // Calculate cooling inefficiency (lower efficiency means more heat is trapped)
+  // Calculate cooling inefficiency 
   var inefficiencyRatio = (100 - currentCoolingEff) / 100;
   
-  // Calculate Power Generation (baseQ). 
+  // Calculate Power Generation. 
   var conductivityMultiplier = 1 + (chosenBarrierConductivity * 0.005);
   powerGenerated = 15000 * (currentCellMass / 0.5) * conductivityMultiplier * Math.pow(inefficiencyRatio, 1.5);
   
@@ -588,7 +584,7 @@ function runPhysicsTick() {
   
   outputLiveTemperatures.innerText = 'Cell 1: ' + tempCell1.toFixed(1) + '\u00B0C   |   Cell 2: ' + tempCell2.toFixed(1) + '\u00B0C   |   Cell 3: ' + tempCell3.toFixed(1) + '\u00B0C';
 
-  // Update the warning banner for damaged cells
+  // Update the warning text for damaged cells
   if (completelyBurntOutCells.size > 0) {
     var warningList = [];
     completelyBurntOutCells.forEach(function(cellIndex) {
@@ -608,7 +604,7 @@ function runPhysicsTick() {
     buttonDeploy.style.display = 'block'; // Make the big red deploy button visible!
   }
 
-  // Apply the active cooling system to all cells (even burnt-out husks cool down eventually)
+  // Apply the active cooling system to all cells
   var baselineCoolingSpeed = (currentCoolingEff / 100) * 0.9;
   var finalCoolingSpeed = baselineCoolingSpeed * (1 + chosenBarrierConductivity * 0.05);
   
@@ -710,7 +706,7 @@ function triggerBarrierDrop(reason, gapIndexToDropInto) {
     currentlyDeployedGapIndex = 0;
   }
   
-  // Add the CSS animation class
+  // Add the CSS animation class for dropping
   isolationBarrierBox.classList.add('dropped');
   
   // Record response time
