@@ -1,0 +1,565 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AI Based Eco Driving Simulator</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Outfit:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="./css/main.css">
+</head>
+<body>
+
+<div class="lab-container">
+  <p class="ms1-only" style="margin-top: 10px; margin-bottom: 20px; font-size: 0.95rem; color: #04519b; font-family: 'Times New Roman', Times, serif;"><strong style="color: #04519b;">Objective:</strong> Analyze electric vehicle (EV) tractive forces, environmental resistances (aerodynamic drag, rolling friction, gravity), and baseline power demand under varying speeds and terrain presets.</p>
+  <p class="ms2-only" style="margin-top: 10px; margin-bottom: 20px; font-size: 0.95rem; color: #04519b; font-family: 'Times New Roman', Times, serif;"><strong style="color: #04519b;">Objective:</strong> Simulate live battery telemetry, cell temperature heatmaps, and dynamic energy integration (<i>E</i> = <i>P</i><sub>total</sub> &times; <i>t</i>) under dynamic driving profiles, passenger payloads, and braking conditions to optimize range, eco-scores, and thermal strain.</p>
+
+  <div class="workspace-split">
+    
+    <!-- left controls panel -->
+    <section class="testCard cBox_wrap ms2-only">
+      <h4 class="titleCard">Set Parameters</h4>
+      
+      <!-- profile select -->
+      <div class="inpsGroup ms2-only">
+        <label for="profileSelect" style="display: block; margin-bottom: 5px;">Driving Profile:</label>
+        <select id="profileSelect" class="ddSelect" style="padding: 8px; border: 1px solid #cbd5e1; border-radius: 4px;">
+          <option value="eco" selected>Eco-Driving Profile (Stable speed)</option>
+          <option value="city">City Traffic Cycle (Stop-and-go)</option>
+          <option value="aggressive">Aggressive Driving (High speed, harsh braking)</option>
+          <option value="custom">Custom Sandbox</option>
+        </select>
+      </div>
+
+      <div class="inpsGroup">
+        <label for="inputSpeed" style="display: block; margin-bottom: 5px;">Speed (v):</label>
+        <div style="display: flex; align-items: center; gap: 10px;">
+          <input type="number" id="inputSpeed" value="60" min="10" max="450" style="flex: 1; padding: 8px; border: 1px solid #cbd5e1; border-radius: 4px;">
+          <span>km/h</span>
+        </div>
+      </div>
+
+      <div class="inpsGroup">
+        <label for="terrainSelect" style="display: block; margin-bottom: 5px;">Select Terrain:</label>
+        <select id="terrainSelect" class="ddSelect" style="padding: 8px; border: 1px solid #cbd5e1; border-radius: 4px;">
+          <option value="flat" selected>Flat Expressway (0&deg; slope)</option>
+          <option value="hill">Steep Hill Climb (+12&deg; slope)</option>
+          <option value="downhill">Downhill Descent (-10&deg; slope)</option>
+        </select>
+      </div>
+
+      <div class="inpsGroup">
+        <label for="inputMass" style="display: block; margin-bottom: 5px;">Vehicle Base Mass:</label>
+        <div style="display: flex; align-items: center; gap: 10px;">
+          <input type="number" id="inputMass" value="1600" min="1000" max="3000" style="flex: 1; padding: 8px; border: 1px solid #cbd5e1; border-radius: 4px;">
+          <span>kg</span>
+        </div>
+      </div>
+
+      <!-- passengers selection -->
+      <div class="inpsGroup ms2-only">
+        <label style="display: block; margin-bottom: 5px;">Number of Passengers:</label>
+        <div class="passenger-selector">
+          <label class="passenger-checkbox-label">
+            <input type="radio" name="passengers" value="1" checked>
+            <span>1</span>
+          </label>
+          <label class="passenger-checkbox-label">
+            <input type="radio" name="passengers" value="2">
+            <span>2</span>
+          </label>
+          <label class="passenger-checkbox-label">
+            <input type="radio" name="passengers" value="3">
+            <span>3</span>
+          </label>
+          <label class="passenger-checkbox-label">
+            <input type="radio" name="passengers" value="4">
+            <span>4</span>
+          </label>
+          <label class="passenger-checkbox-label">
+            <input type="radio" name="passengers" value="5">
+            <span>5</span>
+          </label>
+        </div>
+      </div>
+
+      <!-- total mass readout -->
+      <div class="inpsGroup ms2-only" style="margin-top: 10px; font-size: 0.95rem;">
+        <span style="font-weight: bold; color: #333333;">Total Simulation Mass (m):</span>
+        <span style="font-weight: bold; color: #04519b; background-color: #e0f2fe; padding: 4px 10px; border-radius: 12px; margin-top: 4px; display: inline-block; width: fit-content;" id="totalMassDisplay">1680 kg</span>
+      </div>
+
+      <!-- wrapper for milestone 2 inputs -->
+      <div class="ms2-only" style="width: 100%;">
+        <!-- brake frequency slider -->
+        <div class="inpsGroup" id="brakeFreqGroup" style="width: 100%; margin-top: 10px;">
+          <label for="inputBrakeFreq">
+            Brake Frequency:
+            <span class="valBadge" id="badgeBrake">3 /min</span>
+          </label>
+          <input type="range" id="inputBrakeFreq" min="2" max="10" step="1" value="3" style="width: 100%;">
+        </div>
+      </div>
+
+
+      <!-- live calculations panel -->
+      <div class="ms2-only" style="background: #f8fafc; padding: 15px; border-radius: 8px; border: 1px solid #cbd5e1; margin-top: 20px; flex-direction: column; gap: 8px; font-family: monospace; font-size: 0.85rem; width: 100%;">
+        <h5 style="margin: 0 0 10px 0; font-family: 'Times New Roman', Times, serif; color: #04519b; text-transform: uppercase; border-bottom: 1px solid #cbd5e1; padding-bottom: 4px; font-weight: 600;">Live Calculations</h5>
+        
+        <div style="display: flex; justify-content: space-between; gap: 10px; border-bottom: 1px dashed #cbd5e1; padding-bottom: 4px; margin-bottom: 4px;">
+          <span>Tractive Force (F<sub>total</sub>):</span>
+          <span id="liveFtotal" style="font-weight: bold; color: #b45309;">0 N</span>
+        </div>
+
+        <div style="display: flex; justify-content: space-between; gap: 10px; border-bottom: 1px dashed #cbd5e1; padding-bottom: 4px; margin-bottom: 4px;">
+          <span>Motor Power (P<sub>motor</sub>):</span>
+          <span id="livePmotor" style="font-weight: bold; color: #0f172a;">0.00 kW</span>
+        </div>
+
+        <div style="display: flex; justify-content: space-between; gap: 10px; border-bottom: 1px dashed #cbd5e1; padding-bottom: 4px; margin-bottom: 4px;">
+          <span>Estimated Driving Range:</span>
+          <span id="liveEstRange" style="font-weight: bold; color: #04519b;">120 km</span>
+        </div>
+
+        <div style="display: flex; justify-content: space-between; gap: 10px; border-bottom: 1px dashed #cbd5e1; padding-bottom: 4px; margin-bottom: 4px;">
+          <span>Resulted Driving Range:</span>
+          <span id="liveResultedRange" style="font-weight: bold; color: #16a34a;">-- km</span>
+        </div>
+      </div>
+
+    </section>
+    
+    <!-- Left Column Wrapper for Stage 1 -->
+    <div id="leftColWrapper" class="ms1-only" style="display: flex; flex-direction: column; gap: 20px;">
+      <!-- Incurred Parameters Panel (displays read-only values from the simulation run) -->
+      <section id="incurredParamsCard" class="testCard cBox_wrap" style="height: auto; overflow: visible;">
+        <h4 class="titleCard">Simulation Parameters Used</h4>
+        
+        <div class="inpsGroup">
+          <label>Driving Profile:</label>
+          <span class="valBadge" id="incProfile" style="font-size: 0.95rem; font-weight: bold; width: fit-content; display: inline-block;">Eco-Driving</span>
+        </div>
+  
+        <div class="inpsGroup" style="margin-top: 12px;">
+          <label>Simulation Speed (v):</label>
+          <div style="display: flex; align-items: center; justify-content: space-between; background: #f8fafc; padding: 8px 12px; border: 1px solid #cbd5e1; border-radius: 4px;">
+            <span style="font-weight: 600; color: #0f172a;" id="incSpeed">60 km/h</span>
+            <span style="font-size: 0.85rem; color: #64748b;" id="incSpeedMs">(16.67 m/s)</span>
+          </div>
+        </div>
+  
+        <div class="inpsGroup" style="margin-top: 12px;">
+          <label>Terrain Profile:</label>
+          <span class="valBadge" id="incTerrain" style="font-size: 0.95rem; font-weight: bold; width: fit-content; display: inline-block; background-color: #f0fdf4; border-color: #bbf7d0; color: #166534;">Flat Expressway (0&deg;)</span>
+        </div>
+  
+        <div class="inpsGroup" style="margin-top: 12px;">
+          <label>Total Vehicle Mass (m):</label>
+          <div style="display: flex; align-items: center; justify-content: space-between; background: #f8fafc; padding: 8px 12px; border: 1px solid #cbd5e1; border-radius: 4px;">
+            <span style="font-weight: 600; color: #0f172a;" id="incMass">1680 kg</span>
+            <span style="font-size: 0.85rem; color: #64748b;" id="incMassBreakdown">(1600 kg base + 1 passenger)</span>
+          </div>
+        </div>
+  
+        <div class="inpsGroup" style="margin-top: 12px;">
+          <label>Brake Frequency:</label>
+          <span class="valBadge" id="incBrakeFreq" style="font-size: 0.95rem; font-weight: bold; width: fit-content; display: inline-block; background-color: #fef2f2; border-color: #fecaca; color: #991b1b;">3 /min</span>
+        </div>
+  
+        <div style="background: #eff6ff; padding: 12px; border-radius: 6px; border: 1px solid #bfdbfe; margin-top: 25px; font-size: 0.85rem; color: #1e40af; line-height: 1.45;">
+          <strong style="display: block; margin-bottom: 4px; color: #1e40af;">Note:</strong>
+          These are the actual parameter values incurred during the simulation test run, used directly in the calculations on the right.
+        </div>
+      </section>
+  
+      <!-- Dynamic Downhill Physics Explanation Box -->
+      <div id="downhillExplBox" style="display: none; background: #f0fdf4; border: 1px solid #bbf7d0; border-radius: 8px; padding: 15px; font-size: 0.85rem; line-height: 1.5; color: #166534; font-family: 'Times New Roman', Times, serif; box-shadow: 0 1px 3px rgba(0,0,0,0.03);">
+        <strong style="color: #166534; display: block; margin-bottom: 8px; font-weight: bold; font-size: 0.95rem;">Downhill Physics (Why is it a PASS with Negative Values?):</strong>
+        <ol style="margin: 0; padding-left: 18px; display: flex; flex-direction: column; gap: 8px;">
+          <li><strong>Why F & P are negative:</strong> Downhill gravity pushes the vehicle forward. The motor does not need to pull the car, so tractive force (<i>F</i>) and power draw (<i>P</i>) drop below zero.</li>
+          <li><strong>Why E is negative:</strong> Instead of consuming battery power, the motor acts as a generator (regenerative braking) to capture kinetic energy and charge the battery. Hence, net energy consumed (<i>E</i>) is negative (energy is gained, not lost).</li>
+          <li><strong>Why it PASSES:</strong> Since the battery recovers charge rather than depleting it, the vehicle's driving range is extended beyond the baseline. Gaining energy is highly efficient, yielding a <strong>PASS</strong> verdict instead of a FAIL.</li>
+        </ol>
+      </div>
+    </div>
+
+    <div id="milestoneWorkspace1" class="milestone-container hidden-view">
+      <section class="cBox_wrap" style="display: flex; flex-direction: column; gap: 15px; overflow-y: auto;">
+      
+      <!-- constants -->
+      <div style="background: #f8fafc; padding: 15px; border-radius: 8px; border: 1px solid #e2e8f0;">
+        <h5 style="margin: 0 0 10px 0; font-family: 'Times New Roman', Times, serif; color: #0f172a;">Constants Legend</h5>
+        <div style="display: flex; flex-direction: column; gap: 8px; font-size: 0.9rem;">
+          <span>Gravity (g) = 9.81 m/s²</span>
+          <span>Rolling Fric (&mu;) = 0.012</span>
+          <span>Air Density (&rho;) = 1.225 kg/m³</span>
+          <span>Drag Coeff (C<sub>d</sub>) = 0.24</span>
+          <span>Frontal Area (A) = 2.2 m²</span>
+        </div>
+      </div>
+      
+      <!-- force calculations -->
+      <div style="padding: 15px;">
+        <h5 style="margin: 0 0 15px 0; font-family: 'Times New Roman', Times, serif; color: #0f172a; border-bottom: 1px solid #e2e8f0; padding-bottom: 5px;">Force Breakdown (<i>F</i><sub>total</sub> = <i>F</i><sub>gravity</sub> + <i>F</i><sub>rolling</sub> + <i>F</i><sub>drag</sub>)</h5>
+        
+        <div style="display: flex; flex-direction: column; gap: 10px;">
+          <div style="background: #eff6ff; padding: 10px; border-radius: 6px; border: 1px solid #bfdbfe;">
+            <p style="margin: 0 0 5px 0; font-size: 0.85rem; color: #1e40af; font-weight: 500;">F<sub>gravity</sub> = m &times; g &times; sin(&theta;)</p>
+            <code style="font-size: 1.0rem; color: #1e3a8a;">F<sub>gravity</sub> = <span id="labMass">1675</span>kg &times; 9.81 &times; sin(<span id="labSlope">0&deg;</span>) = <strong id="labFgVal">0</strong> N</code>
+          </div>
+
+          <div style="background: #f0fdf4; padding: 10px; border-radius: 6px; border: 1px solid #bbf7d0;">
+            <p style="margin: 0 0 5px 0; font-size: 0.85rem; color: #166534; font-weight: 500;">F<sub>rolling</sub> = &mu; &times; m &times; g &times; cos(&theta;)</p>
+            <code style="font-size: 1.0rem; color: #14532d;">F<sub>rolling</sub> = 0.012 &times; <span id="labMass2">1675</span>kg &times; 9.81 &times; cos(<span id="labSlope2">0&deg;</span>) = <strong id="labFrVal">197</strong> N</code>
+          </div>
+
+          <div style="background: #fef2f2; padding: 10px; border-radius: 6px; border: 1px solid #fecaca;">
+            <p style="margin: 0 0 5px 0; font-size: 0.85rem; color: #991b1b; font-weight: 500;">F<sub>drag</sub> = 0.5 &times; &rho; &times; C<sub>d</sub> &times; A &times; v&sup2;</p>
+            <code style="font-size: 1.0rem; color: #7f1d1d;">F<sub>drag</sub> = 0.5 &times; 1.225 &times; 0.24 &times; 2.2 &times; (<span id="labSpeed">16.67</span>m/s)&sup2; = <strong id="labFdVal">89</strong> N</code>
+          </div>
+
+          <div style="background: #fefce8; padding: 10px; border-radius: 6px; border: 2px solid #fde047; text-align: center;">
+            <code style="font-size: 1.1rem; font-weight: bold; color: #a16207;">
+              F<sub>total</sub> = <span id="sumFg">0</span> + <span id="sumFr">197</span> + <span id="sumFd">89</span> = <span id="sumFinal">286</span> N
+            </code>
+          </div>
+        </div>
+      </div>
+
+      <!-- power calculations -->
+      <div style="background: #fdf4ff; padding: 15px; border-radius: 8px; border: 1px solid #fbcfe8;">
+        <p style="margin: 0 0 5px 0; font-size: 0.85rem; color: #701a75; font-weight: 500;">P = F<sub>total</sub> &times; v</p>
+        <code style="font-size: 1.1rem; color: #701a75;">P = <span id="dispPowerForce">286</span> N &times; <span id="dispPowerSpeed">16.67</span> m/s = <strong id="dispPowerFinal">4.77</strong> kW</code>
+      </div>
+
+      <!-- energy calculations -->
+      <div style="background: #f0f9ff; padding: 15px; border-radius: 8px; border: 1px solid #bae6fd;">
+        <p style="margin: 0 0 5px 0; font-size: 0.85rem; color: #0c4a6e; font-weight: 500;">E = P &times; t</p>
+        <code style="font-size: 1.1rem; color: #0c4a6e;">E = <span id="dispEnergyPower">4.77</span> kW &times; 30s = <strong id="dispEnergyFinal">39.75</strong> Wh</code>
+      </div>
+
+      </section>
+
+      <div id="pnlBtmBox" style="margin-top: 25px; display: flex; flex-direction: column; gap: 15px; width: 100%;">
+          <div style="display: flex; gap: 15px; width: 100%; margin-top: 10px;">
+            <button id="reviewUnderstandBtn" class="gBtn_prm btnGreen" style="flex: 1; padding: 12px; font-size: 1.0rem; font-weight: bold; text-transform: uppercase; margin-top: 0;">Review and Understand</button>
+            <button id="returnToMs1Btn" class="gBtn_prm btnBlue" style="flex: 1; padding: 12px; font-size: 1.0rem; font-weight: bold; text-transform: uppercase; margin-top: 0;">Return to Test Simulation &rarr;</button>
+          </div>
+          
+          <!-- Comparison Panel -->
+          <div id="comparisonPanel" class="comparison-card" style="width: 100%;">
+            <h5 style="margin: 0 0 15px 0; font-family: 'Times New Roman', Times, serif; color: #04519b; border-bottom: 2px solid #04519b; padding-bottom: 5px; text-transform: uppercase;">Simulation Run vs. Theoretical Calculations</h5>
+            <div class="comparison-grid">
+              <div class="comparison-col">
+                <h6 style="margin: 0 0 10px 0; font-family: 'Times New Roman', Times, serif; font-size: 0.95rem; font-weight: 700; color: #04519b; border-bottom: 1px solid #cbd5e1; padding-bottom: 4px;">Dynamic Simulation Output</h6>
+                <div class="comparison-row">
+                  <span>Avg Power (P):</span>
+                  <span class="val" id="compSimPower">-- kW</span>
+                </div>
+                <div class="comparison-row">
+                  <span>Total Energy (E):</span>
+                  <span class="val" id="compSimEnergy">-- Wh</span>
+                </div>
+                <div class="comparison-row">
+                  <span>Resulted Range:</span>
+                  <span class="val" id="compSimRange">-- km</span>
+                </div>
+                <div class="comparison-row">
+                  <span>AI Eco-Score:</span>
+                  <span class="val" id="compSimScore">--%</span>
+                </div>
+              </div>
+              <div class="comparison-col">
+                <h6 style="margin: 0 0 10px 0; font-family: 'Times New Roman', Times, serif; font-size: 0.95rem; font-weight: 700; color: #04519b; border-bottom: 1px solid #cbd5e1; padding-bottom: 4px;">Static Theoretical Formula</h6>
+                <div class="comparison-row">
+                  <span>Calculated Power (P):</span>
+                  <span class="val" id="compTheoPower">-- kW</span>
+                </div>
+                <div class="comparison-row">
+                  <span>Calculated Energy (E):</span>
+                  <span class="val" id="compTheoEnergy">-- Wh</span>
+                </div>
+                <div class="comparison-row">
+                  <span>Estimated Range:</span>
+                  <span class="val" id="compTheoRange">-- km</span>
+                </div>
+                <div class="comparison-row">
+                  <span>Baseline Score:</span>
+                  <span class="val" id="compTheoScore">100%</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+    </div> <!-- Close milestoneWorkspace1 -->
+
+    <!-- Milestone 2 -->
+    <div id="milestoneWorkspace2" class="milestone-container active-view">
+      <!-- visualizer column -->
+      <section class="rightRigCol">
+        
+        <!-- 3d view -->
+        <div class="viewport-3d-wrapper">
+          <!-- HUD Top-Left Overlay -->
+          <div class="hud-text-box hud-top-left" id="hudStatus">
+            [STANDBY MODE]
+          </div>
+          <div class="hud-text-box hud-bottom-right">
+            <div class="hud-row">
+              <span>SPEED:</span>
+              <span class="hud-val" id="hudSpeed">0.0 km/h</span>
+            </div>
+            <div class="hud-row">
+              <span>REGEN CAPTURE:</span>
+              <span class="hud-val" id="hudRegen">--</span>
+            </div>
+            <div class="hud-row">
+              <span>BASELINE LOAD:</span>
+              <span class="hud-val" id="hudLiveForce">0 N</span>
+            </div>
+          </div>
+
+          <div class="scene-3d">
+            <div class="road-3d-env" id="road3D">
+               <!-- road lines -->
+              <div class="road-stripe" style="--index: 0;"></div>
+              <div class="road-stripe" style="--index: 1;"></div>
+              <div class="road-stripe" style="--index: 2;"></div>
+              <div class="road-stripe" style="--index: 3;"></div>
+              <div class="road-stripe" style="--index: 4;"></div>
+              
+              <!-- car shadow -->
+              <div class="car-shadow-3d"></div>
+
+              <!-- car model -->
+              <div class="car-3d-model">
+                <!-- car body -->
+                <div class="car-body-3d">
+                  <div class="face front"></div>
+                  <div class="face back"></div>
+                  <div class="face left"></div>
+                  <div class="face right"></div>
+                  <div class="face top"></div>
+                  <div class="face bottom"></div>
+                </div>
+                <!-- car cabin -->
+                <div class="car-cabin-3d">
+                  <div class="face front"></div>
+                  <div class="face back"></div>
+                  <div class="face left"></div>
+                  <div class="face right"></div>
+                  <div class="face top"></div>
+                </div>
+                
+                <!-- mirrors -->
+                <div class="mirror-3d left"></div>
+                <div class="mirror-3d right"></div>
+                
+                <!-- spoiler -->
+                <div class="spoiler-3d">
+                  <div class="face top"></div>
+                  <div class="face left-leg"></div>
+                  <div class="face right-leg"></div>
+                </div>
+
+                <!-- 3d wheels -->
+                <div class="wheel-3d fl" id="wheelFL">
+                  <div class="wheel-sidewall left"></div>
+                  <div class="wheel-sidewall right"></div>
+                  <div class="wheel-tread t1"></div>
+                  <div class="wheel-tread t2"></div>
+                  <div class="wheel-tread t3"></div>
+                  <div class="wheel-tread t4"></div>
+                </div>
+                <div class="wheel-3d fr" id="wheelFR">
+                  <div class="wheel-sidewall left"></div>
+                  <div class="wheel-sidewall right"></div>
+                  <div class="wheel-tread t1"></div>
+                  <div class="wheel-tread t2"></div>
+                  <div class="wheel-tread t3"></div>
+                  <div class="wheel-tread t4"></div>
+                </div>
+                <div class="wheel-3d bl" id="wheelBL">
+                  <div class="wheel-sidewall left"></div>
+                  <div class="wheel-sidewall right"></div>
+                  <div class="wheel-tread t1"></div>
+                  <div class="wheel-tread t2"></div>
+                  <div class="wheel-tread t3"></div>
+                  <div class="wheel-tread t4"></div>
+                </div>
+                <div class="wheel-3d br" id="wheelBR">
+                  <div class="wheel-sidewall left"></div>
+                  <div class="wheel-sidewall right"></div>
+                  <div class="wheel-tread t1"></div>
+                  <div class="wheel-tread t2"></div>
+                  <div class="wheel-tread t3"></div>
+                  <div class="wheel-tread t4"></div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+      </section>
+
+      <!-- battery and verdict details -->
+      <div class="right-details-col">
+        
+
+        <!-- battery pack display -->
+        <div class="battery-monitor-pnl cBox_wrap">
+          <h5 class="battery-title" style="border-left-color: #ff6b00;">Live Battery Pack Monitor</h5>
+          
+          <div class="battery-layout" style="margin-bottom: 10px;">
+            <!-- battery level bar -->
+            <div class="soc-meter-box">
+              <div class="liquid-bg">
+                <div class="liquid-wave" id="socWave" style="height: 100%;"></div>
+                <div class="soc-text-overlay">
+                  <span id="socPercentage" style="font-size: 1.0rem;">100.0%</span>
+                  <span class="soc-sub" style="font-size: 0.45rem;">State of Charge</span>
+                </div>
+              </div>
+            </div>
+            
+            <!-- battery cells -->
+            <div class="battery-pack-grid">
+              <div class="cell-grid-header" style="font-size: 0.65rem;">Segmented Battery Packs (Live Temperature Heatmap)</div>
+              <div class="grid-cells-container" style="gap: 6px;">
+                <div class="battery-cell" id="bCell0" style="height: 20px; font-size: 0.6rem;">C1</div>
+                <div class="battery-cell" id="bCell1" style="height: 20px; font-size: 0.6rem;">C2</div>
+                <div class="battery-cell" id="bCell2" style="height: 20px; font-size: 0.6rem;">C3</div>
+                <div class="battery-cell" id="bCell3" style="height: 20px; font-size: 0.6rem;">C4</div>
+                <div class="battery-cell" id="bCell4" style="height: 20px; font-size: 0.6rem;">C5</div>
+                <div class="battery-cell" id="bCell5" style="height: 20px; font-size: 0.6rem;">C6</div>
+                <div class="battery-cell" id="bCell6" style="height: 20px; font-size: 0.6rem;">C7</div>
+                <div class="battery-cell" id="bCell7" style="height: 20px; font-size: 0.6rem;">C8</div>
+                <div class="battery-cell" id="bCell8" style="height: 20px; font-size: 0.6rem;">C9</div>
+                <div class="battery-cell" id="bCell9" style="height: 20px; font-size: 0.6rem;">C10</div>
+                <div class="battery-cell" id="bCell10" style="height: 20px; font-size: 0.6rem;">C11</div>
+                <div class="battery-cell" id="bCell11" style="height: 20px; font-size: 0.6rem;">C12</div>
+              </div>
+            </div>
+          </div>
+          
+          <!-- live dials / stats -->
+          <div class="battery-gauges-row" style="margin-top: 8px; gap: 6px;">
+            <div class="gauge-card" style="padding: 4px;">
+              <div class="gauge-lbl" style="font-size: 0.55rem;">Cell Temperature</div>
+              <div class="gauge-val" id="gaugeTemp" style="font-size: 0.75rem;">25.0 &deg;C</div>
+            </div>
+            <div class="gauge-card" style="padding: 4px;">
+              <div class="gauge-lbl" style="font-size: 0.55rem;">Current Draw</div>
+              <div class="gauge-val" id="gaugeCurrent" style="font-size: 0.75rem;">0.0 A</div>
+            </div>
+            <div class="gauge-card" style="padding: 4px;">
+              <div class="gauge-lbl" style="font-size: 0.55rem;">Terminal Voltage</div>
+              <div class="gauge-val" id="gaugeVoltage" style="font-size: 0.75rem;">380 V</div>
+            </div>
+            <div class="gauge-card" style="padding: 4px;">
+              <div class="gauge-lbl" style="font-size: 0.55rem;">Thermal Strain</div>
+              <div class="gauge-val" id="gaugeStrain" style="font-size: 0.75rem;">NORMAL</div>
+            </div>
+          </div>
+          
+          <!-- power flow text -->
+          <div class="flow-indicator" id="flowIndicator" style="margin-top: 6px; padding: 4px; font-size: 0.65rem;">
+            <span class="flow-arrow-left">&larr;</span> Energy Flowing Out (Discharging) <span class="flow-arrow-right">&rarr;</span>
+          </div>
+        </div>
+
+        <!-- run simulation block -->
+        <div class="cBox_wrap" style="padding: 4px 12px;">
+          <button id="runBtn" class="gBtn_prm btnGreen" style="width: 100%; padding: 8px; font-size: 1.0rem;">Run Telemetry Test Simulation</button>
+          
+          <div id="progressContainer" style="display: none; margin-top: 15px; background: #e2e8f0; border-radius: 4px; height: 12px; overflow: hidden;">
+            <div id="progressBar" style="height: 100%; background: #16a34a; width: 0%;"></div>
+          </div>
+          <p id="statusLabel" style="display: none; text-align: center; font-size: 0.85rem; margin-top: 5px; color: #64748b;"></p>
+        </div>
+
+        <!-- results display -->
+        <section class="verdictCard cBox_wrap">
+          <h4 class="titleCard">Verdict</h4>
+          <div class="resList">
+            
+            <!-- Live Energy & Power Integration sub-panel -->
+            <div class="battery-monitor-pnl" style="margin-bottom: 12px; padding: 10px; background: #f8fafc; border: 1px solid #cbd5e1; border-radius: 6px;">
+              <h5 class="battery-title" style="border-left-color: #04519b; font-size: 0.8rem; margin-bottom: 8px;">Live Energy &amp; Power Integration (E = P<sub>avg</sub> &times; t)</h5>
+              
+              <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 8px; margin-bottom: 8px;">
+                <div class="gauge-card" style="background: #fdf4ff; border-color: #fbcfe8; padding: 5px;">
+                  <div class="gauge-lbl" style="color: #701a75; font-size: 0.6rem;">Power (P)</div>
+                  <div class="gauge-val" id="livePowerDraw" style="font-size: 0.95rem; color: #701a75;">0.00 kW</div>
+                </div>
+                <div class="gauge-card" style="background: #f0fdf4; border-color: #bbf7d0; padding: 5px;">
+                  <div class="gauge-lbl" style="color: #166534; font-size: 0.6rem;">Time (t)</div>
+                  <div class="gauge-val" id="liveTimeElapsed" style="font-size: 0.95rem; color: #166534;">0.0s</div>
+                </div>
+                <div class="gauge-card" style="background: #f0f9ff; border-color: #bae6fd; padding: 5px;">
+                  <div class="gauge-lbl" style="color: #0369a1; font-size: 0.6rem;">Energy (E)</div>
+                  <div class="gauge-val" id="liveEnergyConsumed" style="font-size: 0.95rem; color: #0369a1;">0 Wh</div>
+                </div>
+              </div>
+              
+              <!-- Live dynamic math display -->
+              <div id="liveFormulaDisplay" style="font-family: monospace; font-size: 0.8rem; font-weight: bold; text-align: center; background: #ffffff; color: #0f172a; padding: 8px; border-radius: 4px; border: 1px solid #cbd5e1; box-shadow: inset 0 1px 3px rgba(0,0,0,0.03);">
+                E = P &times; t &rArr; 0 Wh = 0.00 kW &times; 0.0s
+              </div>
+            </div>
+            <div class="rowResItem">
+              <span class="lblRes">AI ECO-SCORE:</span>
+              <span class="valRes" id="verdictScoreText" style="font-weight: bold; color: #04519b;">--%</span>
+            </div>
+            <div class="rowResItem">
+              <span class="lblRes">VERDICT STATUS:</span>
+              <span class="valRes" id="verdictStatusText" style="font-weight: bold; color: #777777;">--</span>
+            </div>
+
+            <div class="rowResItem no-border">
+              <span class="lblRes">CONCLUSION:</span>
+              <span class="valRes conclusion-text" id="conclusionText">--</span>
+            </div>
+          </div>
+        </section>
+
+        <!-- Reset Simulation button -->
+        <button id="resetSimulationBtn" class="gBtn_prm btnRed" style="display: none; width: 100%; padding: 10px; font-size: 0.95rem; font-weight: bold; text-transform: uppercase; margin-top: 15px;">Reset Simulation</button>
+
+        <!-- Proceed to Explanation button -->
+        <button id="proceedToExplanationBtn" class="gBtn_prm btnBlue" style="display: none; width: 100%; padding: 10px; font-size: 0.95rem; font-weight: bold; text-transform: uppercase; margin-top: 15px;">Proceed to Explanation &rarr;</button>
+
+      </div>
+    </div> <!-- Close milestoneWorkspace2 -->
+
+  </div>
+
+  <!-- history table -->
+  <div class="history-matrix-panel cBox_wrap ms2-only">
+    <h4 class="titleCard">Simulated Performance Matrix History</h4>
+    <table class="report-matrix-table" id="reportTable">
+      <thead>
+        <tr>
+          <th>Driving Profile Tested</th>
+          <th>Terrain Profile</th>
+          <th>Unladen Mass (kg)</th>
+          <th>Wh Energy Consumed</th>
+          <th>Peak Power (kW)</th>
+          <th>Resulted Range (km)</th>
+          <th>AI Eco-Score (%)</th>
+          <th>Verdict</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr id="emptyHistoryRow">
+          <td colspan="8" style="text-align: center; color: #777777; font-style: italic;">No telemetry test simulations logged yet. Press "Run Telemetry Test" to start.</td>
+        </tr>
+      </tbody>
+    </table>
+    <button id="clearHistoryBtn" class="btnGrey">Clear Test History</button>
+  </div>
+</div>
+
+<script src="./js/main.js"></script>
+</body>
+</html>
