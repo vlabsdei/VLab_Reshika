@@ -113,12 +113,12 @@ k : Thermal conductivity of the material (W/m · K)<br>
 A : Available surface contact area (m<sup>2</sup>)<br>
 dT/dx : Spatial temperature gradient across the barrier<br>
 
-<img src="propagation.drawio.png">
+<img src="./images/propagation.drawio.png">
 
 ### WORKFLOW
 
-<img src="Milestone 1.png">
+<img src="./images/Milestone 1.png">
 
-<img src="Milestione 2.png">
+<img src="./images/Milestione 2.png">
 
 :::
