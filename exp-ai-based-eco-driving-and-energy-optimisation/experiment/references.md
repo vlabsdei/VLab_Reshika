@@ -7,4 +7,4 @@
 
 ## RESEARCH PAPERS
 
-- Spotnitz, R. and Franklin, J., 2003. Abuse behavior of high-power lithium-ion cells._Journal of Power Sources_, 113(1), pp.81-100.
+- Spotnitz, R. and Franklin, J., 2003. Abuse behavior of high-power lithium-ion cells._Journal of Power Sources_, 113(1).
