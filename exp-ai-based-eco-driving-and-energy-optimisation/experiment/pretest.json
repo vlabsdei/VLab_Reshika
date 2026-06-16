@@ -1,0 +1,90 @@
+{
+  "version": 2.0,
+  "questions": [
+    {
+      "question": "What does the traction motor in an EV actually do to make the car move?",
+      "answers": {
+        "a": "It turns mechanical energy from the wheels into electrical energy for the battery.",
+        "b": "It converts the electrical energy stored in the battery pack into mechanical energy.",
+        "c": "It changes chemical energy directly into mechanical energy to turn the wheels.",
+        "d": "It generates thermal energy to help power the vehicle’s auxiliary systems."
+      },
+      "explanations": {
+        "a": "This is regenerative braking, not the main way the car moves forward.",
+        "b": "Correct. As per THEORY.pdf, the battery gives power to the traction motor, which changes electrical energy into mechanical energy to make the vehicle move.",
+        "c": "Normal gas cars do this, but EVs use stored electrical energy instead.",
+        "d": "The motor is built to create movement from electricity, not to make heat for other things."
+      },
+      "correctAnswer": "b",
+      "difficulty": "beginner"
+    },
+    {
+      "question": "If my EV motor runs at a power level of P = 2000 W for a total driving time of t = 1.5 hours, how much energy (E) is consumed in Watt-hours (Wh)?",
+      "answers": {
+        "a": "1333.33 Wh",
+        "b": "2000 Wh",
+        "c": "3000 Wh",
+        "d": "300 Wh"
+      },
+      "explanations": {
+        "a": "This happens if you divide power by time instead of multiplying them.",
+        "b": "This would only be right if the car drove for exactly 1 hour.",
+        "c": "Correct. Based on the formula E = P x t in THEORY.pdf, you multiply 2000 W by 1.5 hours to get 3000 Wh.",
+        "d": "This looks like a math mistake with the decimal point."
+      },
+      "correctAnswer": "c",
+      "difficulty": "beginner"
+    },
+    {
+      "question": "Why does driving aggressively (like slamming on the gas pedal) lower your driving range?",
+      "answers": {
+        "a": "It requires a large amount of power within a short period of time, leading to faster energy depletion.",
+        "b": "It causes the traction motor to completely shut off to protect the battery.",
+        "c": "It decreases the overall driving time, which automatically wastes battery power.",
+        "d": "It changes the battery's chemical composition, making it unable to hold a charge."
+      },
+      "explanations": {
+        "a": "Correct. THEORY.pdf explains that rapid acceleration takes a lot of power really fast, which drains the battery quicker.",
+        "b": "Stepping on the gas makes the motor draw more power, it doesn't shut it off.",
+        "c": "Even if you reach your destination faster, the huge power draw still ruins your efficiency.",
+        "d": "Aggressive driving makes the battery drain faster, but it doesn't change its actual internal chemistry."
+      },
+      "correctAnswer": "a",
+      "difficulty": "beginner"
+    },
+    {
+      "question": "What does 'State of Charge' (SOC) mean when checking your EV's battery status?",
+      "answers": {
+        "a": "The total distance the vehicle can travel before you have to plug it in.",
+        "b": "The rate at which power is being drained from the battery pack every second.",
+        "c": "The amount of energy remaining in the battery at any given time, shown as a percentage.",
+        "d": "The maximum capacity of a brand-new battery pack."
+      },
+      "explanations": {
+        "a": "This is the driving range, not the battery state itself.",
+        "b": "This describes power consumption or how fast energy is being used.",
+        "c": "Correct. THEORY.pdf states that State of Charge (SOC) is just the energy left in the battery at any time, written as a percentage.",
+        "d": "This is the total capacity of the battery pack, which doesn't constantly change while driving."
+      },
+      "correctAnswer": "c",
+      "difficulty": "beginner"
+    },
+    {
+      "question": "How does getting stuck in a heavy stop-and-go traffic jam affect an electric car's battery consumption?",
+      "answers": {
+        "a": "It makes energy use more efficient because you are moving much slower.",
+        "b": "It has no effect because the AI system automatically cuts off power demand.",
+        "c": "It allows the vehicle to maintain a stable speed, which saves battery life.",
+        "d": "It causes repeated stopping and starting, which increases motor power demand and battery consumption."
+      },
+      "explanations": {
+        "a": "Moving slow doesn't help because the constant stopping and starting ruins efficiency.",
+        "b": "The AI only tracks your habits and gives tips, it can't change how traffic physically affects the car.",
+        "c": "You can only keep a stable speed in light traffic, not a jam.",
+        "d": "Correct. According to THEORY.pdf, heavy traffic forces you to constantly stop and start, which makes the motor work harder and uses more battery."
+      },
+      "correctAnswer": "d",
+      "difficulty": "beginner"
+    }
+  ]
+}
