@@ -1,0 +1,175 @@
+{
+  "version": 2.0,
+  "questions": [
+    {
+      "question": "Which parameter was changed to see how well the battery pack could cool itself?",
+      "answers": {
+        "a": "Cell Voltage",
+        "b": "Cooling Efficiency",
+        "c": "Isolation Response Time",
+        "d": "Fault Trigger Time"
+      },
+      "explanations": {
+        "a": "Cell voltage was not used to evaluate the cooling performance of the battery pack.",
+        "b": "Cooling efficiency was varied to study how effectively heat could be removed from the battery pack.",
+        "c": "Isolation response time is an output parameter observed during the simulation.",
+        "d": "Fault duration determines when the fault occurs, not the cooling capability."
+      },
+      "correctAnswer": "b",
+      "difficulty": "beginner"
+    },
+    {
+      "question": "What did you observe when the battery temperature was increased?",
+      "answers": {
+        "a": "Thermal propagation decreased",
+        "b": "No noticeable change occurred",
+        "c": "Thermal propagation increased",
+        "d": "The fault disappeared automatically"
+      },
+      "explanations": {
+        "a": "Higher temperatures do not reduce thermal propagation.",
+        "b": "Temperature changes directly affect battery behavior.",
+        "c": "Increasing the battery temperature caused heat to spread more quickly to nearby cells.",
+        "d": "The simulation does not automatically remove faults."
+      },
+      "correctAnswer": "c",
+      "difficulty": "beginner"
+    },
+    {
+      "question": "Which output value tells you how fast the isolation system reacted to the fault?",
+      "answers": {
+        "a": "Battery Pack Temperature",
+        "b": "Isolation Response Time",
+        "c": "Cooling Efficiency",
+        "d": "Fault Duration"
+      },
+      "explanations": {
+        "a": "This shows the overall temperature of the battery pack.",
+        "b": "Isolation response time indicates how quickly the protection system responded.",
+        "c": "Cooling efficiency is an input parameter.",
+        "d": "Fault duration is controlled by the user."
+      },
+      "correctAnswer": "b",
+      "difficulty": "beginner"
+    },
+    {
+      "question": "What happened to the affected cells when the cooling efficiency was reduced?",
+      "answers": {
+        "a": "The number of affected cells decreased",
+        "b": "The number of affected cells remained unchanged",
+        "c": "The number of affected cells increased",
+        "d": "No cells were affected"
+      },
+      "explanations": {
+        "a": "Lower cooling efficiency does not reduce cell damage.",
+        "b": "The extent of thermal propagation changes with cooling efficiency.",
+        "c": "Reduced cooling efficiency allowed heat to spread to more cells.",
+        "d": "Thermal runaway still affects neighboring cells."
+      },
+      "correctAnswer": "c",
+      "difficulty": "beginner"
+    },
+    {
+      "question": "When did the battery isolation system become active during the simulation?",
+      "answers": {
+        "a": "Immediately after starting the simulation",
+        "b": "When the safety temperature limit was reached",
+        "c": "When cooling efficiency was increased",
+        "d": "When the battery pack cooled down"
+      },
+      "explanations": {
+        "a": "The isolation system activates only when a critical condition occurs.",
+        "b": "The system was triggered after the faulty cell exceeded the safety threshold.",
+        "c": "Cooling efficiency does not directly activate isolation.",
+        "d": "Isolation occurs during overheating conditions."
+      },
+      "correctAnswer": "b",
+      "difficulty": "beginner"
+    },
+    {
+      "question": "What was the effect of increasing the fault duration?",
+      "answers": {
+        "a": "Battery damage reduced",
+        "b": "Thermal propagation reduced",
+        "c": "More cells were affected by the fault",
+        "d": "The fault was automatically removed"
+      },
+      "explanations": {
+        "a": "Longer faults generally increase battery damage.",
+        "b": "Thermal propagation became more severe.",
+        "c": "A longer fault duration allowed heat to spread to additional cells.",
+        "d": "The simulation does not remove faults automatically."
+      },
+      "correctAnswer": "c",
+      "difficulty": "intermediate"
+    },
+    {
+      "question": "Which output helped you identify the extent of thermal runaway in the battery pack?",
+      "answers": {
+        "a": "Fault Trigger Time",
+        "b": "Cooling Efficiency",
+        "c": "Number of Affected Cells",
+        "d": "Cell Voltage"
+      },
+      "explanations": {
+        "a": "Fault trigger time only indicates when the fault started.",
+        "b": "Cooling efficiency is an input parameter.",
+        "c": "The number of affected cells shows how far the thermal runaway spread.",
+        "d": "Cell voltage does not directly indicate propagation extent."
+      },
+      "correctAnswer": "c",
+      "difficulty": "intermediate"
+    },
+    {
+      "question": "What happened after the faulty battery section was disconnected from the rest of the pack?",
+      "answers": {
+        "a": "The battery temperature increased rapidly",
+        "b": "Further heat propagation was reduced",
+        "c": "The cooling system stopped working",
+        "d": "The fault duration increased"
+      },
+      "explanations": {
+        "a": "Isolation is intended to limit damage, not increase it.",
+        "b": "Disconnecting the faulty section reduced the spread of heat to nearby cells.",
+        "c": "The cooling system continues to function normally.",
+        "d": "Isolation does not affect fault duration."
+      },
+      "correctAnswer": "b",
+      "difficulty": "intermediate"
+    },
+    {
+      "question": "Under which conditions was thermal runaway observed to be the most severe?",
+      "answers": {
+        "a": "Low temperature and high cooling efficiency",
+        "b": "High temperature and high cooling efficiency",
+        "c": "High temperature and low cooling efficiency",
+        "d": "Low temperature and short fault duration"
+      },
+      "explanations": {
+        "a": "These conditions help reduce thermal propagation.",
+        "b": "Good cooling limits heat spread.",
+        "c": "High temperature combined with poor cooling resulted in the most severe thermal runaway.",
+        "d": "These conditions reduce the severity of the fault."
+      },
+      "correctAnswer": "c",
+      "difficulty": "advanced"
+    },
+    {
+      "question": "Which factor was most effective in preventing further battery damage during the simulation?",
+      "answers": {
+        "a": "Increasing fault duration",
+        "b": "Delaying fault detection",
+        "c": "Faster isolation response",
+        "d": "Increasing battery temperature"
+      },
+      "explanations": {
+        "a": "Longer faults increase battery damage.",
+        "b": "Delayed response allows heat to spread further.",
+        "c": "A faster isolation response limited thermal propagation and protected nearby cells.",
+        "d": "Higher temperatures worsen battery conditions."
+      },
+      "correctAnswer": "c",
+      "difficulty": "advanced"
+    }
+  ]
+}
