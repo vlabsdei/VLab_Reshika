@@ -38,7 +38,7 @@ the product of the system voltage and the flowing current:
 
 Where: 
 
-**==> picture [128 x 12] intentionally omitted <==**
+P = Electrical Power (W)
 
 V = Grid Voltage (V) 
 
