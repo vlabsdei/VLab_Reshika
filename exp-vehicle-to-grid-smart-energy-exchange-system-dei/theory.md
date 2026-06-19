@@ -24,39 +24,55 @@ To accurately simulate and analyze the bidirectional energy exchange, several fo
 
 - **Charging Efficiency:** The ratio of energy successfully stored in the battery pack relative to the total energy drawn from the grid during the charging cycle. 
 
+- **Vehicle-to-Grid (V2G):** A bidirectional system that allows parked electric vehicles to discharge electricity from their battery packs back into the public power grid during high peak demand. 
+
+- **Grid-to-Vehicle (G2V):** The traditional unidirectional or bidirectional mode where power flows from the utility grid into the EV to charge the battery under normal or low demand conditions. 
+
+- **Peak Demand:** Periods of high aggregate electrical load on the power grid that strain generation and distribution equipment, requiring immediate external balancing. 
+
+- **Bidirectional Inverter:** The power electronics component responsible for converting Alternating Current (AC) from the grid to Direct Current (DC) for the battery, and vice versa, while synchronizing phase and voltage parameters. 
+
 ## **3. Governing Mathematical Formulas** 
 
 The electrical performance and efficiency metrics of the V2G exchange interface are dictated by standard power equations: 
 
 ## **Power Equation** 
 
-The electrical power (P), measured in Watts (W), transferred between the vehicle and the grid is 
+The electrical power (P), measured in Watts (W), transferred between the vehicle and the grid is the product of the system voltage and the flowing current: 
 
-the product of the system voltage and the flowing current: 
-
-𝑷 =  𝑽 × 𝑰 
+**P=V x I**
 
 Where: 
 
-P = Electrical Power (W)
+P = Electric Power (W)
 
-V = Grid Voltage (V) 
+G = Grid Voltage (V)
 
-I = Charging/Discharging Current (A) 
+I = Charging/Discharging Current (A)
 
-## **Energy Exchange Rate** 
+This formula calculates the exact amount of electrical energy being transferred between the vehicle and the substation per second. 
 
-While instantaneous power is determined by the equation above, the cumulative energy transferred over a specific timeline (t) governs the total capacity exchange, influencing the shifting State of Charge (SOC) of the battery pack. 
+## **2. Charging Efficiency Formula** 
+
+**𝜂 = (𝑃<sub>𝑠𝑡𝑜𝑟𝑒𝑑</sub>/𝑃<sub>𝑠𝑢𝑝𝑝𝑙𝑖𝑒𝑑</sub>) X 100**
+
+Where: 
+
+𝜂 = Overall conversion Energy as per percentage (%) 
+
+𝑃<sub>𝑠𝑡𝑜𝑟𝑒𝑑</sub> = Net power successfully absorbed by the target battery or grid infrastructure. 
+
+𝑃<sub>𝑠𝑢𝑝𝑝𝑙𝑖𝑒𝑑</sub> = Gross input power fed through the bidirectional inverter system. 
+
+It determines the energy lost as heat during the high-voltage conversion process, exposing how system quality alters operational performance. 
 
 ## **4. Working Logic & Simulation Dynamics** 
 
-The smart energy exchange simulation operates on a dynamic load-balancing control logic: 
+- **State of Charge (SOC) Depletion Loop:** Once V2G mode is fully synced and active, a time-based loop executes in main.js. For every 1 second of simulation runtime, the EV Battery State of Charge (SOC) decreases by exactly 1% as energy is drained and transferred to the grid. 
 
-## **Peak Shaving and Load Balancing** 
+- **50% SOC Reverse-Flow Safety Trigger:** To demonstrate autonomous protection loops, a hard comparison threshold is checked continuously during depletion: 
 
-When the smart grid experiences high grid demand (peak load), the system requests localized power support. If a connected EV maintains a high battery SOC, it triggers a V2G discharge cycle, routing power back into the system to achieve peak shaving and load balancing. 
+**𝑪𝒖𝒓𝒓𝒆𝒏𝒕 𝑺𝒐𝑪 ≤𝟓𝟎%** 
 
-## **Battery Dependency Guardrails** 
-
-The quantity of power supplied back to the grid is structurally restricted by the vehicle's remaining charge. If the battery SOC drops to a low level, the power transfer capability scales down automatically to safeguard the cell chemistry from over-discharging and preserve baseline mobility requirements. 
+The exact millisecond the SOC counts down to 50%, the backend script overrides all user inputs. It forces the simulation to exit Discharging (V2G) mode and executing an absolute flip into Charging (G2V) mode. The current direction is instantly inverted to draw power from the grid back into the vehicle to safeguard baseline mobility, locking out the student's discharge controls and printing a critical safety override log to the user interface. 
 
