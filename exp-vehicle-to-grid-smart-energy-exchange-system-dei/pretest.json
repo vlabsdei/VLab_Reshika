@@ -1,0 +1,90 @@
+{
+  "version": 2.0,
+  "questions": [
+    {
+      "question": "Q1. What is the primary function of a bidirectional inverter in a V2G system?",
+      "answers": {
+        "a": "To increase the battery's maximum capacity automatically",
+        "b": "To convert Alternating Current (AC) from the grid to Direct Current (DC) for the battery, and vice versa",
+        "c": "To completely isolate the vehicle from the smart grid network",
+        "d": "To increase the vehicle's mechanical top speed during driving"
+      },
+      "explanations": {
+        "a": "An inverter cannot change the physical storage capacity of an EV battery pack.",
+        "b": "Correct. The bidirectional inverter is responsible for converting AC to DC for the battery and vice versa while synchronizing system parameters.",
+        "c": "The inverter allows the vehicle to dynamically interact with the grid rather than isolating it.",
+        "d": "The bidirectional inverter manages stationary energy exchange interface metrics, not vehicle driving dynamics."
+      },
+      "correctAnswer": "b",
+      "difficulty": "beginner"
+    },
+    {
+      "question": "Q2. According to the system specifications, what is the valid simulation range for Grid Voltage?",
+      "answers": {
+        "a": "5 - 60 V",
+        "b": "100 - 150 V",
+        "c": "180 - 260 V",
+        "d": "20% - 100% V"
+      },
+      "explanations": {
+        "a": "A range of 5-60 A represents the valid charging and discharging current limits, not the voltage.",
+        "b": "This range is too low and falls outside the specified utility grid constraints.",
+        "c": "Correct. The operational voltage of the smart utility grid infrastructure varies within a valid simulation range of 180 - 260 V.",
+        "d": "This percentage range represents the operational simulation window for the battery State of Charge (SOC)."
+      },
+      "correctAnswer": "c",
+      "difficulty": "beginner"
+    },
+    {
+      "question": "Q3. During the active State of Charge (SOC) Depletion Loop in V2G mode, how does the battery capacity change?",
+      "answers": {
+        "a": "It decreases by exactly 1% for every 1 second of simulation runtime",
+        "b": "It decreases by exactly 5% for every 1 second of simulation runtime",
+        "c": "It varies randomly depending on immediate grid demand fluctuations",
+        "d": "It remains completely constant until the user manual stops the loop"
+      },
+      "explanations": {
+        "a": "Correct. For every 1 second of simulation runtime, the EV Battery State of Charge (SOC) decreases by exactly 1% as energy is transferred to the grid.",
+        "b": "The backend execution script dictates a depletion rate of 1% per second, not 5%.",
+        "c": "The depletion loop executes at a fixed, time-based interval rather than fluctuating with grid loads.",
+        "d": "The SOC actively depletes as energy is drained back into the smart grid system."
+      },
+      "correctAnswer": "a",
+      "difficulty": "beginner"
+    },
+    {
+      "question": "Q4. What autonomous action is triggered when the State of Charge (SOC) drops to 50% or below during discharging?",
+      "answers": {
+        "a": "The simulation increases the discharging current past 60 A to finish the cycle",
+        "b": "The backend system completely shuts down and locks out the student permanently",
+        "c": "The simulation exits Discharging (V2G) mode and executes an absolute flip into Charging (G2V) mode",
+        "d": "The grid voltage is automatically locked at a minimum value of 180 V"
+      },
+      "explanations": {
+        "a": "Discharging further at low capacity would violate safety thresholds and deplete baseline mobility.",
+        "b": "The system overrides user input controls but prints a critical safety log instead of shutting down.",
+        "c": "Correct. The backend script forces the simulation to exit Discharging mode and switch entirely to Charging mode to safeguard baseline mobility.",
+        "d": "The safety loop triggers an operational mode inversion rather than overriding grid infrastructure voltage."
+      },
+      "correctAnswer": "c",
+      "difficulty": "beginner"
+    },
+    {
+      "question": "Q5. Which formula correctly dictates the electrical power (P) transferred between the vehicle and the grid?",
+      "answers": {
+        "a": "P = V / I",
+        "b": "P = V * I",
+        "c": "P = (P_Stored / P_Supplied) * 100",
+        "d": "P = V + I"
+      },
+      "explanations": {
+        "a": "Electrical power is calculated as a product of system parameters, not a quotient.",
+        "b": "Correct. The electrical power transferred is the product of the system grid voltage (V) and the flowing current (I).",
+        "c": "This formula represents overall conversion charging efficiency (eta), not electrical power.",
+        "d": "Power is evaluated using multiplication rather than adding voltage and current values together."
+      },
+      "correctAnswer": "b",
+      "difficulty": "beginner"
+    }
+  ]
+}
