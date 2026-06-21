@@ -1,0 +1,175 @@
+{
+  "version": 2.0,
+  "questions": [
+    {
+      "question": "Q1. What is the primary objective of the Experiment 3 simulation?",
+      "answers": {
+        "a": "To monitor solar cell generation and grid power quality",
+        "b": "To study bidirectional Vehicle-to-Grid (V2G) and Grid-to-Vehicle (G2V) energy exchange under automated state machine transitions",
+        "c": "To test the physical structural durability of EV charging cables",
+        "d": "To manually stabilize frequency fluctuations in an islanded microgrid"
+      },
+      "explanations": {
+        "a": "Solar generation is not part of this simulation's objective.",
+        "b": "The objective section explicitly states the experiment is designed to study bidirectional V2G and G2V energy exchange with automated state transitions.",
+        "c": "Cable durability is a mechanical characteristic not covered by this software simulation.",
+        "d": "Frequency stabilization is not the stated focus of this experiment."
+      },
+      "correctAnswer": "b",
+      "difficulty": "beginner"
+    },
+    {
+      "question": "Q2. What specific battery State of Charge (SOC) safety threshold triggers the BMS Safety Override Alert?",
+      "answers": {
+        "a": "20%",
+        "b": "35%",
+        "c": "50%",
+        "d": "80%"
+      },
+      "explanations": {
+        "a": "20% is the lower limit of the SOC slider, not the override trigger point.",
+        "b": "35% is not mentioned in the safety protocols.",
+        "c": "The safety alert banner text explicitly states that the BMS override activates when the battery reaches the 50% SOC safety threshold.",
+        "d": "80% is a typical charging limit but does not trigger the override banner in this file."
+      },
+      "correctAnswer": "c",
+      "difficulty": "beginner"
+    },
+    {
+      "question": "Q3. When the BMS Safety Override becomes active, what automatic adjustment is made to the substation demand?",
+      "answers": {
+        "a": "Discharging is suspended and switched to charging (G2V) mode",
+        "b": "The inverter AC voltage is boosted to 260 V",
+        "c": "The system enters a full physical disconnect state automatically",
+        "d": "Current is increased to maximum to drain the battery faster"
+      },
+      "explanations": {
+        "a": "The override banner states that discharging is suspended and the system switches to charging (G2V) mode to maintain safety thresholds.",
+        "b": "Voltage modifications are performed via the slider, not by the BMS override.",
+        "c": "The system stays connected but switches modes rather than fully disconnecting.",
+        "d": "Draining the battery further would violate the safety threshold constraint."
+      },
+      "correctAnswer": "a",
+      "difficulty": "beginner"
+    },
+    {
+      "question": "Q4. Which of the following equations represents the Governing Relation displayed in the controls panel?",
+      "answers": {
+        "a": "P = V / I",
+        "b": "P = V × I",
+        "c": "V = I × R",
+        "d": "P = I² × R"
+      },
+      "explanations": {
+        "a": "Dividing voltage by current does not yield electrical power.",
+        "b": "The Governing Relation panel clearly shows the power formula as P = V × I.",
+        "c": "While valid as Ohm's Law, this is not the governing formula shown in this layout.",
+        "d": "This relates to resistive power loss and is not the relationship featured in the UI panel."
+      },
+      "correctAnswer": "b",
+      "difficulty": "beginner"
+    },
+    {
+      "question": "Q5. What are the allowed minimum and maximum configuration limits for the Inverter AC Voltage slider?",
+      "answers": {
+        "a": "0 V to 100 V",
+        "b": "110 V to 240 V",
+        "c": "180 V to 260 V",
+        "d": "220 V to 380 V"
+      },
+      "explanations": {
+        "a": "These voltages are too low for typical standard AC inverter simulations.",
+        "b": "These are common household values but do not match the UI limits configured here.",
+        "c": "The voltage HTML input element explicitly specifies a min of 180 and a max of 260.",
+        "d": "These values exceed the operational constraints of this specific single-phase configuration."
+      },
+      "correctAnswer": "c",
+      "difficulty": "intermediate"
+    },
+    {
+      "question": "Q6. What is the default initial setting of the EV State of Charge (SOC) slider before user adjustment?",
+      "answers": {
+        "a": "20%",
+        "b": "50%",
+        "c": "90%",
+        "d": "100%"
+      },
+      "explanations": {
+        "a": "20% represents the minimum selectable slider limit.",
+        "b": "50% represents the threshold where the override activates.",
+        "c": "The HTML input attributes define the default starting value as 90%.",
+        "d": "100% is the maximum bound of the charging range."
+      },
+      "correctAnswer": "c",
+      "difficulty": "intermediate"
+    },
+    {
+      "question": "Q7. Which metric from the top telemetry bar displays the actual power exchanged after accounting for efficiency factors?",
+      "answers": {
+        "a": "Calculated Power",
+        "b": "Grid Target",
+        "c": "Inverter Temp",
+        "d": "Net Transferred Power"
+      },
+      "explanations": {
+        "a": "Calculated power represents the theoretical input calculation before efficiency losses.",
+        "b": "Grid target is the reference expectation set by the utility system.",
+        "c": "Inverter temperature is a thermal indicator, not a power metric.",
+        "d": "Net Transferred Power reflects the actual energy successfully transferred through the bidirectional link."
+      },
+      "correctAnswer": "d",
+      "difficulty": "intermediate"
+    },
+    {
+      "question": "Q8. What button text indicates the initial step a user must take to start the synchronization process?",
+      "answers": {
+        "a": "Reset Bench",
+        "b": "Position Cable to Begin",
+        "c": "Disengage Grid Tie",
+        "d": "Clear Records"
+      },
+      "explanations": {
+        "a": "Reset Bench re-initializes parameters to original defaults.",
+        "b": "The primary action button initializes with the text 'Position Cable to Begin' to guide the physical connection phase.",
+        "c": "This button is initially disabled and used to terminate an active connection.",
+        "d": "Clear Records empties the logged data table without impacting connection state."
+      },
+      "correctAnswer": "b",
+      "difficulty": "intermediate"
+    },
+    {
+      "question": "Q9. What happens if a user adjusts the Discharging Current slider to its maximum allowable limit?",
+      "answers": {
+        "a": "The current reaches 5 A",
+        "b": "The current reaches 20 A",
+        "c": "The current reaches 60 A",
+        "d": "The current reaches 100 A"
+      },
+      "explanations": {
+        "a": "5 A represents the absolute minimum boundary of the current slider.",
+        "b": "20 A is the default loaded value, not the maximum configuration.",
+        "c": "The slider input properties establish a maximum current value boundary of 60 A.",
+        "d": "100 A is beyond the parameters defined inside this simulation layout."
+      },
+      "correctAnswer": "c",
+      "difficulty": "advanced"
+    },
+    {
+      "question": "Q10. According to the default layout, what condition tells the user that no telemetric tracking records have been generated yet?",
+      "answers": {
+        "a": "The sync status badge reads 'DISCONNECTED' and a table row states 'No telemetry records logged'",
+        "b": "The 3D canvas turns dark red",
+        "c": "The inverter temperature drops instantly to 0 °C",
+        "d": "The formula panel text disappears"
+      },
+      "explanations": {
+        "a": "The template includes an empty-row placeholder in the table body instructing users to adjust sliders and synchronize to begin logging telemetry records.",
+        "b": "The 3D environment retains its background independent of telemetry history logging.",
+        "c": "The standard resting temperature is hardcoded at an initial 25.0 °C.",
+        "d": "The governing math relation banner remains statically visible for reference."
+      },
+      "correctAnswer": "a",
+      "difficulty": "advanced"
+    }
+  ]
+}
