@@ -1,18 +1,19 @@
+/* Clean Academic Light Mode Style System */
 :root {
   --bg-main: #f8f9fa; /* Light alabaster */
   --bg-card: #ffffff; /* Crisp white */
-  --text-main: #1e293b; /* Dark slate */
-  --text-muted: #64748b; /* Slate gray */
-  --border-color: #cbd5e1; /* Clean border outline */
+  --text-main: #04519b; /* Slate blue-gray from Thermal Runaway */
+  --text-muted: #7f8c8d; /* Muted gray from Thermal Runaway */
+  --border-color: #e0e0e0; /* Subtle borders from Thermal Runaway */
   
-  /* Academic accents */
-  --color-blue: #2563eb;
-  --color-green: #10b981;
-  --color-red: #ef4444;
-  --color-amber: #d97706;
+  /* Accents from Thermal Runaway project */
+  --color-blue: #04519b; /* Primary dark blue */
+  --color-green: #27ae60; /* Success green */
+  --color-red: #e74c3c; /* Danger red */
+  --color-amber: #ff6b00; /* Orange/amber accent */
   
-  --font-sans: 'Inter', sans-serif;
-  --font-mono: 'Fira Code', monospace;
+  --font-sans: 'Times New Roman', Times, Georgia, serif;
+  --font-mono: 'Times New Roman', Times, Georgia, serif;
 }
 
 /* Reset */
@@ -28,12 +29,13 @@ body {
   font-family: var(--font-sans);
   font-size: 14px;
   line-height: 1.5;
-  padding: 20px;
+  padding: 10px 15px;
 }
 
 /* Base Layout Container */
 .lab-container {
-  max-width: 1200px;
+  max-width: 1400px;
+  width: 100%;
   margin: 0 auto;
   display: flex;
   flex-direction: column;
@@ -101,10 +103,10 @@ body {
 
 /* Objective Section */
 .lab-objective {
-  background-color: var(--bg-card);
-  border: 2px solid var(--border-color);
-  border-radius: 6px;
-  padding: 16px 20px;
+  background-color: transparent;
+  border: none;
+  border-radius: 0;
+  padding: 0;
   font-size: 13px;
   color: var(--text-muted);
   line-height: 1.6;
