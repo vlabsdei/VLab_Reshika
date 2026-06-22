@@ -1,10 +1,10 @@
-## 2. Theory & Mathematical Model
+## Theory
 
 An EV powertrain consists of key electrical and mechanical components including the battery pack, power inverter, and electric motor. Monitoring the health of these systems is critical for preventing catastrophic failures, ensuring vehicle longevity, and optimization of power delivery.
 
 Predictive fault detection models continuously analyze streaming sensor telemetry—such as motor speed (RPM), inverter temperature ($^{\circ}\text{C}$), battery voltage ($\text{V}$), and motor load ($\%$)—to identify anomalous behaviors indicating degradation or impending faults.
 
-### 2.1 Efficiency Formulation
+### 1 Efficiency Formulation
 
 The primary indicator of system health under normal versus faulty operational states is the overall Powertrain/Motor Efficiency ($\eta$). It represents the ratio of mechanical power output to electrical power input:
 
@@ -16,7 +16,7 @@ Where:
 - $P_{\text{out}}$: Mechanical Output Power (W), typically derived from motor speed ($\omega$) and torque ($T$) via $P_{\text{out}} = T \times \omega$.
 - $P_{\text{in}}$: Electrical Input Power (W), provided by the battery and inverter, calculated via $P_{\text{in}} = V \times I$ (Voltage $\times$ Current).
 
-### 2.2 Fault Manifestations & Detection Logic
+### 2 Fault Manifestations & Detection Logic
 
 1.  **Thermal Overheating:** Excessive current draw or cooling failure elevates the Inverter Temperature beyond safe thresholds ($>100^{\circ}\text{C}$). This triggers thermal throttling or component degradation, manifesting as a sharp drop in structural efficiency ($\eta$).
 2.  **Sensor Noise & Malfunction:** Real-world sensors experience degradation or electromagnetic interference. High sensor noise distorts the telemetry feed, causing unstable control loop oscillations or false readouts, leading to localized anomalies.
