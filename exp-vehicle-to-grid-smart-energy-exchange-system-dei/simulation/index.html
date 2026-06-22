@@ -5,9 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Vehicle-to-Grid (V2G) Smart Energy Exchange Simulation</title>
   <link rel="stylesheet" href="./css/main.css">
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;500;600&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+
   <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/controls/OrbitControls.js"></script>
 </head>
@@ -67,7 +65,7 @@
         <!-- Autonomous Grid Status Display -->
         <div class="control-group">
           <label class="control-label">Grid Clock & Status</label>
-          <div id="gridStatusDisplay" class="grid-status-display" style="padding: 12px; border-radius: 4px; background: #1e293b; color: #fff; font-family: monospace; font-size: 13px; font-weight: bold; text-align: center; border: 1px solid #334155; transition: background 0.3s ease;">
+          <div id="gridStatusDisplay" class="grid-status-display" style="padding: 12px; border-radius: 4px; background: #1e293b; color: #fff; font-family: 'Times New Roman', Times, serif; font-size: 13px; font-weight: bold; text-align: center; border: 1px solid #334155; transition: background 0.3s ease;">
             Time: --:-- | INITIALIZING
           </div>
         </div>
@@ -121,8 +119,8 @@
 
         <!-- Sync Switch Action Button Layout -->
         <div class="sync-action-wrapper" style="display: flex; flex-direction: column; gap: 8px;">
-          <button id="syncPhaseBtn" class="btn btn-ready">🔒 Position Cable to Begin</button>
-          <button id="stopSyncBtn" class="btn btn-disabled" disabled>🔌 Disengage Grid Tie</button>
+          <button id="syncPhaseBtn" class="btn btn-ready"> Connect Bidirectional Umbilical</button>
+          <button id="stopSyncBtn" class="btn btn-disabled" disabled>Disengage Grid Tie</button>
         </div>
       </section>
 
