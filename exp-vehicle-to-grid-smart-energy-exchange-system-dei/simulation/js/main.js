@@ -1,4 +1,6 @@
 document.addEventListener('DOMContentLoaded', () => {
+  const isMobileOrTablet = ('ontouchstart' in window) || (navigator.maxTouchPoints > 0);
+
   // --- DOM Elements ---
   const gridStatusDisplay = document.getElementById('gridStatusDisplay');
   const voltageSlider = document.getElementById('voltageSlider');
@@ -119,7 +121,7 @@ document.addEventListener('DOMContentLoaded', () => {
   const dragPlane = new THREE.Plane(new THREE.Vector3(0, 1, 0), -0.6); // Drag plane at connection height
   const socketPos = new THREE.Vector3(-3.25, 0.6, 0.72);
   const bracketPos = new THREE.Vector3(0.5, 0.25, 1.8);
-  const cableStartPos = new THREE.Vector3(3.7, 0.4, 0.4);
+  const cableStartPos = new THREE.Vector3(-0.75, 0.6, 0.72);
 
   // --- Helper: Format Power values nicely ---
   function formatPower(watts) {
@@ -157,7 +159,7 @@ document.addEventListener('DOMContentLoaded', () => {
     toast.style.borderRadius = '4px';
     toast.style.fontSize = '12px';
     toast.style.boxShadow = '0 2px 8px rgba(0,0,0,0.15)';
-    toast.style.fontFamily = 'sans-serif';
+    toast.style.fontFamily = "'Times New Roman', Times, serif";
     toast.innerHTML = message;
     container.appendChild(toast);
     setTimeout(() => {
@@ -167,7 +169,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }, 4000);
   }
 
-  // --- Helper: Add record row to Test Bench Log ---
+  // Adds a new telemetry record to the test bench log table
   function appendLogRecord(modeText, v, i, netP, resultText, isOverride = false) {
     const emptyRow = logTableBody.querySelector('.empty-row');
     if (emptyRow) {
@@ -320,7 +322,7 @@ document.addEventListener('DOMContentLoaded', () => {
     // Receptacle target socket
     const socketMesh = new THREE.Mesh(
       new THREE.TorusGeometry(0.15, 0.05, 8, 16),
-      new THREE.MeshLambertMaterial({ color: 0x3b82f6 })
+      new THREE.MeshLambertMaterial({ color: 0x04519b })
     );
     socketMesh.position.set(1.25, 0.6, 0.72); // world position: (-4.5 + 1.25, 0.6, 0.72) = (-3.25, 0.6, 0.72)
     socketMesh.rotation.y = Math.PI / 2;
@@ -338,7 +340,7 @@ document.addEventListener('DOMContentLoaded', () => {
     evGroup.add(batteryCasingMesh);
 
     const fillGeo = new THREE.BoxGeometry(0.31, 0.46, 0.31);
-    const fillMat = new THREE.MeshBasicMaterial({ color: 0x10b981 });
+    const fillMat = new THREE.MeshBasicMaterial({ color: 0x27ae60 });
     batteryFillMesh = new THREE.Mesh(fillGeo, fillMat);
     batteryFillMesh.position.set(0.1, 1.45, 0);
     evGroup.add(batteryFillMesh);
@@ -394,9 +396,9 @@ document.addEventListener('DOMContentLoaded', () => {
       inverterGroup.add(ventGroup);
     }
 
-    // Side Ventilation Vent Mesh for Thermal / Power Glow
-    const glowMatL = new THREE.MeshBasicMaterial({ color: 0xff5500, transparent: true, opacity: 0.0, side: THREE.DoubleSide });
-    const glowMatR = new THREE.MeshBasicMaterial({ color: 0xff5500, transparent: true, opacity: 0.0, side: THREE.DoubleSide });
+    // Side vents glow meshes for thermal load feedback
+    const glowMatL = new THREE.MeshBasicMaterial({ color: 0xff6b00, transparent: true, opacity: 0.0, side: THREE.DoubleSide });
+    const glowMatR = new THREE.MeshBasicMaterial({ color: 0xff6b00, transparent: true, opacity: 0.0, side: THREE.DoubleSide });
     
     inverterGlowL = new THREE.Mesh(new THREE.PlaneGeometry(1.0, 1.0), glowMatL);
     inverterGlowL.position.set(-0.765, 1.02, 0);
@@ -444,17 +446,17 @@ document.addEventListener('DOMContentLoaded', () => {
     orangeLED.position.set(-0.45, 0.85, 0.78);
     inverterGroup.add(orangeLED);
 
-    redLED = new THREE.Mesh(new THREE.SphereGeometry(0.035, 8, 8), new THREE.MeshBasicMaterial({ color: 0xef4444 }));
+    redLED = new THREE.Mesh(new THREE.SphereGeometry(0.035, 8, 8), new THREE.MeshBasicMaterial({ color: 0xe74c3c }));
     redLED.position.set(-0.55, 0.85, 0.78);
     inverterGroup.add(redLED);
 
     // Emergency Stop Button
-    const estopBase = new THREE.Mesh(new THREE.CylinderGeometry(0.06, 0.06, 0.04, 12), new THREE.MeshStandardMaterial({ color: 0xf59e0b, roughness: 0.5 }));
+    const estopBase = new THREE.Mesh(new THREE.CylinderGeometry(0.06, 0.06, 0.04, 12), new THREE.MeshStandardMaterial({ color: 0xff6b00, roughness: 0.5 }));
     estopBase.position.set(0.45, 0.85, 0.78);
     estopBase.rotation.x = Math.PI / 2;
     inverterGroup.add(estopBase);
 
-    const estopButton = new THREE.Mesh(new THREE.CylinderGeometry(0.045, 0.045, 0.03, 12), new THREE.MeshStandardMaterial({ color: 0xef4444, roughness: 0.3 }));
+    const estopButton = new THREE.Mesh(new THREE.CylinderGeometry(0.045, 0.045, 0.03, 12), new THREE.MeshStandardMaterial({ color: 0xe74c3c, roughness: 0.3 }));
     estopButton.position.set(0.45, 0.85, 0.81);
     estopButton.rotation.x = Math.PI / 2;
     inverterGroup.add(estopButton);
@@ -662,17 +664,19 @@ document.addEventListener('DOMContentLoaded', () => {
     scene.add(breakerGroup);
 
     // 6. Busbar Conducting Cables
-    // Wire 1 (EV -> Inverter)
+    // Wire 1 (EV -> Inverter) - Made invisible in unified inverter umbilical architecture
     const busbarMat = new THREE.MeshLambertMaterial({ color: 0x64748b });
     const busbarGeo1 = new THREE.CylinderGeometry(0.03, 0.03, 2.5);
     busbar1 = new THREE.Mesh(busbarGeo1, busbarMat);
     busbar1.rotation.z = Math.PI / 2;
     busbar1.position.set(-2.0, 0.6, 0.72);
+    busbar1.visible = false;
     scene.add(busbar1);
 
-    pilotBusbar1 = new THREE.Mesh(new THREE.CylinderGeometry(0.015, 0.015, 2.5), new THREE.MeshBasicMaterial({ color: 0x3b82f6, transparent: true, opacity: 0.1 }));
+    pilotBusbar1 = new THREE.Mesh(new THREE.CylinderGeometry(0.015, 0.015, 2.5), new THREE.MeshBasicMaterial({ color: 0x04519b, transparent: true, opacity: 0.1 }));
     pilotBusbar1.rotation.z = Math.PI / 2;
     pilotBusbar1.position.set(-2.0, 0.6, 0.72);
+    pilotBusbar1.visible = false;
     scene.add(pilotBusbar1);
 
     // Wire 2 (Inverter -> Breaker)
@@ -682,7 +686,7 @@ document.addEventListener('DOMContentLoaded', () => {
     busbar2.position.set(1.22, 0.25, 0);
     scene.add(busbar2);
 
-    pilotBusbar2 = new THREE.Mesh(new THREE.CylinderGeometry(0.015, 0.015, 1.25), new THREE.MeshBasicMaterial({ color: 0x3b82f6, transparent: true, opacity: 0.1 }));
+    pilotBusbar2 = new THREE.Mesh(new THREE.CylinderGeometry(0.015, 0.015, 1.25), new THREE.MeshBasicMaterial({ color: 0x04519b, transparent: true, opacity: 0.1 }));
     pilotBusbar2.rotation.z = Math.PI / 2;
     pilotBusbar2.position.set(1.22, 0.25, 0);
     scene.add(pilotBusbar2);
@@ -694,7 +698,7 @@ document.addEventListener('DOMContentLoaded', () => {
     busbar3.position.set(3.22, 0.25, 0);
     scene.add(busbar3);
 
-    pilotBusbar3 = new THREE.Mesh(new THREE.CylinderGeometry(0.015, 0.015, 1.35), new THREE.MeshBasicMaterial({ color: 0x3b82f6, transparent: true, opacity: 0.1 }));
+    pilotBusbar3 = new THREE.Mesh(new THREE.CylinderGeometry(0.015, 0.015, 1.35), new THREE.MeshBasicMaterial({ color: 0x04519b, transparent: true, opacity: 0.1 }));
     pilotBusbar3.rotation.z = Math.PI / 2;
     pilotBusbar3.position.set(3.22, 0.25, 0);
     scene.add(pilotBusbar3);
@@ -708,7 +712,7 @@ document.addEventListener('DOMContentLoaded', () => {
     plugMesh = new THREE.Group();
     plugMesh.position.copy(bracketPos);
 
-    const plugBody = new THREE.Mesh(new THREE.BoxGeometry(0.2, 0.12, 0.2), new THREE.MeshLambertMaterial({ color: 0xf59e0b }));
+    const plugBody = new THREE.Mesh(new THREE.BoxGeometry(0.2, 0.12, 0.2), new THREE.MeshLambertMaterial({ color: 0xff6b00 }));
     plugBody.castShadow = true;
     plugMesh.add(plugBody);
 
@@ -738,9 +742,11 @@ document.addEventListener('DOMContentLoaded', () => {
     initEnergyParticles();
 
     // --- Interaction Listeners (Raycast dragging) ---
-    renderer.domElement.addEventListener('pointerdown', onPointerDown);
-    window.addEventListener('pointermove', onPointerMove);
-    window.addEventListener('pointerup', onPointerUp);
+    if (!isMobileOrTablet) {
+      renderer.domElement.addEventListener('pointerdown', onPointerDown);
+      window.addEventListener('pointermove', onPointerMove);
+      window.addEventListener('pointerup', onPointerUp);
+    }
 
     // Window resize handler
     window.addEventListener('resize', onWindowResize);
@@ -775,15 +781,15 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   }
 
-  // --- Energy Flow Particles ---
+  // Set up particles for representing energy flow (3 segments: Umbilical, Inverter-Breaker, Breaker-Grid)
   function initEnergyParticles() {
     const particleGeo = new THREE.SphereGeometry(0.045, 8, 8);
-    const particleMat = new THREE.MeshBasicMaterial({ color: 0xf59e0b });
+    const particleMat = new THREE.MeshBasicMaterial({ color: 0xff6b00 });
 
     energyParticles = [];
     
-    // 16 particles: 4 segments (3 static, 1 dynamic cable) x 4 particles each
-    for (let i = 0; i < 16; i++) {
+    // 12 particles: 3 segments x 4 particles each
+    for (let i = 0; i < 12; i++) {
       const mesh = new THREE.Mesh(particleGeo, particleMat.clone());
       mesh.visible = false;
       scene.add(mesh);
@@ -803,9 +809,9 @@ document.addEventListener('DOMContentLoaded', () => {
     const isCompleted = state.CURRENT_MODE === 'G2V' && state.SOC >= 100;
     const isLoopActive = state.stage === 2 && !isCompleted;
     
-    let particleColor = 0xf59e0b; // Yellow/orange for V2G
+    let particleColor = 0xff6b00; // Orange/amber for V2G
     if (state.CURRENT_MODE === 'G2V') {
-      particleColor = 0x3b82f6; // Blue for G2V
+      particleColor = 0x04519b; // Dark blue for G2V
     }
 
     // Dynamic speed based on voltage and active current flow
@@ -835,38 +841,38 @@ document.addEventListener('DOMContentLoaded', () => {
       p.mesh.visible = true;
       p.mesh.material.color.setHex(particleColor);
 
-      // Move pct based on mode direction
-      if (p.segment === 3) {
-        // Cable: flows Grid -> EV in G2V (pct increase), EV -> Grid in V2G (pct decrease)
-        if (state.CURRENT_MODE === 'G2V') {
-          p.pct += speed;
-          if (p.pct > 1.0) p.pct -= 1.0;
-        } else {
+      // Move pct based on mode direction and segment location
+      if (state.CURRENT_MODE === 'V2G') {
+        // Discharging flow: EV -> Inverter -> Breaker -> Grid
+        if (p.segment === 0) {
+          // Cable (starts at Inverter, ends at EV): flow EV (1.0) -> Inverter (0.0)
           p.pct -= speed;
           if (p.pct < 0.0) p.pct += 1.0;
+        } else {
+          // Busbars: flow Inverter -> Breaker -> Grid (pct increases)
+          p.pct += speed;
+          if (p.pct > 1.0) p.pct -= 1.0;
         }
       } else {
-        // Busbars: flow EV -> Grid in V2G (pct increase), Grid -> EV in G2V (pct decrease)
-        if (state.CURRENT_MODE === 'V2G') {
+        // Charging flow: Grid -> Breaker -> Inverter -> EV
+        if (p.segment === 0) {
+          // Cable: flow Inverter (0.0) -> EV (1.0)
           p.pct += speed;
           if (p.pct > 1.0) p.pct -= 1.0;
         } else {
+          // Busbars: flow Grid -> Breaker -> Inverter (pct decreases)
           p.pct -= speed;
           if (p.pct < 0.0) p.pct += 1.0;
         }
       }
 
-      // Calculate position only
-      if (p.segment === 3) {
-        // Charging cable
+      // Calculate position
+      if (p.segment === 0) {
+        // Charging Umbilical Cable (EV to Inverter)
         p.mesh.position.copy(cableCurve.getPointAt(p.pct));
       } else {
         let start, end;
-        if (p.segment === 0) {
-          // EV to Inverter busbar
-          start = new THREE.Vector3(-3.25, 0.6, 0.72);
-          end = new THREE.Vector3(-0.75, 0.6, 0.72);
-        } else if (p.segment === 1) {
+        if (p.segment === 1) {
           // Inverter to Breaker busbar
           start = new THREE.Vector3(0.6, 0.25, 0);
           end = new THREE.Vector3(1.85, 0.25, 0);
@@ -999,13 +1005,13 @@ document.addEventListener('DOMContentLoaded', () => {
         currentSlider.disabled = false;
         socSlider.disabled = false;
 
-        syncPhaseBtn.textContent = '⚡ Activate Energy Loop';
+        syncPhaseBtn.textContent = ' Activate Energy Loop';
         syncPhaseBtn.className = 'btn btn-ready';
 
         syncStatusBadge.textContent = 'PLUG CONNECTED';
         syncStatusBadge.className = 'badge badge-unlocked';
 
-        showToast("[PLUG CONNECTED] Hardware interlock snapped. Busbars activated.");
+        showToast("[PLUG CONNECTED] Bidirectional power path established through the inverter.");
       } else {
         plugMesh.position.copy(bracketPos);
         plugMesh.rotation.set(0, 0, 0);
@@ -1017,7 +1023,7 @@ document.addEventListener('DOMContentLoaded', () => {
         currentSlider.disabled = true;
         socSlider.disabled = true;
 
-        syncPhaseBtn.textContent = '🔒 Position Cable to Begin';
+        syncPhaseBtn.textContent = isMobileOrTablet ? 'Tap to Connect Plug' : 'Connect Bidirectional Plug';
         syncPhaseBtn.className = 'btn btn-ready';
       }
       updateCableSpline();
@@ -1133,11 +1139,11 @@ document.addEventListener('DOMContentLoaded', () => {
       line.setAttribute('x2', '385');
       line.setAttribute('y2', y);
       if (val === 50) {
-        line.setAttribute('stroke', '#cbd5e1');
+        line.setAttribute('stroke', '#e0e0e0');
         line.setAttribute('stroke-width', '1.5');
         line.setAttribute('stroke-dasharray', '4,4');
       } else {
-        line.setAttribute('stroke', '#f1f5f9');
+        line.setAttribute('stroke', '#f8f9fa');
         line.setAttribute('stroke-width', '1');
       }
       chartSvg.appendChild(line);
@@ -1146,9 +1152,9 @@ document.addEventListener('DOMContentLoaded', () => {
       text.setAttribute('x', '30');
       text.setAttribute('y', y + 3);
       text.setAttribute('text-anchor', 'end');
-      text.setAttribute('font-family', "'Inter', sans-serif");
+      text.setAttribute('font-family', "'Times New Roman', Times, serif");
       text.setAttribute('font-size', '8px');
-      text.setAttribute('fill', val === 50 ? '#10b981' : '#94a3b8');
+      text.setAttribute('fill', val === 50 ? '#27ae60' : '#7f8c8d');
       if (val === 50) text.setAttribute('font-weight', '600');
       text.textContent = val + '%';
       chartSvg.appendChild(text);
@@ -1159,7 +1165,7 @@ document.addEventListener('DOMContentLoaded', () => {
     bottomLine.setAttribute('y1', '150');
     bottomLine.setAttribute('x2', '385');
     bottomLine.setAttribute('y2', '150');
-    bottomLine.setAttribute('stroke', '#94a3b8');
+    bottomLine.setAttribute('stroke', '#7f8c8d');
     bottomLine.setAttribute('stroke-width', '1');
     chartSvg.appendChild(bottomLine);
 
@@ -1168,9 +1174,9 @@ document.addEventListener('DOMContentLoaded', () => {
       text.setAttribute('x', '210');
       text.setAttribute('y', '90');
       text.setAttribute('text-anchor', 'middle');
-      text.setAttribute('font-family', "'Inter', sans-serif");
+      text.setAttribute('font-family', "'Times New Roman', Times, serif");
       text.setAttribute('font-size', '10px');
-      text.setAttribute('fill', '#94a3b8');
+      text.setAttribute('fill', '#7f8c8d');
       text.textContent = 'Awaiting synchronization data...';
       chartSvg.appendChild(text);
       return;
@@ -1196,14 +1202,14 @@ document.addEventListener('DOMContentLoaded', () => {
 
     const socPath = document.createElementNS('http://www.w3.org/2000/svg', 'path');
     socPath.setAttribute('d', socPathD);
-    socPath.setAttribute('stroke', '#3b82f6');
+    socPath.setAttribute('stroke', '#04519b');
     socPath.setAttribute('stroke-width', '2');
     socPath.setAttribute('fill', 'none');
     chartSvg.appendChild(socPath);
 
     const gridPath = document.createElementNS('http://www.w3.org/2000/svg', 'path');
     gridPath.setAttribute('d', gridPathD);
-    gridPath.setAttribute('stroke', '#ef4444');
+    gridPath.setAttribute('stroke', '#e74c3c');
     gridPath.setAttribute('stroke-width', '2');
     gridPath.setAttribute('fill', 'none');
     chartSvg.appendChild(gridPath);
@@ -1213,15 +1219,15 @@ document.addEventListener('DOMContentLoaded', () => {
     legendSocColor.setAttribute('y', '158');
     legendSocColor.setAttribute('width', '8');
     legendSocColor.setAttribute('height', '8');
-    legendSocColor.setAttribute('fill', '#3b82f6');
+    legendSocColor.setAttribute('fill', '#04519b');
     chartSvg.appendChild(legendSocColor);
 
     const legendSocText = document.createElementNS('http://www.w3.org/2000/svg', 'text');
     legendSocText.setAttribute('x', '142');
     legendSocText.setAttribute('y', '165');
-    legendSocText.setAttribute('font-family', "'Inter', sans-serif");
+    legendSocText.setAttribute('font-family', "'Times New Roman', Times, serif");
     legendSocText.setAttribute('font-size', '8px');
-    legendSocText.setAttribute('fill', '#1e293b');
+    legendSocText.setAttribute('fill', '#2c3e50');
     legendSocText.textContent = 'Battery SOC (%)';
     chartSvg.appendChild(legendSocText);
 
@@ -1230,20 +1236,20 @@ document.addEventListener('DOMContentLoaded', () => {
     legendGridColor.setAttribute('y', '158');
     legendGridColor.setAttribute('width', '8');
     legendGridColor.setAttribute('height', '8');
-    legendGridColor.setAttribute('fill', '#ef4444');
+    legendGridColor.setAttribute('fill', '#e74c3c');
     chartSvg.appendChild(legendGridColor);
 
     const legendGridText = document.createElementNS('http://www.w3.org/2000/svg', 'text');
     legendGridText.setAttribute('x', '242');
     legendGridText.setAttribute('y', '165');
-    legendGridText.setAttribute('font-family', "'Inter', sans-serif");
+    legendGridText.setAttribute('font-family', "'Times New Roman', Times, serif");
     legendGridText.setAttribute('font-size', '8px');
-    legendGridText.setAttribute('fill', '#1e293b');
+    legendGridText.setAttribute('fill', '#2c3e50');
     legendGridText.textContent = 'Grid Energy (%)';
     chartSvg.appendChild(legendGridText);
   }
 
-  // --- Target Power Maintenance Loop (Every 500ms) ---
+  // Periodic grid tie target updates (every 500ms)
   setInterval(() => {
     state.TARGET_POWER = state.CURRENT_MODE === 'V2G' ? 11500 : 6900;
     if (state.stage === 1) {
@@ -1332,7 +1338,6 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     // 4. Inverter Temperature simulation (exponential scaling from ambient 25°C baseline based on wasted power)
-    // In Stage 2, heat is generated by wasted power. In Stage 1 (Breaker Open) or disconnected, no actual power flows.
     const wastedPowerForTemp = (state.stage === 2 && state.IS_PLUG_CONNECTED) ? Math.abs(netPower - state.calculatedPower) : 0;
     const targetTemp = 25.0 + 0.012 * Math.pow(wastedPowerForTemp, 1.15);
     const timeStep = dt > 0 ? dt : 16.67;
@@ -1407,13 +1412,13 @@ document.addEventListener('DOMContentLoaded', () => {
       inverterGlowL.material.opacity = isGlowActive ? finalGlow : 0.0;
       inverterGlowR.material.opacity = isGlowActive ? finalGlow : 0.0;
 
-      // Color shifts to bright red if temperature exceeds 45°C, else remains amber
+      // Shifting glow color dynamically to red if thermal threshold exceeded
       if (state.temp > 45.0) {
-        inverterGlowL.material.color.setHex(0xef4444); // Bright Red
-        inverterGlowR.material.color.setHex(0xef4444);
+        inverterGlowL.material.color.setHex(0xe74c3c); // Danger red
+        inverterGlowR.material.color.setHex(0xe74c3c);
       } else {
-        inverterGlowL.material.color.setHex(0xff5500); // Amber/Orange
-        inverterGlowR.material.color.setHex(0xff5500);
+        inverterGlowL.material.color.setHex(0xff6b00); // Standard orange/amber
+        inverterGlowR.material.color.setHex(0xff6b00);
       }
     }
 
@@ -1443,68 +1448,68 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // --- Draw Offscreen Textures ---
     
-    // 1. Battery HUD
+    // 1. Renders the battery percentage HUD
     if (batteryCanvas) {
       const ctx = batteryCanvas.getContext('2d');
       ctx.fillStyle = '#0f172a';
       ctx.fillRect(0, 0, 128, 64);
-      ctx.strokeStyle = '#cbd5e1';
+      ctx.strokeStyle = '#e0e0e0';
       ctx.lineWidth = 2;
       ctx.strokeRect(4, 4, 120, 56);
       
       const fillW = Math.round(112 * (state.batterySoc / 100));
-      let fillCol = '#10b981';
-      if (state.batterySoc <= 25) fillCol = '#ef4444';
-      else if (state.batterySoc <= 50) fillCol = '#f59e0b';
+      let fillCol = '#27ae60';
+      if (state.batterySoc <= 25) fillCol = '#e74c3c';
+      else if (state.batterySoc <= 50) fillCol = '#ff6b00';
       
       ctx.fillStyle = fillCol;
       ctx.fillRect(8, 8, fillW, 48);
 
       ctx.fillStyle = '#ffffff';
-      ctx.font = 'bold 15px monospace';
+      ctx.font = 'bold 15px "Times New Roman"';
       ctx.textAlign = 'center';
       ctx.fillText(Math.round(state.batterySoc) + '%', 64, 38);
       batteryTexture.needsUpdate = true;
     }
 
-    // 2. Inverter Panel Canvas (Synchroscope Dial)
+    // 2. Draws synchroscope dial on the inverter cabinet screen
     if (invCanvas) {
       const ctx = invCanvas.getContext('2d');
-      ctx.fillStyle = '#f8fafc';
+      ctx.fillStyle = '#f8f9fa';
       ctx.fillRect(0, 0, 256, 256);
       
-      ctx.fillStyle = '#1e293b';
-      ctx.font = 'bold 18px sans-serif';
+      ctx.fillStyle = '#2c3e50';
+      ctx.font = 'bold 18px "Times New Roman"';
       ctx.textAlign = 'center';
       ctx.fillText('POWER INVERTER', 128, 30);
       
-      ctx.fillStyle = '#64748b';
-      ctx.font = '10px sans-serif';
+      ctx.fillStyle = '#7f8c8d';
+      ctx.font = '10px "Times New Roman"';
       ctx.fillText(state.CURRENT_MODE === 'V2G' ? 'V2G Export Active Power' : 'G2V Import Active Power', 128, 52);
-      ctx.font = 'italic 11px sans-serif';
-      ctx.fillStyle = '#94a3b8';
+      ctx.font = 'italic 11px "Times New Roman"';
+      ctx.fillStyle = '#7f8c8d';
       ctx.fillText('P = V x I', 128, 70);
 
-      ctx.fillStyle = '#1e293b';
-      ctx.font = 'bold 20px monospace';
+      ctx.fillStyle = '#2c3e50';
+      ctx.font = 'bold 20px "Times New Roman"';
       ctx.fillText(state.calculatedPower === 0 ? '0 W' : formatPowerWithSign(state.calculatedPower, state.CURRENT_MODE), 128, 92);
 
       // Synchroscope Dial drawing
-      ctx.strokeStyle = '#64748b';
+      ctx.strokeStyle = '#7f8c8d';
       ctx.lineWidth = 2;
       ctx.beginPath();
       ctx.arc(128, 175, 48, 0, 2 * Math.PI);
       ctx.stroke();
 
       // Green sync target sector (centered at 0° / straight up)
-      ctx.strokeStyle = '#10b981';
+      ctx.strokeStyle = '#27ae60';
       ctx.lineWidth = 6;
       ctx.beginPath();
       ctx.arc(128, 175, 48, -Math.PI / 2 - 0.17, -Math.PI / 2 + 0.17); // +/- 10 degrees sync window
       ctx.stroke();
 
       // Draw tick marks
-      ctx.strokeStyle = '#94a3b8';
+      ctx.strokeStyle = '#7f8c8d';
       ctx.lineWidth = 1.5;
       for (let angle = 0; angle < 360; angle += 30) {
         const rad = angle * Math.PI / 180;
@@ -1521,15 +1526,15 @@ document.addEventListener('DOMContentLoaded', () => {
       }
 
       // Draw dial labels
-      ctx.fillStyle = '#64748b';
-      ctx.font = '8px monospace';
+      ctx.fillStyle = '#7f8c8d';
+      ctx.font = '8px "Times New Roman"';
       ctx.fillText('0°', 128, 118);
       ctx.fillText('-90°', 72, 178);
       ctx.fillText('+90°', 184, 178);
       ctx.fillText('180°', 128, 234);
 
-      ctx.fillStyle = '#10b981';
-      ctx.font = 'bold 9px sans-serif';
+      ctx.fillStyle = '#27ae60';
+      ctx.font = 'bold 9px "Times New Roman"';
       ctx.fillText('SYNC', 128, 140);
 
       // Rotating Needle (represents phase difference)
@@ -1542,7 +1547,7 @@ document.addEventListener('DOMContentLoaded', () => {
         angleRad = state.phaseDiff * Math.PI / 180;
       }
       ctx.rotate(angleRad);
-      ctx.strokeStyle = '#ef4444';
+      ctx.strokeStyle = '#e74c3c';
       ctx.lineWidth = 3;
       ctx.lineCap = 'round';
       ctx.beginPath();
@@ -1558,53 +1563,53 @@ document.addEventListener('DOMContentLoaded', () => {
       invTexture.needsUpdate = true;
     }
 
-    // 3. Grid Console Panel
+    // 3. Draws substation status and target metrics
     if (gridCanvas) {
       const ctx = gridCanvas.getContext('2d');
       ctx.fillStyle = '#ffffff';
       ctx.fillRect(0, 0, 256, 256);
       
-      ctx.fillStyle = '#1e293b';
-      ctx.font = 'bold 18px sans-serif';
+      ctx.fillStyle = '#2c3e50';
+      ctx.font = 'bold 18px "Times New Roman"';
       ctx.textAlign = 'center';
       ctx.fillText('SUBSTATION TIE', 128, 30);
       
       const labelText = state.CURRENT_MODE === 'V2G' ? 'Grid Demand Target' : 'Grid Supply Capacity';
-      ctx.fillStyle = '#475569';
-      ctx.font = 'bold 12px sans-serif';
+      ctx.fillStyle = '#7f8c8d';
+      ctx.font = 'bold 12px "Times New Roman"';
       ctx.fillText(labelText, 128, 55);
 
       const targetText = formatPower(state.TARGET_POWER);
-      const targetColor = state.CURRENT_MODE === 'V2G' ? '#ef4444' : '#3b82f6';
+      const targetColor = state.CURRENT_MODE === 'V2G' ? '#e74c3c' : '#04519b';
       ctx.fillStyle = targetColor;
-      ctx.font = 'bold 22px monospace';
+      ctx.font = 'bold 22px "Times New Roman"';
       ctx.fillText(targetText, 128, 90);
 
       // Draw Grid Tie Capacity percentage
       const gridEnergyPct = state.IS_PLUG_CONNECTED ? (state.CURRENT_MODE === 'V2G' ? 100 - (state.SOC - 50) : 100) : 100;
-      ctx.fillStyle = '#475569';
-      ctx.font = 'bold 11px sans-serif';
+      ctx.fillStyle = '#7f8c8d';
+      ctx.font = 'bold 11px "Times New Roman"';
       ctx.fillText('Grid Storage Capacity: ' + gridEnergyPct.toFixed(1) + '%', 128, 114);
 
       // Draw Grid Voltage status
-      ctx.fillStyle = '#1e293b';
-      ctx.font = 'bold 12px monospace';
+      ctx.fillStyle = '#2c3e50';
+      ctx.font = 'bold 12px "Times New Roman"';
       ctx.fillText(`Grid Voltage: ${state.voltage} V`, 128, 134);
 
       // Power deviation scale bar drawing
-      ctx.fillStyle = '#475569';
-      ctx.font = '10px sans-serif';
+      ctx.fillStyle = '#7f8c8d';
+      ctx.font = '10px "Times New Roman"';
       ctx.fillText('Power Deviation Scale Bar', 128, 168);
       
-      ctx.fillStyle = '#cbd5e1';
+      ctx.fillStyle = '#e0e0e0';
       ctx.fillRect(38, 182, 180, 8);
       
-      ctx.fillStyle = '#10b981';
+      ctx.fillStyle = '#27ae60';
       ctx.fillRect(123, 182, 10, 8);
 
       // Pointer triangle
       const px = 128 + pointerOffset;
-      ctx.fillStyle = '#ef4444';
+      ctx.fillStyle = '#e74c3c';
       ctx.beginPath();
       ctx.moveTo(px, 194);
       ctx.lineTo(px - 6, 204);
@@ -1612,29 +1617,29 @@ document.addEventListener('DOMContentLoaded', () => {
       ctx.closePath();
       ctx.fill();
 
-      ctx.fillStyle = '#64748b';
-      ctx.font = '9px sans-serif';
+      ctx.fillStyle = '#7f8c8d';
+      ctx.font = '9px "Times New Roman"';
       ctx.fillText('-12.0 kW', 38, 178);
       ctx.fillText('+12.0 kW', 218, 178);
 
       gridTexture.needsUpdate = true;
     }
 
-    // 4. Status Panel texture
+    // 4. Updates floating status indicators
     if (statusCanvas) {
       const ctx = statusCanvas.getContext('2d');
       ctx.clearRect(0, 0, 256, 64);
       
       if (state.IS_PLUG_CONNECTED) {
-        const boxCol = state.CURRENT_MODE === 'V2G' ? '#d97706' : '#2563eb';
+        const boxCol = state.CURRENT_MODE === 'V2G' ? '#ff6b00' : '#04519b';
         ctx.fillStyle = '#ffffff';
         ctx.fillRect(10, 5, 236, 54);
         ctx.strokeStyle = boxCol;
         ctx.lineWidth = 3.5;
         ctx.strokeRect(10, 5, 236, 54);
         
-        ctx.fillStyle = '#1e293b';
-        ctx.font = 'bold 15px monospace';
+        ctx.fillStyle = '#2c3e50';
+        ctx.font = 'bold 15px "Times New Roman"';
         ctx.textAlign = 'center';
         ctx.fillText(state.CURRENT_MODE === 'V2G' ? 'STATUS: V2G EXPORT' : 'STATUS: G2V IMPORT', 128, 38);
       }
@@ -1737,7 +1742,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
       syncPhaseBtn.disabled = false;
       syncPhaseBtn.className = 'btn btn-ready';
-      syncPhaseBtn.textContent = '🔒 Position Cable to Begin';
+      syncPhaseBtn.textContent = isMobileOrTablet ? 'Tap to Connect Plug' : 'Connect Bidirectional Plug';
       
       stopSyncBtn.disabled = true;
       stopSyncBtn.className = 'btn btn-disabled';
@@ -1755,14 +1760,14 @@ document.addEventListener('DOMContentLoaded', () => {
         
         syncPhaseBtn.disabled = false;
         syncPhaseBtn.className = 'btn btn-ready';
-        syncPhaseBtn.textContent = '⚡ Activate Energy Loop';
+        syncPhaseBtn.textContent = ' Activate Energy Loop';
       } else {
         syncStatusBadge.textContent = 'OUT OF SYNC';
         syncStatusBadge.className = 'badge badge-unlocked';
         
         syncPhaseBtn.disabled = true;
         syncPhaseBtn.className = 'btn btn-disabled';
-        syncPhaseBtn.textContent = '⚠️ Align Synchroscope to Lock Grid';
+        syncPhaseBtn.textContent = ' Align Synchroscope to Lock Grid';
       }
       if (safetyAlert && state.SOC > 50 && !state.isLockedInEmergencyCharging) safetyAlert.classList.add('hidden');
     } else {
@@ -1888,43 +1893,43 @@ document.addEventListener('DOMContentLoaded', () => {
       batteryFillMesh.scale.y = s;
       batteryFillMesh.position.y = 1.22 + s * 0.23;
       
-      let fillCol = 0x10b981; // Green
+      let fillCol = 0x27ae60; // Success green
       if (state.batterySoc <= 25) {
-        fillCol = 0xef4444; // Red
+        fillCol = 0xe74c3c; // Danger red
       } else if (state.batterySoc <= 50) {
-        fillCol = 0xf59e0b; // Orange
+        fillCol = 0xff6b00; // Orange/amber
       }
       batteryFillMesh.material.color.setHex(fillCol);
     }
 
-    // Update Inverter LED Status Lights
+    // Update LED indicators on the inverter unit
     if (greenLED && redLED && orangeLED) {
       if (!state.IS_PLUG_CONNECTED) {
         greenLED.material.color.setHex(0x062014); // dim green
-        redLED.material.color.setHex(0xef4444);   // bright red
+        redLED.material.color.setHex(0xe74c3c);   // danger red
         orangeLED.material.color.setHex(0x271c04); // dim orange
       } else if (state.stage === 1) {
-        redLED.material.color.setHex(0xef4444); // bright red (not running)
+        redLED.material.color.setHex(0xe74c3c); // danger red (not running)
         if (state.isSynced) {
-          // Flashing green
+          // Blink green LED when synchronized
           const blink = Math.floor(performance.now() / 300) % 2 === 0;
-          greenLED.material.color.setHex(blink ? 0x10b981 : 0x062014);
+          greenLED.material.color.setHex(blink ? 0x27ae60 : 0x062014);
           orangeLED.material.color.setHex(0x271c04);
         } else {
           greenLED.material.color.setHex(0x062014);
-          // Flashing orange (unsynced warning)
+          // Blink orange LED when synchronization is pending
           const blink = Math.floor(performance.now() / 400) % 2 === 0;
-          orangeLED.material.color.setHex(blink ? 0xf59e0b : 0x271c04);
+          orangeLED.material.color.setHex(blink ? 0xff6b00 : 0x271c04);
         }
       } else {
-        // Stage 2 (Running)
+        // Active simulation state (Stage 2)
         redLED.material.color.setHex(0x3b0707); // dim red
-        greenLED.material.color.setHex(0x10b981); // solid green
-        orangeLED.material.color.setHex(state.CURRENT_MODE === 'V2G' ? 0xf59e0b : 0x3b82f6); // solid orange or blue
+        greenLED.material.color.setHex(0x27ae60); // solid green
+        orangeLED.material.color.setHex(state.CURRENT_MODE === 'V2G' ? 0xff6b00 : 0x04519b); // active export or import color
       }
     }
 
-    // Update active energy flow particles
+    // Update particle flow animation
     updateEnergyParticles(dt);
   }
 
@@ -2052,7 +2057,24 @@ document.addEventListener('DOMContentLoaded', () => {
   // Switch Engage / Activate Energy Loop click
   syncPhaseBtn.addEventListener('click', () => {
     if (!state.IS_PLUG_CONNECTED) {
-      showToast("[INTERLOCK ACTIVE] Please drag and drop the Charging Plug into the EV receptacle socket to initialize.");
+      if (isMobileOrTablet) {
+        plugMesh.position.copy(socketPos);
+        plugMesh.rotation.y = Math.PI / 2;
+        updateCableSpline();
+
+        state.IS_PLUG_CONNECTED = true;
+        renderer.domElement.style.cursor = 'default';
+
+        voltageSlider.disabled = false;
+        currentSlider.disabled = false;
+        socSlider.disabled = false;
+
+        syncStatusBadge.textContent = 'CONNECTED';
+        syncStatusBadge.className = 'badge badge-unlocked';
+
+        showToast("[PLUG CONNECTED] Bidirectional power path established through the inverter.");
+        updatePhysics(0);
+      }
       return;
     }
 
@@ -2178,7 +2200,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     // Re-initialize buttons
-    syncPhaseBtn.textContent = '🔒 Position Cable to Begin';
+    syncPhaseBtn.textContent = isMobileOrTablet ? 'Tap to Connect Plug' : 'Connect Bidirectional Plug';
     syncPhaseBtn.disabled = false;
     syncPhaseBtn.className = 'btn btn-ready';
 
@@ -2197,8 +2219,8 @@ document.addEventListener('DOMContentLoaded', () => {
     if (inverterGlowL && inverterGlowR) {
       inverterGlowL.material.opacity = 0;
       inverterGlowR.material.opacity = 0;
-      inverterGlowL.material.color.setHex(0xff5500);
-      inverterGlowR.material.color.setHex(0xff5500);
+      inverterGlowL.material.color.setHex(0xff6b00);
+      inverterGlowR.material.color.setHex(0xff6b00);
     }
 
     // Reset breaker visual arm
