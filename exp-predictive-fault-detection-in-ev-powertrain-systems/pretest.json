@@ -1,0 +1,90 @@
+{
+  "version": 2.0,
+  "questions": [
+    {
+      "question": "Q1. Which formula is correctly used in the simulation to compute the useful Mechanical Power Output (P_out) of the EV motor shaft?",
+      "answers": {
+        "a": "P_out = (tau * N) / 1000",
+        "b": "P_out = (tau * N * 2 * pi) / 60000",
+        "c": "P_out = P_baseline + P_therm + P_drag + P_emi",
+        "d": "P_out = (P_in / P_losses) * 100"
+      },
+      "explanations": {
+        "a": "This basic relation misses the critical conversion factors for angular velocity mapping.",
+        "b": "Correct. Useful mechanical power output in kW relies directly on motor torque (tau), speed in RPM (N), and the 2*pi/60000 unit translator mapping.",
+        "c": "This equation aggregates internal wasted energy losses, not useful mechanical output power.",
+        "d": "This option represents an incorrect configuration of powertrain efficiency limits."
+      },
+      "correctAnswer": "b",
+      "difficulty": "beginner"
+    },
+    {
+      "question": "Q2. Under what operational conditions does the system's simulation engine trigger an automatic, severe thermal loss penalty of +0.4 kW/°C?",
+      "answers": {
+        "a": "The moment the motor speed increases past an idle value of 500 RPM",
+        "b": "When ambient temperature drops down to a baseline room equilibrium of 30°C",
+        "c": "When the core temperature breaks past a severe safety boundary limit of 95°C",
+        "d": "Only when the user releases the keyboard Spacebar shield filter structure"
+      },
+      "explanations": {
+        "a": "Velocity changes modulate baseline domain hysteresis losses rather than causing runaway thermal penalties.",
+        "b": "At 30°C, the system operates at ideal baseline equilibrium conditions without penalties.",
+        "c": "Correct. Copper resistance creep triggers a steep runaway safety penalty addition of +0.4 kW for every degree above the 95°C limit.",
+        "d": "Releasing the filter shields causes electromagnetic wave distortion leaks, not the copper thermal penalty."
+      },
+      "correctAnswer": "c",
+      "difficulty": "beginner"
+    },
+    {
+      "question": "Q3. What parameters are combined in the simulation to compute the mechanical and fluid drag loss branch (P_drag)?",
+      "answers": {
+        "a": "Inverter switching frequencies and stochastic sensor noise limits",
+        "b": "Alternating domain iron hysteresis and structural lamination coefficients",
+        "c": "Cooling pump fluid flow demands and axle friction scaled by gross passenger mass",
+        "d": "Useful torque parameters multiplied by raw angular acceleration metrics"
+      },
+      "explanations": {
+        "a": "Switching interference and noise represent variables mapped into electromagnetic losses (P_emi).",
+        "b": "Lamination domain resistance dictates the baseline iron loss scaling with motor speed (P_baseline).",
+        "c": "Correct. Mechanical and fluid drag losses combine cooling pump power demands with velocity-scaled axle friction from the passenger mass faders.",
+        "d": "Torque and speed parameters are used to calculate useful mechanical work, not drag losses."
+      },
+      "correctAnswer": "c",
+      "difficulty": "beginner"
+    },
+    {
+      "question": "Q4. According to the laboratory framework, what is the critical threshold that immediately prompts an automated 3.0-second predictive fault safety countdown?",
+      "answers": {
+        "a": "Core efficiency scaling up to a nominal, stable value of 95%",
+        "b": "Core temperature exceeding 118°C or system efficiency dropping below 80%",
+        "c": "Vehicle passenger payload weights shifting out of quadrant fader mounts",
+        "d": "Motor rotation speeds fluctuating safely between 500 RPM and 1500 RPM"
+      },
+      "explanations": {
+        "a": "An efficiency metric of 95% indicates ideal nominal operations, not a system fault condition.",
+        "b": "Correct. Exceeding 118°C or dropping under 80% efficiency violates safe boundaries, forcing the diagnostic system to start a 3.0-second isolation countdown.",
+        "c": "Weight placement modifies internal kinetic load friction dynamically but does not directly initiate isolation timelines.",
+        "d": "This RPM range represents standard operating conditions well within safe system margins."
+      },
+      "correctAnswer": "b",
+      "difficulty": "beginner"
+    },
+    {
+      "question": "Q5. How is the overall Core Powertrain Efficiency (eta) mathematically derived inside the simulation?",
+      "answers": {
+        "a": "eta = (P_out / (P_out + P_losses)) * 100",
+        "b": "eta = (P_losses / P_out) * 100",
+        "c": "eta = (P_baseline + P_therm) * 100",
+        "d": "eta = (P_in / P_out) * 100"
+      },
+      "explanations": {
+        "a": "Correct. Core efficiency is determined by evaluating the ratio of useful output work against total input power (the sum of useful power and accumulated losses).",
+        "b": "This represents an inversion of the performance factor, measuring waste relative to work.",
+        "c": "This relation only isolates thermal and iron variables while omitting useful traction power metrics entirely.",
+        "d": "This configuration would produce values above 100%, incorrectly tracking power conversion principles."
+      },
+      "correctAnswer": "a",
+      "difficulty": "beginner"
+    }
+  ]
+}
