@@ -1,89 +1,49 @@
-## Theory
+# Theory
+## 1. Introduction and Experiment Overview
+This experiment simulates an intelligent monitoring and diagnostic framework designed to identify operational anomalies within an electric vehicle's powertrain before catastrophic mechanical or electrical failure occurs. By tracking high-frequency sensor streams like real-time rotational speed, core temperature, and mechanical load variations, the system models continuous energy degradation path dynamics. Students manually inject severe signal noise and extreme torque constraints to observe how internal heat spikes collapse system health, ultimately triggering an automated 3.0-second safety isolation countdown mechanism.
 
-An EV powertrain consists of key electrical and mechanical components including the battery pack, power inverter, and electric motor. Monitoring the health of these systems is critical for preventing catastrophic failures, ensuring vehicle longevity, and optimization of power delivery.
+---
 
-Predictive fault detection models continuously analyze streaming sensor telemetry—such as motor speed (RPM), inverter temperature ($^{\circ}\text{C}$), battery voltage ($\text{V}$), and motor load ($\%$)—to identify anomalous behaviors indicating degradation or impending faults.
+## 2. Basic Terminologies
 
-### 1 Efficiency Formulation
+* **Motor Speed ($N$):** The rotational velocity of the magnetic flux rotor shaft, measured in Revolutions Per Minute (RPM) with a safe operational span from 500 to 6000 RPM.
+* **Inverter Temperature / Core Temp ($T$):** The thermal state of the primary powertrain electronics and stator windings, operating inside an allowable window of $30^\circ\text{C}$ to $120^\circ\text{C}$.
+* **Motor Load:** The external mechanical demand or resistance torque applied to the drivetrain matrix, ranging from a $10\%$ baseline up to a $100\%$ full-capacity stress limit.
+* **Sensor Noise / Abnormalities:** Stochastic distortion and electromagnetic interference injected into the signal tracking paths, used to evaluate diagnostic fault tolerances.
+* **Core Efficiency ($\eta$):** The percentage ratio metric quantifying how effectively the powertrain converts input electrical battery power into true forward driving work.
+* **Predictive Fault Status:** A live automated diagnostic safety state that switches from "Normal" to "Fault" when efficiency curves drop or temperature thresholds fracture boundaries.
 
-The primary indicator of system health under normal versus faulty operational states is the overall Powertrain/Motor Efficiency ($\eta$). It represents the ratio of mechanical power output to electrical power input:
+---
+
+## 3. Mathematical Formula Blueprint
+
+### 3.1 Core System Efficiency
+System core performance is evaluated continuously via the balance between usable output work and total required electrical power input:
 
 $$\eta = \left( \frac{P_{\text{out}}}{P_{\text{in}}} \right) \times 100$$
 
 Where:
+* $\eta$ = Powertrain Core Efficiency percentage.
+* $P_{\text{out}}$ = Useful Mechanical Output Power (kW).
+* $P_{\text{in}}$ = Total Electrical Input Power (kW), representing the sum of useful work and wasted system overhead ($P_{\text{in}} = P_{\text{out}} + P_{\text{losses}}$).
 
-- $\eta$: Powertrain / Motor Efficiency ($\%%$)
-- $P_{\text{out}}$: Mechanical Output Power (W), typically derived from motor speed ($\omega$) and torque ($T$) via $P_{\text{out}} = T \times \omega$.
-- $P_{\text{in}}$: Electrical Input Power (W), provided by the battery and inverter, calculated via $P_{\text{in}} = V \times I$ (Voltage $\times$ Current).
+### 3.2 Mechanical Output Power Extraction
+Useful translational power generated at the wheel hub relies directly on current shaft torque ($\tau$) and angular velocity speed vector elements ($N$):
 
-### 2 Fault Manifestations & Detection Logic
+$$P_{\text{out}} = \frac{\tau \times N \times 2\pi}{60000}$$
 
-1.  **Thermal Overheating:** Excessive current draw or cooling failure elevates the Inverter Temperature beyond safe thresholds ($>100^{\circ}\text{C}$). This triggers thermal throttling or component degradation, manifesting as a sharp drop in structural efficiency ($\eta$).
-2.  **Sensor Noise & Malfunction:** Real-world sensors experience degradation or electromagnetic interference. High sensor noise distorts the telemetry feed, causing unstable control loop oscillations or false readouts, leading to localized anomalies.
-3.  **Sudden Load Discrepancies:** Mismatches between expected mechanical load demand and actual output profiles indicate internal rotor faults, bearing wear, or winding faults.
+### 3.3 Internal Energy Losses Breakdown Matrix
+Total system energy losses ($P_{\text{losses}}$) are aggregated across four distinct real-time physical degradation streams to isolate specific subsystem hardware stress:
 
----
+$$P_{\text{losses}} = P_{\text{baseline}} + P_{\text{therm}} + P_{\text{drag}} + P_{\text{emi}}$$
 
-## 3. Parameter Specifications
-
-The simulation environment dynamically scales its output responses based on student inputs across the following validated operational ranges:
-
-### 3.1 System Variables
-
-| Parameter Category                | Parameter Name               | Valid Variable Ranges / Specifications            |
-| :-------------------------------- | :--------------------------- | :------------------------------------------------ |
-| **Input Parameters**              | Motor Speed                  | 500 – 6000 RPM                                    |
-|                                   | Battery Voltage              | Standard Nominal EV Operating Voltage             |
-|                                   | Sensor Data Feed             | Continuous Real-time Telemetry                    |
-|                                   | Inverter Temperature         | $30^{\circ}\text{C} - 120^{\circ}\text{C}$        |
-| **Parameters Changed by Student** | Sensor Noise Level           | Adjustable variance bounds                        |
-|                                   | Motor Mechanical Load        | 10% – 100%                                        |
-|                                   | Environmental/Operating Temp | $30^{\circ}\text{C} - 120^{\circ}\text{C}$        |
-| **Output Parameters**             | Motor Efficiency ($\eta$)    | Calculated % Output                               |
-|                                   | Fault Status                 | Binary (Normal / Faulty)                          |
-|                                   | Warning Indicators           | Status Flags (e.g., `OVERHEAT`, `SENSOR_ANOMALY`) |
+* **Baseline Core Hysteresis Loss ($P_{\text{baseline}}$):** Simulates magnetic alternating domain resistance friction inside structural iron laminations, scaling with velocity: 
+  $$P_{\text{baseline}} = 0.15 \times \left( \frac{N}{1000} \right)$$
+* **Resistive Thermal Loss ($P_{\text{therm}}$):** Evaluates copper winding resistance creep as temperature climbs past ambient boundaries ($30^\circ\text{C}$). If core temp scales past a severe safety threshold of **$95^\circ\text{C}$**, a steep runaway safety penalty ($+0.4\text{ kW}/^\circ\text{C}$) triggers automatically:
+  $$P_{\text{therm}} = ((\text{Temp} - 30) \times 0.005) + \text{Penalty}_{\text{overheat}}$$
+* **Mechanical and Fluid Drag Loss ($P_{\text{drag}}$):** Computes internal kinetic friction from pumping fluid cooling systems along with axle shear loads scaled by gross passenger fader mass parameters:
+  $$P_{\text{drag}} = (\text{Coolant Flow} \times 0.008) + \left( \frac{N}{1000} \times 0.05 \times \frac{\text{Mass}}{75} \right)$$
+* **Electromagnetic Noise Distortion Loss ($P_{\text{emi}}$):** Accounts for continuous energy leakage due to high-frequency inverter switching field deformations under high unshielded noise profiles:
+  $$P_{\text{emi}} = \text{Noise} \times 0.6$$
 
 ---
-
-## 4. Test Procedure & Simulation Logic (Retest Framework)
-
-The interactive simulation executes a strict procedural pipeline to replicate real-time predictive diagnostic software:
-
-```
-[Start Simulation]
-       │
-       ▼
- [Read Inputs: Speed, Load, Temp, Noise]
-       │
-       ▼
- [Compute Input/Output Power & Efficiency (η)]
-       │
-       ▼
- ┌─────┴─────────────────────────────────────┐
- │       Evaluate Fault Conditions:          │
- │  - Is Temp > Threshold (e.g., 95°C)?      │
- │  - Is Noise > Critical Tolerance?         │
- │  - Is η < Expected Target for given Load? │
- └─────┬─────────────────────────────────────┘
-       │
-       ├─── YES ──► [Trigger Warning Indicator & Update Fault Status to True]
-       │
-       └─── NO  ──► [Maintain Normal Operation Status]
-       │
-       ▼
- [Generate Outputs & Trend Plots] ──► [End Cycle / Continuous Loop]
-```
-
-### 4.1 Steps for Interactive Retesting
-
-1.  **Baseline Initialization:** Set the _Motor Load_ to 50%, _Inverter Temperature_ to $45^{\circ}\text{C}$, and _Sensor Noise_ to minimum. Observe the calculated `Motor Efficiency` (typically high, $approx 85-95\%$) and ensure `Fault Status` remains `NORMAL`.
-2.  **Thermal Stress Test:** Incrementally increase the operating _Temperature_ above $95^{\circ}\text{C}$ while keeping load constant. Observe the rapid degradation in `Motor Efficiency` and verify if the `OVERHEAT` warning indicator triggers automatically.
-3.  **Sensor Degradation Analysis:** Introduce high _Sensor Noise_. Observe how standard error profiles ripple through the computational telemetry, causing immediate spikes in error margins and shifting the `Fault Status` indicator to alert conditions.
-4.  **Full System Recovery:** Restore inputs back to standard nominal operational bounds to verify whether self-healing algorithms clear warning triggers and restore standard powertrain efficiency behavior.
-
----
-
-## 5. Expected Observations & Results
-
-1.  **Efficiency Degradation:** Sensor abnormalities, high noise injection, and severe internal overheating directly compromise inverter performance and motor torque consistency, causing a noticeable downward drop in overall system efficiency.
-2.  **Proactive Failure Prevention:** Implementing immediate automated threshold alerting schemes ensures early predictive fault visibility, allowing isolation or maintenance protocols to initiate before catastrophic powertrain failure occurs.
