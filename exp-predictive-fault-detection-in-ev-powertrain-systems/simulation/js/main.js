@@ -121,6 +121,7 @@ const isMobile = window.matchMedia("(pointer: coarse)").matches ||
                  /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent) ||
                  window.innerWidth <= 960;
 let isMobileFilterActive = false;
+let motorTouchHold = null; // Tracks active motor core touch-hold state for deep click
 
 // Physics interaction variables
 let isSpinning = false;
@@ -186,6 +187,8 @@ function logEvent(message, type = 'info') {
         else if (type === 'success') msg.style.color = 'var(--color-success)';
         else msg.style.color = '#38bdf8'; // info cyan
         msg.textContent = message;
+        msg.container = entry;
+        msg.addEventListener('click',() => {})
         
         entry.appendChild(timestamp);
         entry.appendChild(msg);
@@ -289,6 +292,10 @@ function startDrag(coords, id) {
 
     // 1a. Cooling Vent Casing Hit Test (Centered at 442, X=418-454, Y=150-370)
     if (coords.x >= 418 && coords.x <= 454 && coords.y >= 150 && coords.y <= 370) {
+        if (!isMobile) {
+            logEvent("Cooling vent drag disabled on desktop. Use keyboard keys (+ / -) instead.", "warning");
+            return;
+        }
         coolantTouchId = id;
         isDraggingCoolant = true;
         let pct = 1.0 - (coords.y - 170) / 180.0;
@@ -298,6 +305,10 @@ function startDrag(coords, id) {
 
     // 1b. Brake Controller Casing Hit Test (Centered at 482, X=458-494, Y=150-370)
     if (coords.x >= 458 && coords.x <= 494 && coords.y >= 150 && coords.y <= 370) {
+        if (!isMobile) {
+            logEvent("Brake controller drag disabled on desktop. Use keyboard keys (W / S) instead.", "warning");
+            return;
+        }
         brakeTouchId = id;
         isDraggingBrake = true;
         let pct = 1.0 - (coords.y - 170) / 180.0;
@@ -475,6 +486,28 @@ function handleTouchStart(e) {
     for (let i = 0; i < e.changedTouches.length; i++) {
         const touch = e.changedTouches[i];
         const coords = getCoords(touch.clientX, touch.clientY);
+        
+        // Mobile-only motor center deep click detection (600ms long touch hold)
+        if (isMobile && isPowerOn && !isTerminated) {
+            const dist = Math.sqrt((coords.x - CX) ** 2 + (coords.y - CY) ** 2);
+            if (dist < 36) {
+                const currentTouchId = touch.identifier;
+                motorTouchHold = {
+                    id: currentTouchId,
+                    startX: touch.clientX,
+                    startY: touch.clientY,
+                    startTime: performance.now(),
+                    triggered: false
+                };
+                setTimeout(() => {
+                    if (motorTouchHold && motorTouchHold.id === currentTouchId && !motorTouchHold.triggered) {
+                        motorTouchHold.triggered = true;
+                        toggleMobileFilter();
+                    }
+                }, 600);
+            }
+        }
+        
         startDrag(coords, touch.identifier);
     }
 }
@@ -482,6 +515,21 @@ function handleTouchStart(e) {
 function handleTouchMove(e) {
     if (isMeltdown) return;
     if (e.cancelable) e.preventDefault();
+    
+    // Check if the motor hold touch moved too far ( tremors allowed up to 12px, then canceled )
+    if (motorTouchHold) {
+        for (let i = 0; i < e.touches.length; i++) {
+            const touch = e.touches[i];
+            if (touch.identifier === motorTouchHold.id) {
+                const dx = touch.clientX - motorTouchHold.startX;
+                const dy = touch.clientY - motorTouchHold.startY;
+                if (Math.sqrt(dx * dx + dy * dy) > 12) {
+                    motorTouchHold = null;
+                }
+            }
+        }
+    }
+    
     for (let i = 0; i < e.touches.length; i++) {
         const touch = e.touches[i];
         const coords = getCoords(touch.clientX, touch.clientY);
@@ -490,6 +538,15 @@ function handleTouchMove(e) {
 }
 
 function handleTouchEnd(e) {
+    // Clear motor hold if the finger is lifted
+    if (motorTouchHold) {
+        for (let i = 0; i < e.changedTouches.length; i++) {
+            const touch = e.changedTouches[i];
+            if (touch.identifier === motorTouchHold.id) {
+                motorTouchHold = null;
+            }
+        }
+    }
     for (let i = 0; i < e.changedTouches.length; i++) {
         const touch = e.changedTouches[i];
         endDrag(touch.identifier);
@@ -555,6 +612,7 @@ function resetLab() {
     isSpaceBarPressed = false;
     filterRadius = 0.0;
     isMobileFilterActive = false;
+    motorTouchHold = null;
     const mobileFilterBtn = document.getElementById('mobile-filter-btn');
     if (mobileFilterBtn) {
         mobileFilterBtn.classList.remove('active');
@@ -595,24 +653,38 @@ function resetLab() {
 if (resetButton) resetButton.addEventListener('click', resetLab);
 if (modalResetBtn) modalResetBtn.addEventListener('click', resetLab);
 
+// Premium helper to toggle mobile EMI filter with logs and vibration haptics
+function toggleMobileFilter() {
+    if (isMeltdown || !isPowerOn || isTerminated) return;
+    isMobileFilterActive = !isMobileFilterActive;
+    const mobileFilterBtn = document.getElementById('mobile-filter-btn');
+    if (isMobileFilterActive) {
+        if (mobileFilterBtn) {
+            mobileFilterBtn.classList.add('active');
+            mobileFilterBtn.textContent = 'EMI FILTER: ON';
+        }
+        logEvent("EMI noise filter shield active.", "success");
+        if (navigator.vibrate) {
+            navigator.vibrate(60); // brief premium buzz
+        }
+    } else {
+        if (mobileFilterBtn) {
+            mobileFilterBtn.classList.remove('active');
+            mobileFilterBtn.textContent = 'EMI FILTER: OFF';
+        }
+        logEvent("EMI noise filter shield deactivated.", "warning");
+        if (navigator.vibrate) {
+            navigator.vibrate([30, 30]); // double click haptic
+        }
+    }
+}
+
 // Initialize Mobile Filter Button behavior
 const mobileFilterBtn = document.getElementById('mobile-filter-btn');
 if (mobileFilterBtn) {
     if (isMobile) {
         mobileFilterBtn.classList.remove('hidden');
-        mobileFilterBtn.addEventListener('click', () => {
-            if (isMeltdown || !isPowerOn || isTerminated) return;
-            isMobileFilterActive = !isMobileFilterActive;
-            if (isMobileFilterActive) {
-                mobileFilterBtn.classList.add('active');
-                mobileFilterBtn.textContent = 'EMI FILTER: ON';
-                logEvent("EMI noise filter shield active.", "success");
-            } else {
-                mobileFilterBtn.classList.remove('active');
-                mobileFilterBtn.textContent = 'EMI FILTER: OFF';
-                logEvent("EMI noise filter shield deactivated.", "warning");
-            }
-        });
+        mobileFilterBtn.addEventListener('click', toggleMobileFilter);
     } else {
         mobileFilterBtn.classList.add('hidden');
     }
@@ -1387,6 +1459,22 @@ function renderCore() {
     ctx.fillText("CORE", CX, CY + 4);
     ctx.restore();
 
+    // Deep Click charging visual guide ring (only on mobile when hold is active)
+    if (isMobile && motorTouchHold && !motorTouchHold.triggered) {
+        const holdTime = performance.now() - motorTouchHold.startTime;
+        const progress = Math.min(1.0, holdTime / 600.0);
+        ctx.save();
+        ctx.strokeStyle = '#a855f7';
+        ctx.lineWidth = 2.0;
+        ctx.shadowColor = 'rgba(168, 85, 247, 0.85)';
+        ctx.shadowBlur = 6;
+        ctx.beginPath();
+        const rRing = 56 - progress * 28;
+        ctx.arc(CX, CY, rRing, 0, Math.PI * 2);
+        ctx.stroke();
+        ctx.restore();
+    }
+
     // Field Metric Stress Glow Overlay
     if (temperature > 40.0) {
         const heatPct = Math.min(1.0, (temperature - 40) / 80);
@@ -1948,6 +2036,16 @@ function renderSnapshotsList() {
         listEl.appendChild(item);
     });
 }
+// Helper to trigger MathJax typeset after DOM/layout updates settle
+function triggerMathJaxTypeset() {
+    if (window.MathJax && window.MathJax.typesetPromise) {
+        setTimeout(() => {
+            window.MathJax.typesetPromise().catch(err => {
+                console.warn('MathJax typeset error:', err);
+            });
+        }, 50);
+    }
+}
 
 function selectSnapshot(id) {
     const snap = snapshots.find(s => s.id === id);
@@ -1992,9 +2090,7 @@ function selectSnapshot(id) {
         `Output power: ${poutText} kW / Input power: ${(snap.outputPower + snap.totalLosses).toFixed(2)} kW &rarr; Efficiency: ${efficiencyText}%.`;
         
     // Run MathJax Typeset Smoothly
-    if (window.MathJax && window.MathJax.typesetPromise) {
-        window.MathJax.typesetPromise();
-    }
+    triggerMathJaxTypeset();
 }
 
 function resetFormulaCardsToDefault() {
@@ -2009,15 +2105,14 @@ function resetFormulaCardsToDefault() {
     document.getElementById('trace-plosses-eval').textContent = "Select a historical snapshot to see evaluation.";
     document.getElementById('trace-peff-eval').textContent = "Select a historical snapshot to see evaluation.";
     
-    if (window.MathJax && window.MathJax.typesetPromise) {
-        window.MathJax.typesetPromise();
-    }
+    triggerMathJaxTypeset();
 }
 
 if (btnExplanation && explanationPanel) {
     btnExplanation.addEventListener('click', () => {
         isPaused = true; // Pause physics
         explanationPanel.classList.remove('hidden');
+        document.body.classList.add('modal-open'); // Lock background scrolling
         if (appContainer) appContainer.classList.add('phase-2-active');
         const dashboardLayout = document.getElementById('dashboard-layout');
         if (dashboardLayout) dashboardLayout.classList.add('phase-2-active');
@@ -2055,6 +2150,7 @@ if (btnExplanation && explanationPanel) {
 if (btnReturn && explanationPanel) {
     btnReturn.addEventListener('click', () => {
         explanationPanel.classList.add('hidden');
+        document.body.classList.remove('modal-open'); // Unlock background scrolling
         if (appContainer) appContainer.classList.remove('phase-2-active');
         const dashboardLayout = document.getElementById('dashboard-layout');
         if (dashboardLayout) dashboardLayout.classList.remove('phase-2-active');
