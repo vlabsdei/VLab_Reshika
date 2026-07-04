@@ -1,0 +1,175 @@
+{
+  "version": 2.0,
+  "questions": [
+    {
+      "question": "Q1. What mathematical function does the simulation engine use to model the drop-off in coupling efficiency as the lateral alignment offset (x) increases?",
+      "answers": {
+        "a": "A linear decay function",
+        "b": "An inverse proportional square law",
+        "c": "A squared negative exponential function",
+        "d": "A logarithmic distribution function"
+      },
+      "explanations": {
+        "a": "A linear decay would imply a constant rate of efficiency loss, which does not match the curve of magnetic flux boundaries.",
+        "b": "An inverse square law models point-source radiation fields, not the specific planar coil cross-coupling curve handled here.",
+        "c": "Correct. The coupling equation uses e^(-0.002 * x^2), establishing a squared negative exponential distribution where efficiency drops sharply as the vehicle drifts further from the center.",
+        "d": "Logarithmic functions model signal compression scales rather than spatial field decay tracking."
+      },
+      "correctAnswer": "c",
+      "difficulty": "intermediate"
+    },
+    {
+      "question": "Q2. If a vehicle maintains a perfect center alignment (x = 0) but increases its vertical air gap (z), what is the exact mathematical efficiency decay rate per centimeter?",
+      "answers": {
+        "a": "Efficiency drops linearly by 3.0% for every centimeter of gap increase",
+        "b": "Efficiency decays exponentially governed by the scaling factor e^(-0.03 * z)",
+        "c": "Efficiency drops by a constant 0.002% per centimeter",
+        "d": "Efficiency remains entirely fixed unless a horizontal misalignment occurs"
+      },
+      "explanations": {
+        "a": "The decay tracking is exponential rather than strictly linear across the gap domain.",
+        "b": "Correct. The vertical gap loss component is governed directly by e^(-0.03 * z), meaning efficiency drops exponentially as the air gap gets wider.",
+        "c": "The 0.002 scaling coefficient belongs exclusively to the horizontal misalignment squared parameter, not the vertical gap.",
+        "d": "Vertical changes heavily influence the flux density interception, altering baseline metrics even at perfect center paths."
+      },
+      "correctAnswer": "b",
+      "difficulty": "intermediate"
+    },
+    {
+      "question": "Q3. During the continuous execution loop, what direct effect does increasing the Vehicle Speed (v) slider have on the energy integration process?",
+      "answers": {
+        "a": "It scales up the peak instantaneous power delivered by each individual coil segment",
+        "b": "It increases the horizontal road scrolling speed, reducing the exposure time over each active coil zone",
+        "c": "It forces the core alignment index crosshair to drift toward the right edge layout boundary",
+        "d": "It directly increases the nominal capacity of the internal electrochemical battery pack"
+      },
+      "explanations": {
+        "a": "Peak power capacity relies strictly on geometric positioning inputs (x, z), completely independent of velocity metrics.",
+        "b": "Correct. Higher transit speeds speed up the road scrolling pixel factor, meaning the vehicle spends less exposure time over each active subsurface coil segment.",
+        "c": "The lane alignment position is controlled exclusively by the horizontal offset slider, not the transit speed.",
+        "d": "The total battery capacity is a hardcoded constant set at 1000.0 kJ within the configuration profile."
+      },
+      "correctAnswer": "b",
+      "difficulty": "intermediate"
+    },
+    {
+      "question": "Q4. Under what condition will the real-time instantaneous power readout (instPower) read exactly 0.00 kW even when the vehicle is positioned directly above a track coil layout?",
+      "answers": {
+        "a": "When the horizontal alignment offset is precisely centered at 0.0 cm",
+        "b": "The moment the accumulated battery charge reaches its maximum capacity (SoC 100%)",
+        "c": "When a high-clearance Delivery Van profile is selected instead of a low Sedan configuration",
+        "d": "Only when the transit logging window is manually minimized by the operator"
+      },
+      "explanations": {
+        "a": "A centered path maximizes efficiency and power transfer metrics instead of zeroing them out.",
+        "b": "Correct. Once the integrated energy reaches the 1000.0 kJ threshold, the state flag switches to charge complete, zeroing out power inputs to prevent overcharging calculations.",
+        "c": "Higher clearance structures suffer from steep flux decay but still maintain fractional power capture rather than absolute zeroing.",
+        "d": "The background frame loop continues execution metrics independently of user window minimizes."
+      },
+      "correctAnswer": "b",
+      "difficulty": "intermediate"
+    },
+    {
+      "question": "Q5. How does the simulation engine distinguish an active dynamic charging state from an idle track layout condition?",
+      "answers": {
+        "a": "By evaluating whether the distance from the vehicle receiver to the nearest scrolling coil center is within a 90-pixel coupling zone",
+        "b": "By tracking if the vehicle speed drops down below an emergency baseline threshold of 10 km/h",
+        "c": "By scanning if the total snapshot logging log count breaks past an internal limit of 5 entries",
+        "d": "By checking if the user toggles the mathematical verification panel to an active status visibility"
+      },
+      "explanations": {
+        "a": "Correct. The engine checks the horizontal distance between the receiver pad center and the scrolling subsurface track coils; if it is under the 90-pixel limit, it triggers a proximity factor to run the charging calculations.",
+        "b": "Speed limits do not dictate coupling zones; the system remains functional even at the slow boundary of 10 km/h.",
+        "c": "Snapshot collection tracks custom data tables but does not affect the real-time physical simulation loops.",
+        "d": "Tab switching controls view layouts but has no bearing on underlying inductive coupling proximity solvers."
+      },
+      "correctAnswer": "a",
+      "difficulty": "advanced"
+    },
+    {
+      "question": "Q6. In the Phase 2 analytics tab, how is the dynamic 'Air Gap Efficiency Decay' metric calculated when evaluating user-captured snapshots?",
+      "answers": {
+        "a": "By multiplying the current speed factor by the absolute change in battery state metrics",
+        "b": "By comparing two snapshots that have similar alignment offsets but different gap distances to find the loss percentage per centimeter",
+        "c": "By isolating the maximum power variance logged during structural reset calibrations",
+        "d": "By taking a fixed average of the predefined coil width dimensions over tracking ranges"
+      },
+      "explanations": {
+        "a": "Speed and battery metrics do not determine spatial field sensitivity decay vectors.",
+        "b": "Correct. The analytical engine identifies pairs of snapshots with close alignment positions (difference < 0.5 cm) but different air gaps to calculate the empirical efficiency loss per centimeter.",
+        "c": "Reset operations wipe memory registers rather than establishing sensitivity slope lines.",
+        "d": "Coil structural widths are design constants and cannot provide variable analytical sensitivity data."
+      },
+      "correctAnswer": "b",
+      "difficulty": "advanced"
+    },
+    {
+      "question": "Q7. What is the structural purpose of the 'Reset Battery Charge' action within the laboratory workspace?",
+      "answers": {
+        "a": "It shifts execution focus from the live track canvas back to formulas",
+        "b": "It resets accumulated energy, State of Charge, and session time to zero to start a new experimental run",
+        "c": "It forces the physical air gap to snap instantly back to the 5.0 cm baseline sedan boundary",
+        "d": "It clears the entire parameter change log while saving the target charge parameters"
+      },
+      "explanations": {
+        "a": "Tab buttons handle navigation layouts, completely separate from the data reset button actions.",
+        "b": "Correct. Clicking the reset button wipes accumulated energy, zeroes the SoC level bar, and resets the simulation clock to allow for clean, uncoupled test sequences.",
+        "c": "Air gap metrics are controlled entirely by their independent range slider inputs.",
+        "d": "Wiping the battery triggers a custom entry in the parameter log rather than clearing old event histories."
+      },
+      "correctAnswer": "b",
+      "difficulty": "beginner"
+    },
+    {
+      "question": "Q8. When a user clicks the 'Snapshot' button in Phase 1, what exact operation occurs within the state architecture?",
+      "answers": {
+        "a": "The current runtime metrics are frozen, pausing the background road animation loops completely",
+        "b": "A data structure capturing the current time, coordinates, efficiency, power, energy, and SoC is appended to an array in memory",
+        "c": "The simulation code generates a raster PNG download of the HTML5 canvas viewport frame",
+        "d": "The system automatically sets the alignment offset slider to a maximized error value"
+      },
+      "explanations": {
+        "a": "Road scrolling and integration calculations continue uninterrupted after a snapshot is captured.",
+        "b": "Correct. The snapshot function logs a structural state record in memory, making it available for review inside the Phase 2 analysis grid.",
+        "c": "The snapshot feature saves text-based data metrics for mathematical analysis, not raw graphical images.",
+        "d": "Sliders remain at their user-selected values unless manually moved by the operator."
+      },
+      "correctAnswer": "b",
+      "difficulty": "intermediate"
+    },
+    {
+      "question": "Q9. What behavior can be observed regarding the animated magnetic flux waves on the canvas display as the Alignment Offset (x) is moved beyond 12.0 cm?",
+      "answers": {
+        "a": "The waves flash in a rapid blue pattern to denote stable induction paths",
+        "b": "The wave lines shift color from green or orange to a distinct red, visualizing severe driving alignment drift",
+        "c": "The flux waves stop rendering entirely because power integration values lock down",
+        "d": "The waves invert vertically, moving down into the subsurface ground layout layers"
+      },
+      "explanations": {
+        "a": "Blue indicators denote generic active structures, not severe misalignments.",
+        "b": "Correct. The color solver maps the offset coordinates directly to the graphics engine, switching the field lines to red when lateral drift passes the 12 cm threshold.",
+        "c": "Flux waves continue to render with a low opacity until the vehicle is completely outside the proximity bounds.",
+        "d": "The flow direction vector always travels upward from the ground track toward the receiver frame."
+      },
+      "correctAnswer": "b",
+      "difficulty": "advanced"
+    },
+    {
+      "question": "Q10. Why are the transmitter coils embedded beneath smart roads structured in a 'segmented' layout instead of being a single continuous energized track?",
+      "answers": {
+        "a": "To allow the vehicle's wishbone suspension mechanisms to maintain stable tracking contacts",
+        "b": "To limit magnetic field excitation exclusively to the coil beneath the car, preventing idle zone energy losses",
+        "c": "To ensure that the mathematical formulas use fixed integer inputs rather than complex variables",
+        "d": "To force the total battery capacity tracking limits to stay under the 1000 kJ boundary"
+      },
+      "explanations": {
+        "a": "Wishbone suspension loops connect chassis setups to the wheel assemblies and do not interact with track segment controls.",
+        "b": "Correct. Segmented active coils are designed to excite ground segments only when a vehicle is passing directly overhead, avoiding stand-by power drain and stray field exposure in empty zones.",
+        "c": "Formulas rely on dynamic floating-point slider inputs regardless of structural segment choices.",
+        "d": "Battery capacity parameters are defined by the vehicle's onboard chemistry design, completely independent of road configurations."
+      },
+      "correctAnswer": "b",
+      "difficulty": "intermediate"
+    }
+  ]
+}

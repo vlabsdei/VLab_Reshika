@@ -1,0 +1,90 @@
+{
+  "version": 2.0,
+  "questions": [
+    {
+      "question": "Q1. Which formula is correctly used in the simulation to compute the Coupling Efficiency (eta) based on alignment offset (x) and air gap (z)?",
+      "answers": {
+        "a": "eta = 90 * e^(-0.002 * x) * e^(-0.03 * z)",
+        "b": "eta = 90 * e^(-0.002 * x^2) * e^(-0.03 * z)",
+        "c": "eta = 120 * e^(-0.002 * x^2) * e^(-0.03 * z)",
+        "d": "eta = (P_received / P_transmitted) * 100"
+      },
+      "explanations": {
+        "a": "This option incorrectly models the alignment offset as a linear decay factor instead of a squared exponential drop-off.",
+        "b": "Correct. The simulation engine calculates coupling efficiency using a peak baseline of 90% multiplied by exponential decay factors for the squared alignment offset and vertical air gap.",
+        "c": "This option mistakes the transmission power limit of 120 kW for the maximum coupling efficiency baseline of 90%.",
+        "d": "While this represents the relationship between power and efficiency, it is not the structural equation used to compute efficiency from the physical coordinates."
+      },
+      "correctAnswer": "b",
+      "difficulty": "beginner"
+    },
+    {
+      "question": "Q2. What is the constant nominal power transmitted (P_transmitted) by each active road coil segment in this laboratory setup?",
+      "answers": {
+        "a": "90.0 kW",
+        "b": "100.0 kW",
+        "c": "120.0 kW",
+        "d": "1000.0 kW"
+      },
+      "explanations": {
+        "a": "90.0% represents the maximum calibrated coupling efficiency under ideal positioning alignment, not the track power capacity.",
+        "b": "This is an arbitrary baseline value that does not match the transmitter specs configured in the source engine.",
+        "c": "Correct. The embedded track charging segments are designed to deliver a constant high-frequency power of 120.0 kW.",
+        "d": "1000.0 kJ represents the total storage capacity of the target vehicle battery pack, not the transmission power rate."
+      },
+      "correctAnswer": "c",
+      "difficulty": "beginner"
+    },
+    {
+      "question": "Q3. According to the laboratory framework, a vehicle with an air-gap distance of z = 24.5 cm falls under which silhouette profile?",
+      "answers": {
+        "a": "Sedan Silhouette (Low Clearance)",
+        "b": "Crossover SUV Silhouette (Mid Clearance)",
+        "c": "Delivery Van Silhouette (High Clearance)",
+        "d": "Heavy Duty Transport Truck (Max Clearance)"
+      },
+      "explanations": {
+        "a": "The Sedan profile is strictly bounded between a low clearance range of 5.0 cm and 13.0 cm.",
+        "b": "The Crossover SUV profile captures intermediate vehicles with clearances spanning 13.0 cm to 20.0 cm.",
+        "c": "Correct. Any vertical clearance tracking greater than 20.0 cm up to the 30.0 cm maximum limit triggers the high-clearance Delivery Van profile.",
+        "d": "This category is completely outside the scope of the three primary profiles established in this laboratory framework."
+      },
+      "correctAnswer": "c",
+      "difficulty": "beginner"
+    },
+    {
+      "question": "Q4. How does the continuous integration function track accumulated battery energy gain (Delta E) over active charging zones?",
+      "answers": {
+        "a": "By integrating vehicle speed over the total session duration",
+        "b": "By taking the direct product of maximum coupling efficiency and elapsed time",
+        "c": "By integrating the varying instantaneous power received over exposure time",
+        "d": "By dividing the current state of charge by the baseline transmission factor"
+      },
+      "explanations": {
+        "a": "Integrating speed determines the total spatial distance covered, not the electrochemical energy captured by the battery circuit.",
+        "b": "Efficiency alone does not translate to accumulated energy without considering power integration timelines.",
+        "c": "Correct. Active energy integration is calculated mathematically as the definite time integral of the instantaneous received power across dynamic exposure cycles.",
+        "d": "This formulation yields an incorrect parameter dimension that violates standard power conversion laws."
+      },
+      "correctAnswer": "c",
+      "difficulty": "beginner"
+    },
+    {
+      "question": "Q5. What physical behavior is represented by the lane alignment index crosshair on the top-down radar display?",
+      "answers": {
+        "a": "The instantaneous vehicle transit velocity scaled by coil spacing",
+        "b": "The manual calibration adjustment of the lateral alignment offset value",
+        "c": "The mechanical oscillation frequency of the wishbone suspension links",
+        "d": "The automatic thermal protection trip boundary condition"
+      },
+      "explanations": {
+        "a": "Transit velocity governs the speed of road scrolling animation, not the coordinate shifting on the lane index crosshair.",
+        "b": "Correct. The radar inset crosshair serves as a tracking interface mapping the alignment offset (x) relative to the center track limits.",
+        "c": "The suspension link lines connect structural anchors in the side profile canvas but are not mapped onto the top-down lane radar.",
+        "d": "Thermal conditions are absent from this experiment's engine, which focuses solely on geometric alignment and electromagnetic decay links."
+      },
+      "correctAnswer": "b",
+      "difficulty": "beginner"
+    }
+  ]
+}
