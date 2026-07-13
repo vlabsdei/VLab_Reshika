@@ -1,0 +1,1974 @@
+/* main.css - Light-themed EV Side-Profile Visualizer styling */
+
+/* Reset & Theme Variables */
+:root {
+  --bg-primary: #f8f9fa;      /* Clean light-gray background */
+  --bg-secondary: #ffffff;    /* Pure White for panels/cards */
+  --bg-panel-header: #f1f3f5;  
+  
+  --border-color: #dee2e6;    
+  --border-glow-accel: rgba(2, 132, 199, 0.2); 
+  --border-glow-regen: rgba(34, 197, 94, 0.2);
+  --border-glow-charge: rgba(245, 158, 11, 0.2);
+  
+  --text-main: #212529;       /* Dark charcoal */
+  --text-muted: #495057;      
+  --text-light: #868e96;       
+  
+  /* State Accent Colors */
+  --flow-color-accel: #0284c7; /* Sky Blue */
+  --flow-color-regen: #22c55e; /* Green */
+  --flow-color-aux: #f59e0b;   /* Amber */
+  --color-danger: #dc2626;    
+  
+  --font-sans: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  --font-mono: 'JetBrains Mono', 'Fira Code', monospace;
+  
+  --transition-speed: 0.3s;
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  background-color: var(--bg-primary);
+  color: var(--text-main);
+  font-family: var(--font-sans);
+  line-height: 1.5;
+  height: 100vh;
+  overflow: hidden;
+}
+
+/* App Container */
+.app-container {
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+  width: 100vw;
+}
+
+/* Floating Tabs Navigation */
+.app-header {
+  background-color: var(--bg-secondary);
+  border-bottom: 1px solid var(--border-color);
+  padding: 0.8rem 1.5rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-shrink: 0;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.02);
+  gap: 2rem;
+  z-index: 10;
+}
+
+.app-title-group {
+  display: flex;
+  flex-direction: column;
+  gap: 0.15rem;
+  flex-grow: 1;
+}
+
+.app-title-group h1 {
+  font-size: 1.1rem;
+  font-weight: 700;
+  color: var(--text-main);
+  letter-spacing: -0.01em;
+}
+
+.app-objective {
+  font-size: 0.75rem;
+  color: var(--text-muted);
+  line-height: 1.35;
+}
+
+.tab-navigation {
+  display: flex;
+  gap: 0.5rem;
+  flex-shrink: 0;
+}
+
+.tab-btn {
+  background-color: var(--bg-secondary);
+  border: 1px solid var(--border-color);
+  color: var(--text-muted);
+  font-family: var(--font-sans);
+  font-size: 0.82rem;
+  font-weight: 600;
+  padding: 0.45rem 1rem;
+  border-radius: 6px;
+  cursor: pointer;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.02);
+  transition: all var(--transition-speed) ease;
+}
+
+.tab-btn:hover {
+  color: var(--text-main);
+  background-color: #f1f3f5;
+  border-color: #ced4da;
+}
+
+.tab-btn.active {
+  color: var(--flow-color-accel);
+  background-color: rgba(2, 132, 199, 0.08);
+  border-color: rgba(2, 132, 199, 0.35);
+  box-shadow: 0 1px 3px rgba(2, 132, 199, 0.05);
+}
+
+/* System Status Badges */
+.system-status {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.badge {
+  display: inline-flex;
+  align-items: center;
+  padding: 0.3rem 0.6rem;
+  border-radius: 4px;
+  font-family: var(--font-mono);
+  font-size: 0.72rem;
+  font-weight: 700;
+  border: 1px solid transparent;
+  transition: all var(--transition-speed);
+}
+
+.badge.healthy {
+  background-color: rgba(34, 197, 94, 0.08);
+  border-color: rgba(34, 197, 94, 0.2);
+  color: var(--flow-color-regen);
+}
+
+.badge.state-idle {
+  background-color: #f1f3f5;
+  border-color: #e9ecef;
+  color: var(--text-light);
+}
+
+.badge.state-accel {
+  background-color: rgba(2, 132, 199, 0.08);
+  border-color: rgba(2, 132, 199, 0.2);
+  color: var(--flow-color-accel);
+  animation: pulse-accel-badge 1.5s infinite alternate;
+}
+
+.badge.state-regen {
+  background-color: rgba(34, 197, 94, 0.08);
+  border-color: rgba(34, 197, 94, 0.2);
+  color: var(--flow-color-regen);
+  animation: pulse-regen-badge 1.5s infinite alternate;
+}
+
+.badge.state-charging {
+  background-color: rgba(245, 158, 11, 0.08);
+  border-color: rgba(245, 158, 11, 0.2);
+  color: var(--flow-color-aux);
+  animation: pulse-charge-badge 1.5s infinite alternate;
+}
+
+@keyframes pulse-accel-badge {
+  0% { box-shadow: 0 0 2px rgba(2, 132, 199, 0.1); }
+  100% { box-shadow: 0 0 8px rgba(2, 132, 199, 0.3); }
+}
+
+@keyframes pulse-regen-badge {
+  0% { box-shadow: 0 0 2px rgba(34, 197, 94, 0.1); }
+  100% { box-shadow: 0 0 8px rgba(34, 197, 94, 0.3); }
+}
+
+@keyframes pulse-charge-badge {
+  0% { box-shadow: 0 0 2px rgba(245, 158, 11, 0.1); }
+  100% { box-shadow: 0 0 8px rgba(245, 158, 11, 0.3); }
+}
+
+/* Content Panel Base */
+.tab-content-container {
+  flex-grow: 1;
+  overflow: hidden;
+  position: relative;
+}
+
+.tab-panel {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  display: none;
+  overflow-y: auto;
+  padding: 1.25rem;
+}
+
+.tab-panel.active {
+  display: block;
+}
+
+/* Theory Tab Styling */
+.theory-container {
+  max-width: 900px;
+  margin: 0 auto;
+  padding-bottom: 2.5rem;
+}
+
+.theory-section {
+  background-color: var(--bg-secondary);
+  border: 1px solid var(--border-color);
+  border-radius: 8px;
+  padding: 1.5rem 1.75rem;
+  margin-bottom: 1.25rem;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.01);
+}
+
+.theory-section h2 {
+  font-size: 1.2rem;
+  color: var(--text-main);
+  margin-bottom: 0.75rem;
+  border-left: 3px solid var(--flow-color-accel);
+  padding-left: 0.6rem;
+}
+
+.theory-section p {
+  color: var(--text-muted);
+  font-size: 0.9rem;
+  margin-bottom: 0.75rem;
+}
+
+.theory-section ul, .theory-section ol {
+  color: var(--text-muted);
+  font-size: 0.9rem;
+  margin-bottom: 0.75rem;
+  padding-left: 1.25rem;
+}
+
+.theory-section li {
+  margin-bottom: 0.3rem;
+}
+
+#workspace-tab.tab-panel.active {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  overflow: hidden;
+}
+
+@media (max-width: 1200px) {
+  body, .app-container {
+    height: auto !important;
+    overflow: auto !important;
+  }
+  
+  .tab-content-container {
+    overflow: visible !important;
+    height: auto !important;
+    position: relative !important;
+  }
+
+  .tab-panel {
+    position: relative !important;
+    top: auto !important;
+    left: auto !important;
+    right: auto !important;
+    bottom: auto !important;
+    overflow-y: visible !important;
+    height: auto !important;
+    padding: 1rem 0.5rem !important;
+  }
+
+  .workspace-grid {
+    grid-template-columns: 280px 1fr !important;
+    grid-template-rows: auto !important;
+    height: auto !important;
+    flex: none !important;
+  }
+  .right-panel {
+    grid-column: span 2 !important;
+  }
+}
+
+@media (max-width: 768px) {
+  /* Collapse header to stacked layout */
+  .app-header {
+    flex-direction: column !important;
+    align-items: stretch !important;
+    gap: 0.8rem !important;
+    padding: 0.8rem 1rem !important;
+  }
+
+  .app-title-group {
+    text-align: center !important;
+  }
+
+  .tab-navigation {
+    width: 100% !important;
+    display: grid !important;
+    grid-template-columns: 1fr 1fr !important;
+    gap: 0.4rem !important;
+  }
+
+  .tab-btn {
+    text-align: center !important;
+    padding: 0.5rem 0.5rem !important;
+    font-size: 0.78rem !important;
+  }
+
+  /* Collapse workspace grid to a single column */
+  .workspace-grid {
+    grid-template-columns: 1fr !important;
+    grid-template-rows: auto !important;
+    gap: 1rem !important;
+  }
+
+  .left-panel, .center-panel, .right-panel {
+    grid-column: span 1 !important;
+    width: 100% !important;
+  }
+
+  /* Shrink visualizer height on mobile to save vertical scrolling space */
+  .visualizer-container {
+    min-height: 240px !important;
+  }
+
+  /* Center and scale the top cyber attack vector banner to fit narrow viewports */
+  .attack-vector-banner {
+    left: 50% !important;
+    right: auto !important;
+    transform: translate(-50%, -10px) !important;
+    white-space: normal !important;
+    width: 90% !important;
+    text-align: center !important;
+    font-size: 0.6rem !important;
+    padding: 0.35rem 0.5rem !important;
+  }
+
+  .attack-in-progress .attack-vector-banner {
+    transform: translate(-50%, 0) !important;
+  }
+
+  /* Shrink packet legend scale */
+  .packet-legend {
+    top: 10px !important;
+    left: 10px !important;
+    padding: 0.4rem 0.5rem !important;
+  }
+  .packet-legend-title {
+    font-size: 0.6rem !important;
+  }
+  .packet-legend-text {
+    font-size: 0.6rem !important;
+  }
+
+  /* Make conclusion grid collapse */
+  .conclusion-grid {
+    grid-template-columns: 1fr 1fr !important;
+    gap: 0.5rem !important;
+  }
+
+  /* Make step block labels wrap and stack */
+  .step-line {
+    flex-direction: column !important;
+    gap: 0.2rem !important;
+  }
+
+  .step-label {
+    width: auto !important;
+  }
+}
+
+@media (max-width: 480px) {
+  .conclusion-grid {
+    grid-template-columns: 1fr !important;
+  }
+}
+
+/* Workspace Layout Grid */
+.workspace-grid {
+  display: grid;
+  grid-template-columns: 310px 1fr 350px;
+  grid-template-rows: 1fr;
+  gap: 1rem;
+  flex: 1 1 0;
+  min-height: 0;
+  width: 100%;
+}
+
+.panel {
+  background-color: var(--bg-secondary);
+  border: 1px solid var(--border-color);
+  border-radius: 8px;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.02);
+}
+
+.panel-header {
+  background-color: var(--bg-panel-header);
+  border-bottom: 1px solid var(--border-color);
+  padding: 0.6rem 0.8rem;
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 0.05em;
+  color: var(--text-muted);
+  text-transform: uppercase;
+}
+
+.panel-body {
+  padding: 0.9rem;
+  flex-grow: 1;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+/* Control Components */
+.control-group {
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+}
+
+.control-label {
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: var(--text-muted);
+  display: flex;
+  justify-content: space-between;
+}
+
+.control-value {
+  font-family: var(--font-mono);
+  color: var(--flow-color-accel);
+  font-weight: 700;
+}
+
+/* Scenario Presets Grid */
+.presets-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.4rem;
+  margin-top: 0.15rem;
+}
+
+.btn-preset {
+  background-color: var(--bg-secondary);
+  border: 1px solid var(--border-color);
+  color: var(--text-muted);
+  font-family: var(--font-sans);
+  font-size: 0.75rem;
+  font-weight: 600;
+  padding: 0.4rem;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: all var(--transition-speed);
+  text-align: center;
+}
+
+.btn-preset:hover {
+  background-color: #f8f9fa;
+  color: var(--text-main);
+  border-color: #ced4da;
+}
+
+.btn-preset.active {
+  background-color: rgba(2, 132, 199, 0.06);
+  border-color: var(--flow-color-accel);
+  color: var(--flow-color-accel);
+  box-shadow: 0 1px 3px rgba(2, 132, 199, 0.08);
+}
+
+#preset-defense-none.active {
+  background-color: rgba(220, 38, 38, 0.06);
+  border-color: var(--color-danger);
+  color: var(--color-danger);
+  box-shadow: 0 1px 3px rgba(220, 38, 38, 0.08);
+}
+
+#preset-defense-basic.active,
+#preset-defense-ids.active,
+#preset-defense-secoc.active {
+  background-color: rgba(34, 197, 94, 0.06);
+  border-color: var(--flow-color-regen);
+  color: var(--flow-color-regen);
+  box-shadow: 0 1px 3px rgba(34, 197, 94, 0.08);
+}
+
+/* Sliders */
+input[type="range"] {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 100%;
+  height: 5px;
+  border-radius: 3px;
+  background: #e9ecef;
+  outline: none;
+}
+
+input[type="range"]::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  background: var(--flow-color-accel);
+  cursor: pointer;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.15);
+  transition: transform 0.1s;
+}
+
+input[type="range"]::-webkit-slider-thumb:hover {
+  transform: scale(1.2);
+}
+
+#slider-intensity::-webkit-slider-thumb {
+  background: var(--color-danger);
+}
+
+#slider-packet-rate::-webkit-slider-thumb {
+  background: var(--flow-color-aux);
+}
+
+/* Toggle Switch */
+.switch {
+  position: relative;
+  display: inline-block;
+  width: 46px;
+  height: 22px;
+}
+
+.switch input {
+  opacity: 0;
+  width: 0;
+  height: 0;
+}
+
+.slider-toggle {
+  position: absolute;
+  cursor: pointer;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: #dee2e6;
+  transition: .3s;
+  border-radius: 22px;
+  border: 1px solid #ced4da;
+}
+
+.slider-toggle:before {
+  position: absolute;
+  content: "";
+  height: 14px;
+  width: 14px;
+  left: 3px;
+  bottom: 3px;
+  background-color: white;
+  transition: .3s;
+  border-radius: 50%;
+  box-shadow: 0 1px 2px rgba(0,0,0,0.1);
+}
+
+input:checked + .slider-toggle {
+  background-color: var(--flow-color-regen);
+  border-color: #22c55e;
+}
+
+input:checked + .slider-toggle:before {
+  transform: translateX(24px);
+}
+
+/* Select */
+select {
+  background-color: var(--bg-secondary);
+  border: 1px solid var(--border-color);
+  color: var(--text-main);
+  padding: 0.45rem;
+  border-radius: 5px;
+  font-family: var(--font-sans);
+  font-size: 0.8rem;
+  outline: none;
+  cursor: pointer;
+  transition: border-color var(--transition-speed);
+}
+
+select:focus {
+  border-color: var(--flow-color-accel);
+}
+
+/* Action Button */
+.btn-action {
+  background-color: rgba(2, 132, 199, 0.03);
+  border: 1px solid var(--flow-color-accel);
+  color: var(--flow-color-accel);
+  padding: 0.5rem;
+  border-radius: 5px;
+  font-family: var(--font-sans);
+  font-size: 0.8rem;
+  font-weight: 600;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.4rem;
+  transition: all var(--transition-speed);
+}
+
+.btn-action:hover {
+  background-color: var(--flow-color-accel);
+  color: #fff;
+  box-shadow: 0 2px 5px rgba(2, 132, 199, 0.15);
+}
+
+/* Center Panel Layout */
+.visualizer-container {
+  position: relative;
+  flex-grow: 1;
+  min-height: 400px;
+  background-color: #fdfdfd;   
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  overflow: hidden;
+}
+
+/* Blueprint Grid Overlay */
+.blueprint-grid-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-image: 
+    linear-gradient(to right, rgba(33, 37, 41, 0.03) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(33, 37, 41, 0.03) 1px, transparent 1px);
+  background-size: 20px 20px;
+  pointer-events: none;
+  z-index: 1;
+}
+
+/* Schematic Index Legend Overlay (Canvas corner) */
+.schematic-index-legend {
+  position: absolute;
+  top: 15px;
+  left: 15px;
+  background-color: rgba(255, 255, 255, 0.92);
+  border: 1px solid var(--border-color);
+  border-radius: 6px;
+  padding: 0.6rem 0.8rem;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
+  z-index: 10;
+  pointer-events: auto;
+  max-width: 220px;
+  font-family: var(--font-sans);
+}
+
+.index-legend-title {
+  font-size: 0.72rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  color: var(--text-muted);
+  letter-spacing: 0.05em;
+  margin-bottom: 0.45rem;
+  border-bottom: 1px solid var(--border-color);
+  padding-bottom: 0.25rem;
+}
+
+.index-legend-grid {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+}
+
+.index-legend-item {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.index-badge {
+  display: inline-flex;
+  justify-content: center;
+  align-items: center;
+  width: 28px;
+  height: 18px;
+  background-color: #f1f3f5;
+  border: 1px solid #dee2e6;
+  border-radius: 4px;
+  font-family: var(--font-mono);
+  font-size: 0.62rem;
+  font-weight: 700;
+  color: var(--text-main);
+}
+
+.index-text {
+  font-size: 0.68rem;
+  font-weight: 600;
+  color: var(--text-muted);
+}
+
+/* Top-Down EV Chassis Blueprint Frame */
+.ev-chassis-xray {
+  position: relative;
+  width: 95%;
+  height: 90%;
+  max-width: 650px;
+  max-height: 400px;
+  margin: auto;
+  border-radius: 8px;
+  background: transparent;
+  z-index: 2;
+  overflow: visible;
+}
+
+/* EV Car Outline Background */
+.car-outline-svg {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 1;
+  pointer-events: none;
+}
+
+.car-outline-path {
+  fill: rgba(148, 163, 184, 0.02);
+  stroke: rgba(148, 163, 184, 0.25);
+  stroke-width: 1.8;
+  stroke-linejoin: round;
+  stroke-linecap: round;
+  transition: all var(--transition-speed) ease;
+}
+
+/* Dynamic State Colors for the Car Outline */
+.state-accel .car-outline-path {
+  stroke: rgba(2, 132, 199, 0.35);
+  fill: rgba(2, 132, 199, 0.02);
+  filter: drop-shadow(0 0 1px rgba(2, 132, 199, 0.15));
+}
+
+.state-regen .car-outline-path {
+  stroke: rgba(34, 197, 94, 0.35);
+  fill: rgba(34, 197, 94, 0.02);
+  filter: drop-shadow(0 0 1px rgba(34, 197, 94, 0.15));
+}
+
+.state-charging .car-outline-path {
+  stroke: rgba(245, 158, 11, 0.35);
+  fill: rgba(245, 158, 11, 0.02);
+  filter: drop-shadow(0 0 1px rgba(245, 158, 11, 0.15));
+}
+
+/* Chassis floor pan line representing side profile */
+.ev-chassis-xray::after {
+  content: "";
+  position: absolute;
+  bottom: 14%;
+  left: 10%;
+  right: 10%;
+  height: 8px;
+  background-color: #e9ecef;
+  border: 1px solid #ced4da;
+  border-radius: 4px;
+  z-index: 2;
+}
+
+/* Wheel components - Animated rotation */
+.wheel {
+  position: absolute;
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  background: repeating-radial-gradient(circle, #212529, #212529 6px, #495057 8px, #212529 10px);
+  border: 3px solid #dee2e6;
+  box-shadow: 0 4px 6px rgba(0,0,0,0.1), inset 0 0 5px rgba(255,255,255,0.25);
+  z-index: 10;
+  transition: transform 0.1s linear;
+}
+
+/* Spoke markings on wheels so rotation is highly visible */
+.wheel::after {
+  content: "";
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 80%;
+  height: 2px;
+  background-color: rgba(255, 255, 255, 0.4);
+  transform: translate(-50%, -50%);
+}
+
+.front-left  { left: 18%; top: 86%; transform: translate(-50%, -50%); }
+.rear-right  { left: 77%; top: 86%; transform: translate(-50%, -50%); }
+
+@keyframes rotate-wheel-fwd {
+  from { transform: translate(-50%, -50%) rotate(0deg); }
+  to { transform: translate(-50%, -50%) rotate(360deg); }
+}
+
+@keyframes rotate-wheel-rev {
+  from { transform: translate(-50%, -50%) rotate(360deg); }
+  to { transform: translate(-50%, -50%) rotate(0deg); }
+}
+
+/* Trigger wheel spins based on status */
+.moving.state-accel .wheel,
+.moving.state-none .wheel,
+.moving.state-replay .wheel,
+.moving.state-dos .wheel,
+.moving.state-spoof .wheel,
+.moving.state-mitm .wheel {
+  animation: rotate-wheel-fwd var(--wheel-dur, 1s) linear infinite;
+}
+.moving.state-regen .wheel {
+  animation: rotate-wheel-rev var(--wheel-dur, 1.5s) linear infinite;
+}
+
+/* Hardware Modular Blueprint Blocks - Shrunk to Tiny Circles */
+.hardware-block {
+  position: absolute;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background-color: #ffffff;
+  border: 1.5px solid #dee2e6;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-family: var(--font-sans);
+  font-size: 0.72rem;
+  font-weight: 700;
+  color: var(--text-main);
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.02);
+  transition: border-color var(--transition-speed), box-shadow var(--transition-speed);
+  z-index: 5;
+  cursor: help;
+}
+
+/* Elaborated component name tooltips on hover */
+.component-tooltip {
+  position: absolute;
+  bottom: 125%;
+  left: 50%;
+  transform: translateX(-50%) translateY(6px);
+  background-color: rgba(33, 37, 41, 0.95);
+  color: #ffffff;
+  padding: 0.4rem 0.7rem;
+  border-radius: 6px;
+  font-family: var(--font-sans);
+  font-size: 0.72rem;
+  font-weight: 600;
+  white-space: nowrap;
+  pointer-events: none;
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 0.2s ease, transform 0.2s ease, visibility 0.2s ease;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  z-index: 100;
+}
+
+.component-tooltip::after {
+  content: "";
+  position: absolute;
+  top: 100%;
+  left: 50%;
+  transform: translateX(-50%);
+  border-width: 5px;
+  border-style: solid;
+  border-color: rgba(33, 37, 41, 0.95) transparent transparent transparent;
+}
+
+.hardware-block:hover .component-tooltip {
+  opacity: 1;
+  visibility: visible;
+  transform: translateX(-50%) translateY(0);
+}
+
+/* Flat absolute percentage coordinates */
+#front-motor {
+  left: 20%;
+  top: 73%;
+  transform: translate(-50%, -50%);
+  width: 40px;
+  height: 40px;
+}
+#battery-pack {
+  left: 47%;
+  top: 83%;
+  transform: translate(-50%, -50%);
+  width: 40px;
+  height: 40px;
+  z-index: 6;
+}
+#pdu {
+  left: 35%;
+  top: 43%;
+  transform: translate(-50%, -50%);
+  width: 40px;
+  height: 40px;
+}
+#obc {
+  left: 60%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  width: 40px;
+  height: 40px;
+}
+#security-gateway {
+  left: 48%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  width: 32px;
+  height: 32px;
+  background-color: var(--bg-secondary);
+  border: 1.5px dashed var(--flow-color-regen);
+  border-radius: 50%;
+  z-index: 6;
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 0.3s ease, visibility 0.3s ease, transform 0.3s ease;
+  font-size: 0.65rem;
+}
+
+/* Active gateway styles when defense is active */
+.defense-active #security-gateway {
+  opacity: 1;
+  visibility: visible;
+  border-style: solid;
+  border-color: var(--flow-color-regen);
+  box-shadow: 0 0 10px rgba(34, 197, 94, 0.4);
+}
+#rear-motor {
+  left: 74%;
+  top: 73%;
+  transform: translate(-50%, -50%);
+  width: 40px;
+  height: 40px;
+}
+#charging-port {
+  left: 85%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  width: 40px;
+  height: 40px;
+}
+
+/* State Glow Shadows */
+.state-glow {
+  position: absolute;
+  top: -1px;
+  left: -1px;
+  right: -1px;
+  bottom: -1px;
+  border-radius: 50%;
+  border: 1px solid transparent;
+  pointer-events: none;
+  transition: all var(--transition-speed) ease;
+  z-index: -1;
+}
+
+/* Acceleration Drivetrain Glows */
+.state-accel #front-motor .state-glow,
+.state-accel #rear-motor .state-glow,
+.state-accel #battery-pack .state-glow {
+  border-color: rgba(2, 132, 199, 0.4);
+  box-shadow: 0 0 10px var(--border-glow-accel);
+}
+
+/* Regen Drivetrain Glows */
+.state-regen #front-motor .state-glow,
+.state-regen #rear-motor .state-glow,
+.state-regen #battery-pack .state-glow {
+  border-color: rgba(34, 197, 94, 0.4);
+  box-shadow: 0 0 10px var(--border-glow-regen);
+}
+
+/* Grid Charging state glows */
+.state-charging #charging-port .state-glow,
+.state-charging #pdu .state-glow,
+.state-charging #battery-pack .state-glow {
+  border-color: rgba(245, 158, 11, 0.4);
+  box-shadow: 0 0 10px var(--border-glow-charge);
+}
+
+/* Cyber Attack Glow States */
+.state-none #front-motor .state-glow,
+.state-none #rear-motor .state-glow,
+.state-none #battery-pack .state-glow,
+.state-none #pdu .state-glow,
+.state-none #obc .state-glow,
+.state-none #charging-port .state-glow {
+  border-color: rgba(2, 132, 199, 0.4);
+  box-shadow: 0 0 10px var(--border-glow-accel);
+}
+
+.state-dos.attack-active .hardware-block .state-glow {
+  border-color: rgba(220, 38, 38, 0.6);
+  box-shadow: 0 0 12px rgba(220, 38, 38, 0.5);
+}
+
+.state-spoof.attack-active #battery-pack .state-glow,
+.state-spoof.attack-active #front-motor .state-glow,
+.state-spoof.attack-active #rear-motor .state-glow {
+  border-color: rgba(220, 38, 38, 0.6);
+  box-shadow: 0 0 12px rgba(220, 38, 38, 0.5);
+}
+
+.state-replay.attack-active #front-motor .state-glow,
+.state-replay.attack-active #rear-motor .state-glow {
+  border-color: rgba(220, 38, 38, 0.6);
+  box-shadow: 0 0 12px rgba(220, 38, 38, 0.5);
+}
+
+.state-mitm.attack-active #pdu .state-glow,
+.state-mitm.attack-active #obc .state-glow,
+.state-mitm.attack-active #charging-port .state-glow {
+  border-color: rgba(220, 38, 38, 0.6);
+  box-shadow: 0 0 12px rgba(220, 38, 38, 0.5);
+}
+
+/* Battery BMS Status Bar */
+.battery-status-container {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.4rem;
+  margin-bottom: 0.15rem;
+  background: #f8f9fa;
+  border-radius: 4px;
+  padding: 0.15rem 0.3rem;
+  border: 1px solid var(--border-color);
+}
+.soc-display {
+  display: flex;
+  align-items: baseline;
+  gap: 0.1rem;
+}
+.soc-val {
+  font-size: 0.95rem;
+  font-weight: 700;
+  color: var(--text-main);
+}
+.soc-label {
+  font-size: 0.55rem;
+  color: var(--text-light);
+  text-transform: uppercase;
+  font-weight: 600;
+}
+.battery-bar-container {
+  width: 60px;
+  height: 5px;
+  background: #e9ecef;
+  border-radius: 3px;
+  overflow: hidden;
+}
+.battery-level-fill {
+  height: 100%;
+  background-color: var(--flow-color-regen);
+  transition: width 0.3s ease, background-color 0.3s ease;
+}
+
+/* SVG Routing Cable Overlay */
+.schematic-svg-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 3;
+  pointer-events: none;
+}
+
+.cable-bg {
+  stroke: #dee2e6;
+  stroke-width: 5;
+  fill: none;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.cable-core {
+  stroke: #ffffff;
+  stroke-width: 3.2;
+  fill: none;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.cable-flow {
+  stroke-width: 2.2;
+  fill: none;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  stroke-dasharray: 6 12;
+  opacity: 0;
+  transition: stroke 0.3s ease, opacity 0.3s ease;
+}
+
+/* Cable Flow Directions & Animations */
+.state-accel #flow-battery-front {
+  stroke: var(--flow-color-accel);
+  opacity: 0.85;
+  animation: flow-forward var(--flow-dur, 1.2s) linear infinite, pulse-flow-fade 2.5s infinite ease-in-out;
+  marker-end: url(#arrow-accel);
+}
+.state-accel #flow-battery-rear {
+  stroke: var(--flow-color-accel);
+  opacity: 0.85;
+  animation: flow-forward var(--flow-dur, 1.2s) linear infinite, pulse-flow-fade 2.5s infinite ease-in-out;
+  marker-end: url(#arrow-accel);
+}
+
+.state-regen #flow-battery-front {
+  stroke: var(--flow-color-regen);
+  opacity: 0.85;
+  animation: flow-reverse var(--flow-dur, 1.6s) linear infinite, pulse-flow-fade 2.5s infinite ease-in-out;
+  marker-end: url(#arrow-regen);
+}
+.state-regen #flow-battery-rear {
+  stroke: var(--flow-color-regen);
+  opacity: 0.85;
+  animation: flow-reverse var(--flow-dur, 1.6s) linear infinite, pulse-flow-fade 2.5s infinite ease-in-out;
+  marker-end: url(#arrow-regen);
+}
+
+/* Charging Flows */
+.state-charging #flow-port-pdu {
+  stroke: var(--flow-color-aux);
+  opacity: 0.85;
+  animation: flow-forward var(--flow-dur, 1.5s) linear infinite, pulse-flow-fade 2.5s infinite ease-in-out;
+  marker-end: url(#arrow-charge);
+}
+.state-charging #flow-pdu-battery {
+  stroke: var(--flow-color-aux);
+  opacity: 0.85;
+  animation: flow-forward var(--flow-dur, 1.5s) linear infinite, pulse-flow-fade 2.5s infinite ease-in-out;
+  marker-end: url(#arrow-charge);
+}
+
+/* Powertrain config specific layer drops */
+.fwd-only #flow-battery-rear { opacity: 0 !important; }
+.rwd-only #flow-battery-front { opacity: 0 !important; }
+
+/* Keyframes for orthogonal direction flow */
+@keyframes flow-forward {
+  from { stroke-dashoffset: 36; }
+  to { stroke-dashoffset: 0; }
+}
+
+@keyframes flow-reverse {
+  from { stroke-dashoffset: 0; }
+  to { stroke-dashoffset: 36; }
+}
+
+@keyframes pulse-flow-fade {
+  0%, 100% { opacity: 0.3; }
+  50% { opacity: 0.95; }
+}
+
+@keyframes arrow-fade-pulse {
+  0%, 100% { opacity: 0.4; }
+  50% { opacity: 1.0; }
+}
+
+.fading-arrow {
+  animation: arrow-fade-pulse 1.8s infinite ease-in-out;
+}
+
+/* State-specific flow rules for Cruise & Attack */
+.state-none #flow-battery-front,
+.state-none #flow-battery-rear {
+  stroke: var(--flow-color-accel);
+  opacity: 0.85;
+  animation: flow-forward var(--flow-dur, 1.2s) linear infinite, pulse-flow-fade 2.5s infinite ease-in-out;
+  marker-end: url(#arrow-accel);
+}
+
+.state-none #flow-pdu-battery {
+  stroke: var(--flow-color-aux);
+  opacity: 0.85;
+  animation: flow-reverse var(--flow-dur, 1.5s) linear infinite, pulse-flow-fade 2.5s infinite ease-in-out;
+  marker-start: url(#arrow-charge);
+}
+
+.attack-active #flow-battery-front,
+.attack-active #flow-battery-rear {
+  stroke: var(--color-danger);
+  opacity: 0.85;
+  animation: flow-forward var(--flow-dur, 1.2s) linear infinite, pulse-flow-fade 2.5s infinite ease-in-out;
+  marker-end: url(#arrow-accel);
+}
+
+.attack-active #flow-port-pdu {
+  stroke: var(--color-danger);
+  opacity: 0.85;
+  animation: flow-forward var(--flow-dur, 1.5s) linear infinite, pulse-flow-fade 2.5s infinite ease-in-out;
+  marker-end: url(#arrow-attack);
+}
+
+.attack-active #flow-pdu-battery {
+  stroke: var(--color-danger);
+  opacity: 0.85;
+  animation: flow-forward var(--flow-dur, 1.5s) linear infinite, pulse-flow-fade 2.5s infinite ease-in-out;
+  marker-end: url(#arrow-attack);
+}
+
+/* Dynamic SVG particles representing power flow packets */
+.flow-particle {
+  fill: #ffffff;
+  stroke: none;
+  transition: fill 0.3s ease;
+}
+.flow-particle.traction {
+  r: 1.2px;
+  fill: var(--flow-color-accel);
+  filter: drop-shadow(0 0 1px var(--flow-color-accel));
+}
+.state-regen .flow-particle.traction {
+  fill: var(--flow-color-regen);
+  filter: drop-shadow(0 0 1px var(--flow-color-regen));
+}
+.flow-particle.aux {
+  r: 1.2px;
+  fill: var(--flow-color-aux);
+  filter: drop-shadow(0 0 1px var(--flow-color-aux));
+}
+
+.flow-particle.malicious {
+  fill: var(--color-danger) !important;
+  filter: drop-shadow(0 0 2px var(--color-danger)) !important;
+  r: 1.6px !important;
+}
+
+/* Legend items */
+.visualizer-legend {
+  width: 100%;
+  border-top: 1px solid var(--border-color);
+  padding: 0.45rem 1rem;
+  display: flex;
+  justify-content: space-around;
+  font-size: 0.72rem;
+  color: var(--text-muted);
+  background-color: #fafafa;
+}
+.legend-item {
+  display: flex;
+  align-items: center;
+  gap: 0.35rem;
+}
+.legend-color {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+}
+.legend-color.flow-accel { background-color: var(--flow-color-accel); }
+.legend-color.flow-regen { background-color: var(--flow-color-regen); }
+.legend-color.flow-aux { background-color: var(--flow-color-aux); }
+
+/* Right Panel Telemetry elements */
+.right-panel {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+.telemetry-grid {
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
+}
+.telemetry-card {
+  background-color: #ffffff;
+  border: 1px solid var(--border-color);
+  border-radius: 6px;
+  padding: 0.5rem 0.75rem;
+  display: flex;
+  flex-direction: column;
+}
+.telemetry-val-wrapper {
+  display: flex;
+  align-items: baseline;
+  margin-top: 0.15rem;
+}
+.instrument-header {
+  border-top: 1px solid var(--border-color);
+  padding-top: 0.45rem;
+  margin-top: -0.25rem;
+  background: none;
+}
+.cluster-card {
+  padding: 0.4rem 0.6rem;
+}
+.cluster-card .telemetry-value {
+  font-size: 1.15rem;
+}
+
+/* Gauge tracks */
+.gauge-bar-track {
+  height: 3px;
+  background: #e9ecef;
+  border-radius: 2px;
+  margin-top: 0.2rem;
+  overflow: hidden;
+}
+.gauge-bar-fill {
+  height: 100%;
+  width: 0%;
+  transition: width 0.25s ease, background-color 0.25s ease;
+}
+.speed-fill { background-color: var(--flow-color-accel); }
+.power-fill { background-color: #6366f1; }
+.soc-fill { background-color: var(--flow-color-regen); }
+.secure-fill { background-color: var(--flow-color-regen); }
+.mitigated-fill { background-color: var(--flow-color-aux); }
+.compromised-fill { background-color: var(--color-danger); }
+
+/* CAN Bus Security Integrity text states */
+.status-secure {
+  color: var(--flow-color-regen);
+  font-weight: 700;
+}
+.status-mitigated {
+  color: var(--flow-color-aux);
+  font-weight: 700;
+}
+.status-compromised {
+  color: var(--color-danger);
+  font-weight: 700;
+  animation: flash-red-status 1s infinite alternate;
+}
+@keyframes flash-red-status {
+  0% { opacity: 0.6; }
+  100% { opacity: 1; }
+}
+
+
+
+
+/* Calculations Formulas Styling */
+.calc-container {
+  max-width: 850px;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+  padding-bottom: 2.5rem;
+}
+.formula-card {
+  background-color: var(--bg-secondary);
+  border: 1px solid var(--border-color);
+  border-radius: 8px;
+  padding: 1.25rem;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.01);
+}
+.formula-card h3 {
+  font-size: 1.05rem;
+  color: var(--flow-color-accel);
+  margin-bottom: 0.6rem;
+  border-bottom: 1px solid var(--border-color);
+  padding-bottom: 0.4rem;
+}
+.formula-expression {
+  background-color: #f1f3f5;
+  border: 1px solid var(--border-color);
+  border-radius: 5px;
+  padding: 1rem;
+  margin: 0.6rem 0;
+  text-align: center;
+  font-size: 1.15rem;
+  font-family: var(--font-mono);
+  overflow-x: auto;
+  color: #581c87;
+}
+.step-block {
+  margin-top: 0.75rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+}
+.step-line {
+  display: flex;
+  font-family: var(--font-mono);
+  font-size: 0.8rem;
+  border-left: 2px solid var(--border-color);
+  padding-left: 0.6rem;
+}
+.step-label {
+  color: var(--text-light);
+  width: 300px;
+  flex-shrink: 0;
+}
+.step-math {
+  color: var(--text-main);
+}
+.step-result {
+  color: var(--flow-color-regen);
+  font-weight: 700;
+}
+
+/* Scrollbars */
+::-webkit-scrollbar {
+  width: 5px;
+  height: 5px;
+}
+::-webkit-scrollbar-track {
+  background: var(--bg-primary);
+}
+::-webkit-scrollbar-thumb {
+  background: #dee2e6;
+  border-radius: 3px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: #adb5bd;
+}
+
+/* Conclusion Panel Styling */
+.conclusion-panel {
+  background-color: var(--bg-secondary);
+  border: 1px solid var(--border-color);
+  border-radius: 8px;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.02);
+  padding: 0.75rem 1.25rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+  z-index: 5;
+  transition: border-color 0.3s ease, border-top-color 0.3s ease;
+  flex-shrink: 0;
+}
+
+.conclusion-title {
+  font-size: 0.7rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--text-muted);
+}
+
+.conclusion-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1.25fr 1.75fr;
+  gap: 0.75rem;
+}
+
+.conclusion-card {
+  background-color: #f8f9fa;
+  border: 1px solid var(--border-color);
+  border-radius: 6px;
+  padding: 0.45rem 0.65rem;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 0.15rem;
+}
+
+.conclusion-card.advisory-card {
+  justify-content: flex-start;
+}
+
+.card-label {
+  font-size: 0.62rem;
+  font-weight: 600;
+  color: var(--text-light);
+  text-transform: uppercase;
+  letter-spacing: 0.02em;
+}
+
+.card-status-badge {
+  font-size: 0.8rem;
+  font-weight: 800;
+  color: var(--flow-color-regen);
+  text-align: left;
+  letter-spacing: 0.02em;
+}
+
+.card-value {
+  font-family: var(--font-mono);
+  font-size: 0.95rem;
+  font-weight: 700;
+  color: var(--text-main);
+}
+
+.advisory-text {
+  font-size: 0.68rem;
+  line-height: 1.25;
+  color: var(--text-muted);
+  font-weight: 500;
+}
+
+/* Threat and health indicator dynamic colors */
+.conclusion-panel.level-secure { border-top: 4px solid var(--flow-color-regen); }
+.conclusion-panel.level-mitigated { border-top: 4px solid var(--flow-color-accel); }
+.conclusion-panel.level-warning { border-top: 4px solid var(--flow-color-aux); }
+.conclusion-panel.level-critical { border-top: 4px solid var(--color-danger); }
+
+.conclusion-panel.level-secure #conclusion-threat-badge { color: var(--flow-color-regen); }
+.conclusion-panel.level-mitigated #conclusion-threat-badge { color: var(--flow-color-accel); }
+.conclusion-panel.level-warning #conclusion-threat-badge { color: var(--flow-color-aux); }
+.conclusion-panel.level-critical #conclusion-threat-badge { color: var(--color-danger); }
+
+/* Dynamic SVG marker color overrides based on active state */
+.state-none #arrow-accel path { fill: var(--flow-color-accel); }
+.state-none #arrow-charge path { fill: var(--flow-color-aux); }
+
+.attack-active #arrow-accel path,
+.attack-active #arrow-charge path,
+.attack-active #arrow-regen path {
+  fill: var(--color-danger) !important;
+}
+
+/* Mitigated State Cable Flows & Component Glows */
+.state-mitigated #flow-battery-front,
+.state-mitigated #flow-battery-rear {
+  stroke: var(--flow-color-accel);
+  opacity: 0.85;
+  animation: flow-forward var(--flow-dur, 1.2s) linear infinite, pulse-flow-fade 2.5s infinite ease-in-out;
+  marker-end: url(#arrow-accel);
+}
+
+.state-mitigated #flow-pdu-battery {
+  stroke: var(--flow-color-aux);
+  opacity: 0.85;
+  animation: flow-forward var(--flow-dur, 1.5s) linear infinite, pulse-flow-fade 2.5s infinite ease-in-out;
+  marker-end: url(#arrow-attack);
+}
+
+.state-mitigated #flow-port-pdu {
+  stroke: var(--color-danger);
+  opacity: 0.4; /* dim red showing incoming blocked attack vector */
+  animation: flow-forward var(--flow-dur, 1.5s) linear infinite, pulse-flow-fade 2.5s infinite ease-in-out;
+  marker-end: url(#arrow-attack);
+}
+
+
+
+.state-mitigated #front-motor .state-glow,
+.state-mitigated #rear-motor .state-glow,
+.state-mitigated #battery-pack .state-glow,
+.state-mitigated #pdu .state-glow,
+.state-mitigated #obc .state-glow,
+.state-mitigated #charging-port .state-glow {
+  border-color: rgba(2, 132, 199, 0.4);
+  box-shadow: 0 0 10px var(--border-glow-accel);
+}
+
+.moving.state-mitigated .wheel {
+  animation: rotate-wheel-fwd var(--wheel-dur, 1s) linear infinite;
+}
+
+/* Dynamic SVG marker color overrides in mitigated state */
+.state-mitigated #arrow-accel path { fill: var(--flow-color-accel); }
+.state-mitigated #arrow-charge path { fill: var(--flow-color-aux); }
+
+/* Security Gateway font styling for technical labels */
+#security-gateway span {
+  font-family: var(--font-mono);
+  font-weight: 800;
+  font-size: 0.65rem;
+  color: var(--flow-color-regen);
+}
+
+.defense-active.attack-active #security-gateway span {
+  color: var(--color-danger);
+}
+
+/* Floating Attack Vector Header Banner */
+.attack-vector-banner {
+  position: absolute;
+  top: 15px;
+  right: 50px;
+  transform: translateY(-10px);
+  background-color: rgba(127, 29, 29, 0.9);
+  border: 1.5px solid var(--color-danger);
+  color: #ffffff;
+  font-family: var(--font-sans);
+  font-size: 0.65rem;
+  font-weight: 700;
+  padding: 0.35rem 0.8rem;
+  border-radius: 6px;
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+  z-index: 12;
+  opacity: 0;
+  visibility: hidden;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
+  transition: opacity 0.3s ease, visibility 0.3s ease, transform 0.3s ease;
+  pointer-events: none;
+  white-space: nowrap;
+}
+
+.attack-in-progress .attack-vector-banner {
+  opacity: 1;
+  visibility: visible;
+  transform: translateY(0);
+  animation: glow-red-banner 2s infinite ease-in-out;
+}
+
+@keyframes glow-red-banner {
+  0%, 100% { box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4), 0 0 4px rgba(220, 38, 38, 0.2); }
+  50% { box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4), 0 0 10px rgba(220, 38, 38, 0.6); }
+}
+
+/* Info Trigger Button */
+.info-trigger-btn {
+  position: absolute;
+  top: 15px;
+  right: 15px;
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  background-color: rgba(2, 132, 199, 0.08);
+  border: 1px solid var(--flow-color-accel);
+  color: var(--flow-color-accel);
+  font-family: var(--font-mono);
+  font-size: 0.8rem;
+  font-weight: 800;
+  cursor: pointer;
+  z-index: 11;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  transition: all 0.2s ease;
+}
+
+.info-trigger-btn:hover {
+  background-color: var(--flow-color-accel);
+  color: #ffffff;
+  box-shadow: 0 0 8px rgba(2, 132, 199, 0.3);
+}
+
+/* Charging Port Info Overlay */
+.info-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(255, 255, 255, 0.01);
+  backdrop-filter: blur(1.5px);
+  z-index: 15;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 0.3s ease, visibility 0.3s ease;
+  padding: 1.5rem;
+}
+
+.info-overlay.active {
+  opacity: 1;
+  visibility: visible;
+}
+
+.info-content {
+  background-color: var(--bg-secondary);
+  border: 1.5px solid var(--border-color);
+  border-radius: 8px;
+  padding: 1.5rem;
+  max-width: 440px;
+  width: 100%;
+  max-height: 95%;
+  overflow-y: auto;
+  box-sizing: border-box;
+  color: var(--text-main);
+  font-family: var(--font-sans);
+  box-shadow: 0 12px 30px rgba(0, 0, 0, 0.15), 0 0 15px rgba(2, 132, 199, 0.1);
+  text-anchor: left;
+  transform: scale(0.3);
+  opacity: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.8rem;
+}
+
+.info-content h2 {
+  font-size: 0.95rem;
+  font-weight: 700;
+  color: var(--color-danger);
+  margin-bottom: 0.2rem;
+  border-bottom: 1px solid var(--border-color);
+  padding-bottom: 0.3rem;
+}
+
+.info-content p {
+  font-size: 0.72rem;
+  line-height: 1.45;
+  color: var(--text-muted);
+}
+
+.info-content button {
+  margin-top: 0.4rem;
+  align-self: flex-end;
+}
+
+/* Component Details Popup Overlay */
+.component-popup-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(255, 255, 255, 0.01);
+  backdrop-filter: blur(1.5px);
+  z-index: 20;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 0.3s ease, visibility 0.3s ease;
+  padding: 1.5rem;
+}
+
+.component-popup-overlay.active {
+  opacity: 1;
+  visibility: visible;
+}
+
+.popup-card {
+  background-color: var(--bg-secondary);
+  border: 1.5px solid var(--border-color);
+  border-radius: 8px;
+  padding: 1.25rem;
+  max-width: 460px;
+  max-height: 95%;
+  overflow-y: auto;
+  box-sizing: border-box;
+  width: 100%;
+  color: var(--text-main);
+  font-family: var(--font-sans);
+  box-shadow: 0 12px 30px rgba(0, 0, 0, 0.15), 0 0 15px rgba(2, 132, 199, 0.1);
+  position: relative;
+  transform: scale(0.3);
+  opacity: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
+}
+
+.popup-close-btn {
+  position: absolute;
+  top: 10px;
+  right: 12px;
+  background: none;
+  border: none;
+  color: var(--text-muted);
+  font-size: 1.4rem;
+  cursor: pointer;
+  line-height: 1;
+  transition: color 0.2s ease;
+}
+
+.popup-close-btn:hover {
+  color: var(--color-danger);
+}
+
+.popup-card h3 {
+  font-size: 0.95rem;
+  font-weight: 700;
+  color: var(--flow-color-accel);
+  margin-right: 20px;
+  border-bottom: 1px solid var(--border-color);
+  padding-bottom: 0.3rem;
+}
+
+.popup-media-container {
+  width: 100%;
+  height: 160px;
+  background-color: #0b0f19;
+  border-radius: 6px;
+  overflow: hidden;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border: 1px solid var(--border-color);
+  position: relative;
+  flex-shrink: 0;
+}
+
+.popup-media-container svg {
+  width: 100%;
+  height: 100%;
+}
+
+.popup-card p, #popup-description {
+  font-size: 0.72rem;
+  line-height: 1.45;
+  color: var(--text-muted);
+  max-height: 135px;
+  overflow-y: auto;
+  padding-right: 5px;
+}
+
+.nomenclature-list {
+  list-style-type: disc;
+  margin-left: 1.1rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  padding: 0;
+}
+
+.nomenclature-list li {
+  font-size: 0.7rem;
+  color: var(--text-muted);
+}
+
+.nomenclature-list li strong {
+  color: var(--text-main);
+}
+
+.thought-tail-circle {
+  position: absolute;
+  border-radius: 50%;
+  background-color: var(--bg-secondary);
+  border: 1.5px solid var(--border-color);
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1), 0 0 5px rgba(2, 132, 199, 0.05);
+  transform: scale(0);
+  opacity: 0;
+  z-index: 19;
+  pointer-events: none;
+}
+
+/* Thought Bubble Animation triggers */
+.info-overlay.active .info-content,
+.component-popup-overlay.active .popup-card {
+  animation: thought-bubble-in 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+}
+
+@keyframes thought-bubble-in {
+  0% { opacity: 0; transform: scale(0.3) translateY(30px); }
+  100% { opacity: 1; transform: scale(1) translateY(0); }
+}
+
+/* SVG HUD Blueprint vector classes */
+.hud-bg-grid {
+  stroke: rgba(2, 132, 199, 0.05);
+  stroke-width: 0.5;
+}
+
+.hud-outline {
+  stroke: rgba(2, 132, 199, 0.25);
+  stroke-width: 1.5;
+  fill: none;
+}
+
+.hud-outline-primary {
+  stroke: var(--flow-color-accel);
+  stroke-dasharray: 4 2;
+}
+
+.hud-outline-secondary {
+  stroke: var(--flow-color-aux);
+}
+
+.hud-outline-battery {
+  stroke: var(--flow-color-regen);
+}
+
+.hud-callout-line {
+  stroke: #64748b;
+  stroke-width: 0.8;
+  stroke-dasharray: 2 2;
+  fill: none;
+}
+
+.hud-pointer {
+  fill: #64748b;
+}
+
+.hud-text {
+  font-family: var(--font-mono);
+  font-size: 6px;
+  fill: #94a3b8;
+  font-weight: 600;
+}
+
+.hud-text-highlight {
+  fill: var(--flow-color-accel);
+}
+
+.hud-text-battery {
+  fill: var(--flow-color-regen);
+}
+
+.hud-text-port {
+  fill: var(--color-danger);
+}
+
+.hud-circle-node {
+  fill: #0b0f19;
+  stroke: var(--flow-color-accel);
+  stroke-width: 1.2;
+}
+
+/* Canvas Packet Flow Legend */
+.packet-legend {
+  position: absolute;
+  top: 15px;
+  left: 15px;
+  background-color: rgba(255, 255, 255, 0.92);
+  border: 1px solid var(--border-color);
+  border-radius: 6px;
+  padding: 0.5rem 0.7rem;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
+  z-index: 10;
+  pointer-events: none;
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+}
+
+.packet-legend-title {
+  font-size: 0.68rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  color: var(--text-muted);
+  letter-spacing: 0.05em;
+  border-bottom: 1px solid var(--border-color);
+  padding-bottom: 0.2rem;
+  margin-bottom: 0.25rem;
+}
+
+.packet-legend-item {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.packet-legend-dot {
+  display: inline-flex;
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+}
+
+.packet-legend-dot.traction {
+  background-color: var(--flow-color-accel);
+  box-shadow: 0 0 4px var(--flow-color-accel);
+}
+
+.packet-legend-dot.aux {
+  background-color: var(--flow-color-aux);
+  box-shadow: 0 0 4px var(--flow-color-aux);
+}
+
+.packet-legend-dot.malicious {
+  background-color: var(--color-danger);
+  box-shadow: 0 0 4px var(--color-danger);
+}
+
+.packet-legend-text {
+  font-size: 0.68rem;
+  font-weight: 600;
+  color: var(--text-muted);
+}
+
+.math-var {
+  font-family: 'Plus Jakarta Sans', serif;
+  font-style: italic;
+  font-weight: 600;
+}
