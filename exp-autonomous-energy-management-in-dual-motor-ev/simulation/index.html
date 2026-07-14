@@ -1,0 +1,383 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Autonomous Energy Management in Dual-Motor EVs</title>
+  <!-- Google Fonts for clean report styling -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="./css/main.css">
+  <script src="./js/main.js" defer></script>
+</head>
+<body>
+  <!-- Main header block with experiment details and switcher -->
+  <header class="webpage-header">
+    <div class="experiment-objective">
+      <strong>Objective:</strong> Analyze power sharing and traction distribution between front (P1) and rear (P2) motors under dynamically shifting loads and surface friction thresholds.
+    </div>
+
+    <!-- Phase 1 / Phase 2 buttons at top right -->
+    <div class="phase-switcher-container">
+      <div class="phase-switcher">
+        <button class="phase-btn active" id="btn-phase1" data-phase="1">Phase 1: Simulation</button>
+        <button class="phase-btn" id="btn-phase2" data-phase="2">Phase 2: Physics Proof</button>
+      </div>
+    </div>
+  </header>
+
+  <main class="app-container">
+    <!-- Column 1: Sliders and settings input controls -->
+    <section class="panel panel-left">
+      
+      <!-- Vehicle weight label display -->
+      <div class="control-group">
+        <div class="current-load-badge-container" style="display: flex; justify-content: space-between; align-items: center; margin-top: 4px;">
+          <span style="font-size: 0.8rem; font-weight: 600;">Total Vehicle Mass:</span>
+          <span class="control-value" id="val-mass">1500 kg</span>
+        </div>
+      </div>
+
+      <!-- Surface Condition Input -->
+      <div class="control-group">
+        <label for="input-friction" class="control-label">Surface Friction Condition</label>
+        <div class="select-wrapper">
+          <select id="input-friction" class="select-dropdown">
+            <option value="1.0">Dry Asphalt (μ = 1.0)</option>
+            <option value="0.6">Wet Asphalt (μ = 0.6)</option>
+            <option value="0.2">Ice Road (μ = 0.2)</option>
+          </select>
+        </div>
+      </div>
+
+      <!-- Autonomous Torque Allocation Toggle -->
+      <div class="control-group toggle-group">
+        <div class="toggle-container">
+          <label class="switch">
+            <input type="checkbox" id="input-auto" checked>
+            <span class="toggle-slider"></span>
+          </label>
+          <div class="toggle-info">
+            <span class="toggle-label">Autonomous Torque Allocation</span>
+            <span class="toggle-desc">Dynamic traction optimization ON</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Motor Power Allocation Controls -->
+      <div class="control-group motor-controls-box" id="manual-controls-section">
+        <div class="box-header">
+          <span class="box-title">Manual Load Distribution</span>
+          <span class="status-indicator-badge" id="control-mode-badge">Auto Active</span>
+        </div>
+        
+        <!-- P1 Front Motor Slider -->
+        <div class="sub-control">
+          <div class="control-header">
+            <label for="input-p1">Front Motor (P1) Target</label>
+            <span class="control-value disabled-text" id="val-p1-target">75 kW</span>
+          </div>
+          <input type="range" id="input-p1" min="10" max="150" step="5" value="75" class="slider" disabled>
+          <div class="slider-labels">
+            <span>10 kW</span>
+            <span>150 kW</span>
+          </div>
+        </div>
+
+        <!-- P2 Rear Motor Slider -->
+        <div class="sub-control">
+          <div class="control-header">
+            <label for="input-p2">Rear Motor (P2) Target</label>
+            <span class="control-value disabled-text" id="val-p2-target">75 kW</span>
+          </div>
+          <input type="range" id="input-p2" min="10" max="150" step="5" value="75" class="slider" disabled>
+          <div class="slider-labels">
+            <span>10 kW</span>
+            <span>150 kW</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Column 2: Dashboard screen visualizer block -->
+    <section class="panel panel-center" aria-labelledby="telemetry-title">
+      <h2 id="telemetry-title" class="panel-title hidden">Telemetry Visualizer</h2>
+      
+      <!-- Interactive canvas container showing the EV chassis on road -->
+      <div class="simulation-viewport" id="viewport">
+        <!-- Floating label for selected road condition -->
+        <div class="road-surface-badge" id="road-badge">Dry Asphalt</div>
+        
+        <!-- Vector graphics drawing canvas -->
+        <canvas id="vector-canvas"></canvas>
+        
+        <!-- Box holding weights that can be dragged into the cargo bed -->
+        <div class="weight-shelf" id="weight-shelf">
+          <div class="shelf-label">Loads Shelf</div>
+          <div class="shelf-blocks">
+            <div class="weight-block block-driver" draggable="true" id="weight-box-1" data-weight="80" style="--box-color: #3b82f6;">
+              <div class="block-icon">👤</div>
+              <div class="block-label">Driver</div>
+              <div class="block-val">80 kg</div>
+            </div>
+            <div class="weight-block block-passengers" draggable="true" id="weight-box-2" data-weight="150" style="--box-color: #06b6d4;">
+              <div class="block-icon">👥</div>
+              <div class="block-label">Pass.</div>
+              <div class="block-val">150 kg</div>
+            </div>
+            <div class="weight-block block-suitcase" draggable="true" id="weight-box-3" data-weight="30" style="--box-color: #d97706;">
+              <div class="block-icon">💼</div>
+              <div class="block-label">Suitcase</div>
+              <div class="block-val">30 kg</div>
+            </div>
+            <div class="weight-block block-crate" draggable="true" id="weight-box-4" data-weight="240" style="--box-color: #78350f;">
+              <div class="block-icon">📦</div>
+              <div class="block-label">Crate</div>
+              <div class="block-val">240 kg</div>
+            </div>
+          </div>
+        </div>
+        
+        <!-- Top-down view drawing of EV chassis -->
+        <div class="chassis-container">
+          <div class="vehicle-direction-arrow">DIRECTION OF TRAVEL &uarr;</div>
+          
+          <div class="chassis-layout">
+            <!-- Lights -->
+            <div class="headlight-left"></div>
+            <div class="headlight-right"></div>
+            <div class="taillight-left"></div>
+            <div class="taillight-right"></div>
+
+            <!-- Skateboard base frame -->
+            <div class="skateboard-plate"></div>
+
+            <!-- Tie rods and front steering system -->
+            <div class="steering-rack">
+              <div class="tie-rod left-tie-rod"></div>
+              <div class="tie-rod right-tie-rod"></div>
+            </div>
+
+            <!-- Wheels axles -->
+            <div class="axle front-axle"></div>
+            <div class="axle rear-axle"></div>
+
+            <!-- Double-wishbone suspension arms -->
+            <div class="suspension front-left-susp"></div>
+            <div class="suspension front-right-susp"></div>
+            <div class="suspension rear-left-susp"></div>
+            <div class="suspension rear-right-susp"></div>
+
+            <!-- Four wheels (with brake rotors and red calipers inside) -->
+            <div class="wheel front-left" id="wheel-fl">
+              <div class="brake-disc"></div>
+              <div class="brake-caliper"></div>
+              <span class="slip-alert-text">SLIP</span>
+            </div>
+            <div class="wheel front-right" id="wheel-fr">
+              <div class="brake-disc"></div>
+              <div class="brake-caliper"></div>
+              <span class="slip-alert-text">SLIP</span>
+            </div>
+            <div class="wheel rear-left" id="wheel-rl">
+              <div class="brake-disc"></div>
+              <div class="brake-caliper"></div>
+              <span class="slip-alert-text">SLIP</span>
+            </div>
+            <div class="wheel rear-right" id="wheel-rr">
+              <div class="brake-disc"></div>
+              <div class="brake-caliper"></div>
+              <span class="slip-alert-text">SLIP</span>
+            </div>
+
+            <!-- Front and rear electric drive motors -->
+            <div class="motor-block front-motor" id="motor-f">
+              <div class="inverter-box"></div>
+              <span class="motor-label">P1 Front</span>
+              <span class="motor-telemetry" id="motor-f-telemetry">75.0 kW</span>
+            </div>
+            
+            <div class="motor-block rear-motor" id="motor-r">
+              <div class="inverter-box"></div>
+              <span class="motor-label">P2 Rear</span>
+              <span class="motor-telemetry" id="motor-r-telemetry">75.0 kW</span>
+            </div>
+            
+            <!-- Underfloor lithium battery modules -->
+            <div class="battery-pack">
+              <div class="battery-grid-pattern"></div>
+              <div class="battery-cell-glow"></div>
+              <span class="battery-label">HV Battery</span>
+              
+              <!-- Orange high-voltage wires feeding axles -->
+              <span class="battery-flow-line hv-cable" id="flow-front"></span>
+              <span class="battery-flow-line hv-cable" id="flow-rear"></span>
+            </div>
+
+            <!-- Trunk cargo hold (drop weights here) -->
+            <div class="cargo-hold" id="cargo-drop-zone">
+              <div class="cargo-slots" id="cargo-slots"></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Live weight distribution numbers overlay -->
+        <div class="weight-distribution-readout">
+          <div class="axle-load-badge">Front Load: <span id="load-front">50.0%</span></div>
+          <div class="axle-load-badge">Rear Load: <span id="load-rear">50.0%</span></div>
+        </div>
+      </div>
+
+      <!-- Telemetry cards underneath visualizer -->
+      <div class="metrics-grid">
+        <!-- Front motor power stats -->
+        <div class="metric-card">
+          <div class="metric-info">
+            <span class="metric-label">Front Power Usage (P1)</span>
+            <span class="metric-sublabel">Traction Capacity: <span id="cap-front">112.5 kW</span></span>
+          </div>
+          <div class="metric-value-container">
+            <span class="metric-value" id="val-p1">75.0</span>
+            <span class="metric-unit">kW</span>
+          </div>
+          <div class="progress-track">
+            <div class="progress-fill front-fill" id="fill-p1" style="width: 50%;"></div>
+          </div>
+        </div>
+
+        <!-- Rear motor power stats -->
+        <div class="metric-card">
+          <div class="metric-info">
+            <span class="metric-label">Rear Power Usage (P2)</span>
+            <span class="metric-sublabel">Traction Capacity: <span id="cap-rear">112.5 kW</span></span>
+          </div>
+          <div class="metric-value-container">
+            <span class="metric-value" id="val-p2">75.0</span>
+            <span class="metric-unit">kW</span>
+          </div>
+          <div class="progress-track">
+            <div class="progress-fill rear-fill" id="fill-p2" style="width: 50%;"></div>
+          </div>
+        </div>
+
+        <!-- Total power usage box (P1 + P2) -->
+        <div class="metric-card highlight-card">
+          <div class="metric-info">
+            <span class="metric-label">Total Power Usage (P<sub>total</sub>)</span>
+            <span class="metric-sublabel">Formula: P<sub>total</sub> = P1 + P2</span>
+          </div>
+          <div class="metric-value-container">
+            <span class="metric-value text-accent" id="val-ptotal">150.0</span>
+            <span class="metric-unit">kW</span>
+          </div>
+          <div class="progress-track">
+            <div class="progress-fill total-fill" id="fill-ptotal" style="width: 50%;"></div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Column 3: Status alerts and helper instructions -->
+    <section class="panel panel-right" aria-label="System Status">
+      
+      <!-- Dynamic energy efficiency bar -->
+      <div class="metric-card efficiency-card">
+        <div class="efficiency-header">
+          <span class="metric-label">System Energy Efficiency</span>
+          <span class="efficiency-value-badge" id="val-efficiency">92%</span>
+        </div>
+        <div class="efficiency-bar-container">
+          <div class="efficiency-bar-fill" id="fill-efficiency" style="width: 92%;"></div>
+        </div>
+        <p class="efficiency-helper-text" id="efficiency-note">Dynamic losses applied. Slip causes high efficiency penalties.</p>
+      </div>
+
+      <!-- Warning/optimal message banner -->
+      <div class="status-banner status-optimal" id="traction-banner">
+        <div class="banner-icon-container">
+          <span class="banner-icon" id="banner-icon-symbol">✓</span>
+        </div>
+        <div class="banner-text-container">
+          <span class="banner-title" id="banner-status-title">OPTIMAL TRACTION</span>
+          <span class="banner-desc" id="banner-status-desc">All wheels maintaining contact. Power within surface friction limits.</span>
+        </div>
+      </div>
+
+      <!-- Reference text explaining the physics concept -->
+      <div class="help-guide">
+        <h4>Traction & Slip Physics Guide</h4>
+        <p>Dynamic friction capacity depends on load distribution and surface friction coefficient:</p>
+        <div class="formula-box">
+          P<sub>limit</sub> = Load<sub>axle</sub> &times; &mu; &times; Scale
+        </div>
+        <p>In <strong>Autonomous Mode</strong>, power is split matching dynamic load shift, optimizing traction. In <strong>Manual Mode</strong>, unequal allocation causes local slips, reducing efficiency.</p>
+      </div>
+    </section>
+  </main>
+
+  <!-- Phase 2 page: Mathematical proof and formula verification -->
+  <section class="phase2-section" id="phase2-section">
+    
+    <div class="phase2-grid">
+      <!-- Box 1: Governing physics equations used for calculations -->
+      <div class="phase2-card formula-card">
+        <h3>Governing Physics Equations</h3>
+        <div class="formula-block">
+          <div class="equation">P<sub>total</sub> = P1 + P2</div>
+          <div class="eq-desc">Total power demand distributed to front (P1) and rear (P2) motors.</div>
+        </div>
+        <div class="formula-block">
+          <div class="equation">P<sub>limit</sub> = M<sub>axle</sub> &times; &mu; &times; C<sub>scale</sub></div>
+          <div class="eq-desc">Axle grip limit. C<sub>scale</sub> = 0.15 (force-to-power calibration factor).</div>
+        </div>
+        <div class="formula-block">
+          <div class="equation">M<sub>front</sub> = M<sub>total</sub> &times; (0.5 - 0.001 &times; P<sub>total</sub>)</div>
+          <div class="eq-desc">Dynamic load transfer. Deceleration/thrust shifts load forward/rearward (clamped 0.25 to 0.75).</div>
+        </div>
+      </div>
+
+      <!-- Box 2: Real-time values calculated by the script -->
+      <div class="phase2-card values-card">
+        <h3>Live Inferred Variables</h3>
+        <div class="var-row">
+          <span class="var-name">Vehicle Total Mass (M<sub>total</sub>):</span>
+          <span class="var-val" id="p2-mass">1500 kg</span>
+        </div>
+        <div class="var-row">
+          <span class="var-name">Road Friction Coefficient (&mu;):</span>
+          <span class="var-val" id="p2-friction">0.2</span>
+        </div>
+        <div class="var-row">
+          <span class="var-name">Dynamic Front Load (M<sub>front</sub>):</span>
+          <span class="var-val" id="p2-load-front">750.0 kg (50%)</span>
+        </div>
+        <div class="var-row">
+          <span class="var-name">Dynamic Rear Load (M<sub>rear</sub>):</span>
+          <span class="var-val" id="p2-load-rear">750.0 kg (50%)</span>
+        </div>
+        <div class="var-row">
+          <span class="var-name">Front Grip Limit (P<sub>limit,f</sub>):</span>
+          <span class="var-val" id="p2-limit-front">22.5 kW</span>
+        </div>
+        <div class="var-row">
+          <span class="var-name">Rear Grip Limit (P<sub>limit,r</sub>):</span>
+          <span class="var-val" id="p2-limit-rear">22.5 kW</span>
+        </div>
+      </div>
+
+      <!-- Box 3: Verification statement output -->
+      <div class="phase2-card verification-card">
+        <h3>Traction Proof Verification</h3>
+        <div class="verification-status-box" id="p2-status-box">
+          <div class="p2-status-title" id="p2-status-title">SLIPPAGE DETECTED</div>
+          <p class="p2-explanation" id="p2-explanation-text">
+            Initializing math validation...
+          </p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+</body>
+</html>
