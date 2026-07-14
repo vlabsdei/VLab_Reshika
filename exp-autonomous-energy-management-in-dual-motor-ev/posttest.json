@@ -1,0 +1,175 @@
+{
+  "version": 2.0,
+  "questions": [
+    {
+      "question": "Q1: When operating the simulation dashboard in Manual Mode, what action allows you to change the total vehicle mass from 1500 kg to 2000 kg?",
+      "answers": {
+        "a": "Adjusting the surface friction coefficient dropdown menu options",
+        "b": "Dragging all four load blocks (Driver, Passengers, Suitcase, Crate) into the cargo hold zone",
+        "c": "Maximizing both the Front (P1) and Rear (P2) motor target sliders to 150 kW",
+        "d": "Switching the system views from Phase 1 into the Phase 2 mathematical proofs page"
+      },
+      "explanations": {
+        "a": "Incorrect. The friction dropdown changes road traction conditions ($\mu$) but does not modify physical mass metrics.",
+        "b": "Correct. Dropping the Driver (80kg), Passengers (150kg), Suitcase (30kg), and Crate (240kg) aggregates 500kg of extra cargo, moving total mass to 2000kg.",
+        "c": "Incorrect. Changing power parameters adjusts longitudinal load distribution calculations but does not change static mass parameters.",
+        "d": "Incorrect. Toggling view windows displays the math data breakdown but does not structurally add weight variables into the active car model."
+      },
+      "correctAnswer": "b",
+      "difficulty": "beginner"
+    },
+    {
+      "question": "Q2: What visual indication represents that an axle's traction capacity has been breached on the telemetry vector canvas?",
+      "answers": {
+        "a": "The forward green power arrow vanishes completely from the interface",
+        "b": "The battery flow cable animations reverse direction and move toward the center pack",
+        "c": "The parallel backward resistance vector arrow turns red, and a 'SLIP' text warning displays",
+        "d": "The steering rack tie-rods turn neon yellow and pulse continuously"
+      },
+      "explanations": {
+        "a": "Incorrect. The green arrow remains visible to illustrate the magnitude of power applied to the wheel.",
+        "b": "Incorrect. The high-voltage cable animations follow spinning speed trends but do not physically invert direction path orientations.",
+        "c": "Correct. When power exceeds grip limits, the resistance arrow switches color from grey to red, alongside canvas labels indicating SLIP.",
+        "d": "Incorrect. The steering components are static vector elements that do not dynamically color-flash to signal traction issues."
+      },
+      "correctAnswer": "c",
+      "difficulty": "beginner"
+    },
+    {
+      "question": "Q3: If you observe the vehicle simulation road animation stop moving while the wheels continue to spin, what scenario is being demonstrated?",
+      "answers": {
+        "a": "Optimal traction parameters across both vehicle axles",
+        "b": "Double axle slippage where both motors exceed local grip thresholds simultaneously",
+        "c": "The autonomous torque vectoring engine rerouting excess power from front to back",
+        "d": "A physical shutdown triggered by high thermal runaway conditions inside the cells"
+      },
+      "explanations": {
+        "a": "Incorrect. Under optimal traction conditions, the road moves at a speed proportional to the applied electrical output.",
+        "b": "Correct. When both axles experience slip, the vehicle road backdrop animation pauses while the wheels spin continuously.",
+        "c": "Incorrect. The autonomous control logic regulates active motor levels to ensure road travel animations match output parameters safely.",
+        "d": "Incorrect. Thermal runaway is not modeled within the mechanical limits of this vehicle traction visualization dashboard."
+      },
+      "correctAnswer": "b",
+      "difficulty": "beginner"
+    },
+    {
+      "question": "Q4: What is the systematic penalty applied to System Energy Efficiency if the front wheels experience traction slip while the rear wheels remain safe?",
+      "answers": {
+        "a": "A fixed 5% performance degradation penalty",
+        "b": "A fixed 20% efficiency drop deduction",
+        "c": "The total system efficiency falls immediately to its minimum constraint of 10%",
+        "d": "No numeric penalty is incurred unless both axles break friction limits simultaneously"
+      },
+      "explanations": {
+        "a": "Incorrect. A 5% scale adjustment represents the base load loss calculation component, not the structural wheel slip penalty parameter.",
+        "b": "Correct. The simulation logic applies a flat 20% penalty reduction to overall efficiency for each individual axle breaking traction.",
+        "c": "Incorrect. The system efficiency lands at the 10% lower floor boundary only if double axle slip issues occur under heavy manual loads.",
+        "d": "Incorrect. Any single axle breaking grip automatically triggers efficiency drops within the telemetry module."
+      },
+      "correctAnswer": "b",
+      "difficulty": "beginner"
+    },
+    {
+      "question": "Q5: How do the target motor controls respond on the dashboard interface when Autonomous Torque Allocation is checked?",
+      "answers": {
+        "a": "The P1 and P2 sliders lock completely, display an 'Auto Active' badge, and grey out manual targets",
+        "b": "The input options disappear from the left sidebar and relocate inside the cargo trunk slots",
+        "c": "The sliders alternate colors rapidly to signal real-time driver input requests",
+        "d": "The input bounds scale up automatically from 150 kW limits to 300 kW peak values"
+      },
+      "explanations": {
+        "a": "Correct. Enabling autonomous mode disables manual input controls, sets a green badge notification, and automatically computes optimal power mapping.",
+        "b": "Incorrect. The control box components stay fixed in the left sidebar menu area throughout the entire lab activity.",
+        "c": "Incorrect. Color transitions are applied to status banners and warning labels, not interactive slider toggles.",
+        "d": "Incorrect. The limits of the manual input components remain locked at 10 kW min and 150 kW max allocations."
+      },
+      "correctAnswer": "a",
+      "difficulty": "beginner"
+    },
+    {
+      "question": "Q6: While using Manual Mode, what happens to the status warning banner if you slide the Front Motor Target to 120 kW while driving on Ice Road ($\mu = 0.2$)?",
+      "answers": {
+        "a": "It highlights in green stating 'OPTIMAL TRACTION'",
+        "b": "It turns yellow showing an 'AXLE SLIPPAGE DETECTED' warning label for the FRONT axle",
+        "c": "It turns red displaying a 'DOUBLE AXLE SLIPPAGE' critical message profile",
+        "d": "It hides completely behind the dynamic vector graphics canvas viewport layer"
+      },
+      "explanations": {
+        "a": "Incorrect. High power targets on ice surfaces cause calculations to breach grip limits, eliminating optimal green display statuses.",
+        "b": "Correct. High inputs on a low friction surface (0.2) push power past front traction constraints, highlighting a yellow warning layout.",
+        "c": "Incorrect. The message registers as a double axle warning only if the rear motor target also breaches its grip limits simultaneously.",
+        "d": "Incorrect. The banner remains fully visible in the right panel to present critical safety diagnostic details."
+      },
+      "correctAnswer": "b",
+      "difficulty": "beginner"
+    },
+    {
+      "question": "Q7: Which component is hidden from view inside the EV trunk visualization layout if you drop weight blocks inside it?",
+      "answers": {
+        "a": "The high-voltage orange cable networks tracking to the axles",
+        "b": "The text tags showing the specific name labels of the cargo items (e.g., 'Driver', 'Passengers')",
+        "c": "The brake calipers and rotor structural graphics details",
+        "d": "The telemetry readout indicators tracking overall motor kilowatt values"
+      },
+      "explanations": {
+        "a": "Incorrect. The high-voltage wiring lines remain visible around the layout frame structure.",
+        "b": "Correct. To accommodate tight constraints inside the vehicle model chassis trunk space, the text labels drop out, leaving only icons and weights.",
+        "c": "Incorrect. The red brake calipers and grey disc rotors remain anchored onto the wheel components.",
+        "d": "Incorrect. Kilowatt metrics update continuously below the motor blocks, independent of cargo positions."
+      },
+      "correctAnswer": "b",
+      "difficulty": "beginner"
+    },
+    {
+      "question": "Q8: How can you remove a load block from the vehicle cargo hold to return it back to the shelf storage section?",
+      "answers": {
+        "a": "Switching the interface layout into Phase 2 mode and back into Phase 1 mode",
+        "b": "Hovering over the block inside the trunk slots until the text displays 'REMOVE' and clicking it",
+        "c": "Dragging the surface friction condition dropdown select menu back to Dry Asphalt",
+        "d": "De-selecting the autonomous traction checkbox item on the control panel dashboard"
+      },
+      "explanations": {
+        "a": "Incorrect. Toggling view windows maintains current cargo loads and does not clear vehicle load states.",
+        "b": "Correct. The layout features an interactive toggle action where hovering shows a clear option, and clicking returns the asset to the shelf.",
+        "c": "Incorrect. Adjusting environment properties shifts calculated grip boundaries but does not clear active load elements.",
+        "d": "Incorrect. Toggling the automation checkbox affects motor control logic but does not alter physical cargo assignments."
+      },
+      "correctAnswer": "b",
+      "difficulty": "beginner"
+    },
+    {
+      "question": "Q9: What information does the 'Phase 2: Physics Proof' workspace display to validate calculations?",
+      "answers": {
+        "a": "A breakdown tracking inferred variables such as dynamic axle masses, road grip limits, and mathematical explanations",
+        "b": "A script command console window to manually update source code configuration parameters",
+        "c": "An interactive chart plotting historical tire wear attributes over extensive timelines",
+        "d": "A settings dashboard allowing engineers to modify chassis wheel lengths and axle configurations"
+      },
+      "explanations": {
+        "a": "Correct. Phase 2 breaks down active variables into real-time metrics, providing mathematical validation of traction conditions.",
+        "b": "Incorrect. The verification panel displays pre-calculated metrics and statements, not a code terminal.",
+        "c": "Incorrect. Long-term wear traits are outside the parameters monitored by the telemetry validation module.",
+        "d": "Incorrect. The baseline architectural properties of the vehicle model are static parameters that cannot be configured by users."
+      },
+      "correctAnswer": "a",
+      "difficulty": "intermediate"
+    },
+    {
+      "question": "Q10: How does the road animation speed change when total power demand rises under optimal, non-slipping traction conditions?",
+      "answers": {
+        "a": "The animation velocity drops linearly, shifting toward a complete halt layout state",
+        "b": "The animation duration decreases, causing the background to move faster to reflect vehicle acceleration",
+        "c": "The backdrop switches instantly from standard asphalt stripes into solid neon colored lines",
+        "d": "The animation locks at a uniform 3.0s interval, independent of system power adjustments"
+      },
+      "explanations": {
+        "a": "Incorrect. The road animation slows down or pauses only when tires lose friction cohesion and slip.",
+        "b": "Correct. The system translates higher stable power outputs into faster road movement by reducing the animation duration loop timer.",
+        "c": "Incorrect. The visual markers are fixed based on the chosen road condition type and do not change with speed changes.",
+        "d": "Incorrect. The uniform 3.0s setting is an instruction explicitly reserved for partial axle slippage warning periods."
+      },
+      "correctAnswer": "b",
+      "difficulty": "advanced"
+    }
+  ]
+}
