@@ -1,0 +1,90 @@
+{
+  "version": 2.0,
+  "questions": [
+    {
+      "question": "Q1. Which formula defines the total theoretical energy available for recovery during translational vehicle deceleration?",
+      "answers": {
+        "a": "KE = m * v",
+        "b": "KE = 0.5 * m * v^2",
+        "c": "KE = m * g * sin(theta)",
+        "d": "KE = mu * m * g"
+      },
+      "explanations": {
+        "a": "This represents translational momentum, not kinetic energy.",
+        "b": "Kinetic energy is directly proportional to the vehicle mass and the square of its velocity.",
+        "c": "This calculates the parallel gravitational force acting along an inclined plane.",
+        "d": "This computes the maximum traction force boundary on a flat surface."
+      },
+      "correctAnswer": "b",
+      "difficulty": "beginner"
+    },
+    {
+      "question": "Q2. How does an increase in the road slope angle (incline) affect the vehicle's normal load force (Fn)?",
+      "answers": {
+        "a": "It increases the normal load force.",
+        "b": "It has no impact on the normal load force.",
+        "c": "It reduces the normal load force because Fn depends on the cosine of the angle.",
+        "d": "It causes the normal load force to fluctuate rapidly."
+      },
+      "explanations": {
+        "a": "An incline reduces the perpendicular component of gravity pressing the vehicle down.",
+        "b": "Normal force varies dynamically with the geometric cosine profile of the slope grade.",
+        "c": "As the angle increases, the cosine value decreases, which reduces the normal force pressing the tires against the road surface.",
+        "d": "The force shifts smoothly according to the changing trigonometric angle profile."
+      },
+      "correctAnswer": "c",
+      "difficulty": "beginner"
+    },
+    {
+      "question": "Q3. What occurs physically when the applied braking force (Fb) exceeds the maximum available road traction grip (Fmax)?",
+      "answers": {
+        "a": "Energy recovery efficiency reaches 100%.",
+        "b": "The vehicle enters a wheel slip state, causing traction loss.",
+        "c": "The vehicle instantly gains mechanical velocity.",
+        "d": "The Motor-Generator Unit completely shuts down indefinitely."
+      },
+      "explanations": {
+        "a": "Wheel lockup degrades harvesting metrics significantly due to stability penalties.",
+        "b": "Exceeding the physical traction limit overcomes static friction, inducing active tire skid or lockup.",
+        "c": "Braking force still opposes forward kinetic movement despite traction loss.",
+        "d": "The MGU continues running but operates under reduced efficiency constraints."
+      },
+      "correctAnswer": "b",
+      "difficulty": "intermediate"
+    },
+    {
+      "question": "Q4. Why can an electric vehicle's regenerative braking system not harvest all energy during high-force braking events?",
+      "answers": {
+        "a": "The vehicle lacks mechanical friction pads.",
+        "b": "Kinetic energy drops to zero as soon as the brakes are touched.",
+        "c": "The Motor-Generator Unit (MGU) has a strict physical power/force allocation limit.",
+        "d": "Battery packs can only accept energy when the vehicle is traveling uphill."
+      },
+      "explanations": {
+        "a": "Friction brakes are present to handle excessive torque demands beyond regen capabilities.",
+        "b": "Kinetic energy decreases continuously throughout the duration of the stopping cycle.",
+        "c": "Any braking force demanded beyond the maximum MGU threshold must be handled by friction brakes, converting that portion to waste heat.",
+        "d": "Regenerative capture is functional on any grade, provided the vehicle is actively decelerating."
+      },
+      "correctAnswer": "c",
+      "difficulty": "intermediate"
+    },
+    {
+      "question": "Q5. Which structural factor introduces an efficiency penalty in urban stop-and-go conditions compared to steady state coasting?",
+      "answers": {
+        "a": "Frequent blending transitions and high-frequency cycles",
+        "b": "Elimination of normal load shifts",
+        "c": "Constant velocity profiles",
+        "d": "Absence of gravitational acceleration vectors"
+      },
+      "explanations": {
+        "a": "Continuous acceleration and deceleration cycles cause conversion losses inside motor controllers and battery chemistry.",
+        "b": "Normal loads continue to shift during transient cycling periods.",
+        "c": "Urban traffic is characterized by variable velocities rather than constant profiles.",
+        "d": "Gravity acts constantly on the vehicle mass regardless of traffic density changes."
+      },
+      "correctAnswer": "a",
+      "difficulty": "advanced"
+    }
+  ]
+}
