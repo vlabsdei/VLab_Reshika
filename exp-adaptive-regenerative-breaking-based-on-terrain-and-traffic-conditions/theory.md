@@ -1,3 +1,4 @@
+## THEORY
 ## 1. Objective
 Analyze regenerative braking energy recovery efficiency, battery State of Charge ($\Delta\text{SOC}$) gains, and vehicle deceleration stability under dynamically varying environment parameters, including initial velocities, road grading profiles, and specialized surface traction coefficients.
 
