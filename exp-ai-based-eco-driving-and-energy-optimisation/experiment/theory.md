@@ -58,6 +58,7 @@ $$F_{\text{gravity}} = m \times g \times \sin(\theta)$$
 
 ### B. Core UI Formulas (Programmatic Bundling)
 The sub-formulas above flow directly into the primary mathematical metrics driving the user interface readouts.
+
 <img src="./images/ai-based-eco-driving.drawio.png">
 
 #### 1. Live Tractive Force UI Display
