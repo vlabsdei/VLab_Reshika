@@ -1,6 +1,4 @@
-# Experiment Theory: AI-Based Eco-Driving and Energy Optimization
-
-## 1. Objective
+# THEORY
 To analyze electric vehicle (EV) tractive forces and environmental resistances (aerodynamic drag, rolling friction, and gravitational grade resistance) under varying velocities and terrain profiles. The experiment dynamically simulates live battery telemetry, cell temperature heatmaps, and continuous energy integration to optimize driving range, eco-scores, and thermal strain under realistic operating conditions.
 
 ---
