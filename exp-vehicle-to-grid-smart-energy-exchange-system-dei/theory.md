@@ -14,6 +14,7 @@ In a modern smart grid, Electric Vehicles (EVs) are not merely passive loads; th
 * **Battery Management System (BMS):** An electronic safety and control system that monitors cell parameters (such as SOC and temperature) and triggers hard overrides to protect the battery from catastrophic failure states like over-discharging.
 
 ---
+<img src="./images/block diagram.png">
 
 ## 3. Mathematical Formulations & Working Logic
 
