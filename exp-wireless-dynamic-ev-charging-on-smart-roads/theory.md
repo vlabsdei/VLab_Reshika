@@ -57,9 +57,9 @@ $$P_{\text{received}} = P_{\text{transmitted}} \cdot \left(\frac{\eta}{100}\righ
 ### 4.3 Continuous Battery Energy Integration ($\Delta E$)
 Accumulates the energy captured sequentially over energized track segments based on the car's driving velocity.
 
-$$\Delta E = \int P_{\text{received\_inst}} \cdot dt$$
+$$\Delta E = \int P_{\mathrm{received_inst}} \cdot dt$$
 
-* **Definition:** The time-integral of the varying instantaneous power levels ($P_{\text{received\_inst}}$) captured as the vehicle passes through the pulsing magnetic flux envelopes of individual road coils.
+* **Definition:** The time-integral of the varying instantaneous power levels $P_{\mathrm{received_inst}}$ captured as the vehicle passes through the pulsing magnetic flux envelopes of individual road coils.
 * **Purpose:** Translates power transfer into stored capacity ($\text{kJ}$), determining the final battery State of Charge ($\text{SoC}$).
 
 ---
