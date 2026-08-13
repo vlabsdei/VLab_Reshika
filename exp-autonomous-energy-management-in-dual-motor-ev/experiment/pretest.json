@@ -1,0 +1,90 @@
+{
+  "version": 2.0,
+  "questions": [
+    {
+      "question": "Q1: Which parameter dictates the dynamic shifting of an EV's normal load forward or rearward during acceleration in the theory model?",
+      "answers": {
+        "a": "Tire tread depth coefficient",
+        "b": "Weight transfer coefficient ($k_{\\text{transfer}}$)",
+        "c": "Coulomb's constant scale factor ($C_{\\text{scale}}$)",
+        "d": "Static gravitational acceleration ($g$)"
+      },
+      "explanations": {
+        "a": "Incorrect. Tire tread depth is a physical feature related to vehicle maintenance and is not part of the active load shifting calculation formulas.",
+        "b": "Correct. The weight transfer coefficient ($k_{\\text{transfer}} = 0.001\\text{ kW}^{-1}$) modulates the distribution fraction based on total power demand.",
+        "c": "Incorrect. $C_{\\text{scale}}$ is used to calibrate normal force capacity into power limits, not to calculate mass distribution shifts.",
+        "d": "Incorrect. Gravity remains a constant scaling parameter and does not dynamically calculate shifting pitch adjustments by itself."
+      },
+      "correctAnswer": "b",
+      "difficulty": "beginner"
+    },
+    {
+      "question": "Q2: According to Coulomb's Law of Friction applied to vehicles, what occurs if the tractive force of a motor exceeds the axle's grip limit?",
+      "answers": {
+        "a": "The vehicle enters a higher energy efficiency zone",
+        "b": "The battery pack dynamically increases its storage capacity",
+        "c": "The tire breaks static cohesion with the surface, resulting in wheel slip",
+        "d": "The normal force shifts entirely to the front axle automatically"
+      },
+      "explanations": {
+        "a": "Incorrect. Slipping wheels heavily penalize system efficiency rather than improving it.",
+        "b": "Incorrect. Mechanical traction limits have no impact on the chemistry or structural capacity of the battery pack.",
+        "c": "Correct. Breaching the maximum friction threshold ($F_{\\text{tractive}} > F_{\\text{friction, max}}$) causes the tire to lose grip and slip.",
+        "d": "Incorrect. Normal force redistribution is driven by longitudinal acceleration/pitch, not by the violation of friction laws."
+      },
+      "correctAnswer": "c",
+      "difficulty": "beginner"
+    },
+    {
+      "question": "Q3: What are the structural mathematical boundaries enforced for the dynamic front load fraction ($f_{\\text{front}}$) in this dual-motor theory?",
+      "answers": {
+        "a": "Bounded strictly between 0% and 100%",
+        "b": "Bounded strictly between 10% and 95%",
+        "c": "Bounded strictly between 25% and 50%",
+        "d": "Bounded strictly between 50% and 75%"
+      },
+      "explanations": {
+        "a": "Incorrect. The front load fraction is restricted to a narrower envelope to mimic realistic automotive chassis constraints.",
+        "b": "Incorrect. These percentages resemble the calculated boundaries for system energy efficiency, not mass fractions.",
+        "c": "Correct. The governing formula utilizes a clamping constraint: $\\max(0.25, \\min(0.5, \\dots))$, keeping the fraction within 25% to 50%.",
+        "d": "Incorrect. Forward acceleration shifts mass rearward, meaning the front fraction decreases rather than expanding above 50%."
+      },
+      "correctAnswer": "c",
+      "difficulty": "beginner"
+    },
+    {
+      "question": "Q4: In a dual-motor electric vehicle, how does a P1 powertrain layout differ from a P2 layout?",
+      "answers": {
+        "a": "P1 sits on the front axle providing front traction; P2 sits on the rear axle providing rear traction",
+        "b": "P1 governs steering geometry; P2 controls the mechanical brake rotors exclusively",
+        "c": "P1 represents the primary battery pack; P2 represents the high-voltage auxiliary cable network",
+        "d": "P1 delivers power under manual settings; P2 handles automated operations exclusively"
+      },
+      "explanations": {
+        "a": "Correct. P1 architectures deliver electric drive power to the front axle, while P2 configurations deliver it to the rear axle.",
+        "b": "Incorrect. P1 and P2 are powertrain layouts designating motor locations, not steering components or brake configurations.",
+        "c": "Incorrect. Battery packs and high-voltage cables use separate layout definitions distinct from axle motor designations.",
+        "d": "Incorrect. Both powertrain motors are active under both manual adjustments and autonomous management loops."
+      },
+      "correctAnswer": "a",
+      "difficulty": "beginner"
+    },
+    {
+      "question": "Q5: What calibration value is utilized for $C_{\\text{scale}}$ to calculate the dynamic axle power capacity limits ($P_{\\text{limit}}$)?",
+      "answers": {
+        "a": "0.001",
+        "b": "0.15",
+        "c": "0.50",
+        "d": "1.00"
+      },
+      "explanations": {
+        "a": "Incorrect. 0.001 is the numerical value assigned to the weight transfer coefficient ($k_{\\text{transfer}}$).",
+        "b": "Correct. The system applies $C_{\\text{scale}} = 0.15$ as the force-to-power calibration factor to map mass capacity safely into kW units.",
+        "c": "Incorrect. 0.50 is the static front/rear load ratio when no acceleration or extra weights are introduced.",
+        "d": "Incorrect. 1.00 corresponds to the friction coefficient value ($\\mu$) of dry asphalt."
+      },
+      "correctAnswer": "b",
+      "difficulty": "beginner"
+    }
+  ]
+}

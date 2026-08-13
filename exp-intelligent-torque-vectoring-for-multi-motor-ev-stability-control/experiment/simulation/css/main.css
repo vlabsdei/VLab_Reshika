@@ -1,0 +1,17 @@
+body {
+    font-family: Arial, sans-serif;
+    background-color: #2d1a12;
+    color: #fbf8f3;
+    margin: 0;
+    padding: 20px;
+}
+#app {
+    max-width: 900px;
+    margin: 0 auto;
+    text-align: center;
+}
+canvas {
+    border: 2px solid #f97316;
+    border-radius: 8px;
+    background-color: #431407;
+}

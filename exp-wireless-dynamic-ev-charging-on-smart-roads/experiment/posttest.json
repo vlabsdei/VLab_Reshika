@@ -1,0 +1,90 @@
+{
+  "version": 2.0,
+  "questions": [
+    {
+      "question": "Q1. What mathematical function does the simulation engine use to model the drop-off in coupling efficiency as the lateral alignment offset (x) increases?",
+      "answers": {
+        "a": "A linear decay function",
+        "b": "An inverse proportional square law",
+        "c": "A squared negative exponential function",
+        "d": "A logarithmic distribution function"
+      },
+      "explanations": {
+        "a": "A linear decay would imply a constant rate of efficiency loss, which does not match the curve of magnetic flux boundaries.",
+        "b": "An inverse square law models point-source radiation fields, not the specific planar coil cross-coupling curve handled here.",
+        "c": "Correct. The coupling equation uses e^(-0.002 * x^2), establishing a squared negative exponential distribution where efficiency drops sharply as the vehicle drifts further from the center.",
+        "d": "Logarithmic functions model signal compression scales rather than spatial field decay tracking."
+      },
+      "correctAnswer": "c",
+      "difficulty": "intermediate"
+    },
+    {
+      "question": "Q2. If a vehicle maintains a perfect center alignment (x = 0) but increases its vertical air gap (z), what is the exact mathematical efficiency decay rate per centimeter?",
+      "answers": {
+        "a": "Efficiency drops linearly by 3.0% for every centimeter of gap increase",
+        "b": "Efficiency decays exponentially governed by the scaling factor e^(-0.03 * z)",
+        "c": "Efficiency drops by a constant 0.002% per centimeter",
+        "d": "Efficiency remains entirely fixed unless a horizontal misalignment occurs"
+      },
+      "explanations": {
+        "a": "The decay tracking is exponential rather than strictly linear across the gap domain.",
+        "b": "Correct. The vertical gap loss component is governed directly by e^(-0.03 * z), meaning efficiency drops exponentially as the air gap gets wider.",
+        "c": "The 0.002 scaling coefficient belongs exclusively to the horizontal misalignment squared parameter, not the vertical gap.",
+        "d": "Vertical changes heavily influence the flux density interception, altering baseline metrics even at perfect center paths."
+      },
+      "correctAnswer": "b",
+      "difficulty": "intermediate"
+    },
+    {
+      "question": "Q3. During the continuous execution loop, what direct effect does increasing the Vehicle Speed (v) slider have on the energy integration process?",
+      "answers": {
+        "a": "It scales up the peak instantaneous power delivered by each individual coil segment",
+        "b": "It increases the horizontal road scrolling speed, reducing the exposure time over each active coil zone",
+        "c": "It forces the core alignment index crosshair to drift toward the right edge layout boundary",
+        "d": "It directly increases the nominal capacity of the internal electrochemical battery pack"
+      },
+      "explanations": {
+        "a": "Peak power capacity relies strictly on geometric positioning inputs (x, z), completely independent of velocity metrics.",
+        "b": "Correct. Higher transit speeds speed up the road scrolling pixel factor, meaning the vehicle spends less exposure time over each active subsurface coil segment.",
+        "c": "The lane alignment position is controlled exclusively by the horizontal offset slider, not the transit speed.",
+        "d": "The total battery capacity is a hardcoded constant set at 1000.0 kJ within the configuration profile."
+      },
+      "correctAnswer": "b",
+      "difficulty": "intermediate"
+    },
+    {
+      "question": "Q4. Under what condition will the real-time instantaneous power readout (instPower) read exactly 0.00 kW even when the vehicle is positioned directly above a track coil layout?",
+      "answers": {
+        "a": "When the horizontal alignment offset is precisely centered at 0.0 cm",
+        "b": "The moment the accumulated battery charge reaches its maximum capacity (SoC 100%)",
+        "c": "When a high-clearance Delivery Van profile is selected instead of a low Sedan configuration",
+        "d": "Only when the transit logging window is manually minimized by the operator"
+      },
+      "explanations": {
+        "a": "A centered path maximizes efficiency and power transfer metrics instead of zeroing them out.",
+        "b": "Correct. Once the integrated energy reaches the 1000.0 kJ threshold, the state flag switches to charge complete, zeroing out power inputs to prevent overcharging calculations.",
+        "c": "Higher clearance structures suffer from steep flux decay but still maintain fractional power capture rather than absolute zeroing.",
+        "d": "The background frame loop continues execution metrics independently of user window minimizes."
+      },
+      "correctAnswer": "b",
+      "difficulty": "intermediate"
+    },
+    {
+      "question": "Q5. How does the simulation engine distinguish an active dynamic charging state from an idle track layout condition?",
+      "answers": {
+        "a": "By evaluating whether the distance from the vehicle receiver to the nearest scrolling coil center is within a 90-pixel coupling zone",
+        "b": "By tracking if the vehicle speed drops down below an emergency baseline threshold of 10 km/h",
+        "c": "By scanning if the total snapshot logging log count breaks past an internal limit of 5 entries",
+        "d": "By checking if the user toggles the mathematical verification panel to an active status visibility"
+      },
+      "explanations": {
+        "a": "Correct. The engine checks the horizontal distance between the receiver pad center and the scrolling subsurface track coils; if it is under the 90-pixel limit, it triggers a proximity factor to run the charging calculations.",
+        "b": "Speed limits do not dictate coupling zones; the system remains functional even at the slow boundary of 10 km/h.",
+        "c": "Snapshot collection tracks custom data tables but does not affect the real-time physical simulation loops.",
+        "d": "Tab switching controls view layouts but has no bearing on underlying inductive coupling proximity solvers."
+      },
+      "correctAnswer": "a",
+      "difficulty": "advanced"
+    }
+  ]
+}

@@ -1,0 +1,90 @@
+{
+  "version": 2.0,
+  "questions": [
+    {
+      "question": "Q1. When running the simulation, what is the default idle speed that the motor stabilizes at immediately after clicking the center console power button?",
+      "answers": {
+        "a": "0 RPM",
+        "b": "500 RPM",
+        "c": "1000 RPM",
+        "d": "6000 RPM"
+      },
+      "explanations": {
+        "a": "The motor spins at 0 RPM only when the power is completely off or during a system shutdown state.",
+        "b": "Correct. According to the laboratory routine, turning the powertrain core ON initializes an automatic idle rotation speed of 500 RPM.",
+        "c": "1000 RPM is a baseline scaling factor used in loss calculations, not the initialization idle speed.",
+        "d": "6000 RPM represents the maximum velocity ceiling that can be reached via manual rotor acceleration."
+      },
+      "correctAnswer": "b",
+      "difficulty": "intermediate"
+    },
+    {
+      "question": "Q2. On a desktop or laptop interface, which hotkeys are mapped to manually increment and decrement the baseline flow of the blue Cooling Vent valve?",
+      "answers": {
+        "a": "The 'W' and 'S' keys",
+        "b": "The Up and Down Arrow keys",
+        "c": "The '+' and '-' keys",
+        "d": "The Left and Right Click mouse buttons"
+      },
+      "explanations": {
+        "a": "The 'W' and 'S' keys are mapped to control the amber Brake Controller Force slider track.",
+        "b": "The arrow keys are not bound to any direct fader actions inside the simulation code canvas framework.",
+        "c": "Correct. Laptop users can press the '+' (Plus) or '=' key to increase coolant flow, and the '-' (Minus) key to decrease it.",
+        "d": "Mouse clicks are used for cursor-dragging on the valve nodes but do not act as step-increment hotkeys."
+      },
+      "correctAnswer": "c",
+      "difficulty": "intermediate"
+    },
+    {
+      "question": "Q3. How does the mobile control interface allow students to deploy the electromagnetic noise filter shield without a physical keyboard spacebar?",
+      "answers": {
+        "a": "By double-tapping anywhere inside the background blueprint grid lines",
+        "b": "By using a persistent touch gesture with two fingers simultaneously inside the core axis",
+        "c": "By tapping a floating canvas badge that toggles between 'EMI SHIELD: OFF' and 'EMI FILTER: ON'",
+        "d": "By rotating the mobile device horizontally to trigger an internal accelerometer override"
+      },
+      "explanations": {
+        "a": "Double-tapping the background layout does not execute any programmatic control state changes.",
+        "b": "Multi-touch events are strictly isolated to dual fader tracks and rotational rotor rings.",
+        "c": "Correct. Mobile users tap a dedicated floating canvas button that acts as a click toggle, locking the shield filter active without needing a persistent hold.",
+        "d": "The simulator interface relies on direct viewport touch targets rather than mobile hardware rotation sensors."
+      },
+      "correctAnswer": "c",
+      "difficulty": "intermediate"
+    },
+    {
+      "question": "Q4. If you increase the amber Brake Controller Force valve up to a high intensity, what immediate physical effect happens to the motor speed?",
+      "answers": {
+        "a": "The speed accelerates instantly towards the 6000 RPM ceiling due to friction balancing",
+        "b": "The speed experiences heavy deceleration forces and tumbles rapidly towards 0 RPM",
+        "c": "The speed locks completely at its current value until the power button is cycled",
+        "d": "The speed begins to fluctuate in a random stochastic wave pattern independent of mass elements"
+      },
+      "explanations": {
+        "a": "Braking force opposes velocity vectors, meaning it can never accelerate the motor shaft.",
+        "b": "Correct. Pushing the brake slider up applies heavy deceleration forces directly to the spinning motor shaft, driving the RPM down.",
+        "c": "The system remains fully dynamic and responds continuously to input adjustments rather than freezing.",
+        "d": "Stochastic fluctuations are mapped directly into the sensor noise architecture, not the deceleration physics loop."
+      },
+      "correctAnswer": "b",
+      "difficulty": "intermediate"
+    },
+    {
+      "question": "Q5. Why does the Core System Efficiency drop severely when a student maximizes the brake force valve while running at high speeds?",
+      "answers": {
+        "a": "Useful output power collapses toward 0 kW due to falling RPM while mechanical drag losses and trailing noise remain high",
+        "b": "The baseline core loss automatically shifts its multiplier coefficient from 0.15 to a penalty factor of 0.40",
+        "c": "The system assumes a software sensor error has occurred and overrides the calculation with a fixed negative value",
+        "d": "Applying the brakes completely blocks the blue liquid coolant flow channels, instantly vaporizing the power ratio"
+      },
+      "explanations": {
+        "a": "Correct. Falling RPM drops useful output work to zero while braking friction drag spikes and unshielded noise keeps baseline loss active, driving down the efficiency percentage ratio.",
+        "b": "The baseline core loss multiplier remains fixed at 0.15; it is the thermal branch that introduces a 0.40 runaway factor.",
+        "c": "The efficiency drop is an accurate mathematical reflection of physical energy distribution, not a software override error.",
+        "d": "The cooling vent track and braking tracks operate on separate variables; braking does not physically block fluid paths."
+      },
+      "correctAnswer": "a",
+      "difficulty": "advanced"
+    }
+  ]
+}

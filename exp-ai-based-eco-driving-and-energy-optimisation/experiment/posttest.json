@@ -2,174 +2,89 @@
   "version": 2.0,
   "questions": [
     {
-      "question": "Q1. Which force is calculated directly using the vehicle's total mass, gravity, and the sine of the terrain's slope angle?",
+      "question": "Q1. What is the primary purpose of an AI-based Eco-Driving system in an EV?",
       "answers": {
-        "a": "Aerodynamic Drag Force (F<sub>drag</sub>)",
-        "b": "Rolling Friction Force (F<sub>rolling</sub>)",
-        "c": "Gravity Force (F<sub>gravity</sub>)",
-        "d": "Total Tractive Force (F<sub>total</sub>)"
+        "a": "To increase top vehicle velocity",
+        "b": "To optimize energy efficiency and extend driving range by advising smooth driving behavior",
+        "c": "To bypass motor safety limits",
+        "d": "To override manual steering controls"
       },
       "explanations": {
-        "a": "Aerodynamic drag is calculated using air density, drag coefficient, frontal area, and speed squared.",
-        "b": "Rolling friction is calculated using the cosine of the slope angle, not the sine.",
-        "c": "Gravity force follows the physical formula F<sub>gravity</sub> = m &times; g &times; sin(&theta;).",
-        "d": "Total tractive force is the summation of gravity, rolling, and drag forces."
+        "a": "Eco-driving focuses on efficiency, not maximizing top speed.",
+        "b": "Correct. Eco-driving systems calculate optimal speed and acceleration profiles to maximize range.",
+        "c": "Safety limits are maintained by the BMS and motor controller.",
+        "d": "Eco-driving provides recommendations or adaptive velocity control, not direct steering takeover."
+      },
+      "correctAnswer": "b",
+      "difficulty": "beginner"
+    },
+    {
+      "question": "Q2. Which driving pattern consumes the highest amount of battery energy per kilometer?",
+      "answers": {
+        "a": "Constant-speed highway cruising",
+        "b": "Smooth coasting to a stop",
+        "c": "Aggressive acceleration and hard braking in heavy traffic",
+        "d": "Low-speed steady driving on flat terrain"
+      },
+      "explanations": {
+        "a": "Cruising at constant speed is relatively efficient compared to rapid acceleration.",
+        "b": "Coasting maximizes energy recovery and minimizes energy waste.",
+        "c": "Correct. Frequent hard accelerations spike peak power demand and waste kinetic energy as heat.",
+        "d": "Steady low-speed driving consumes minimal power per kilometer."
       },
       "correctAnswer": "c",
       "difficulty": "beginner"
     },
     {
-      "question": "Q2. What happens to the total simulation mass when a user increases the number of passengers from 1 to 5?",
+      "question": "Q3. How does predictive velocity profiling improve EV range?",
       "answers": {
-        "a": "The base mass decreases to compensate.",
-        "b": "The total simulation mass increases.",
-        "c": "The total simulation mass remains completely unchanged.",
-        "d": "The aerodynamic drag coefficient increases instead."
+        "a": "By continuously running the cooling pump at 100% capacity",
+        "b": "By anticipating traffic conditions and terrain elevation to smooth out speed changes",
+        "c": "By disabling regenerative braking during downhill descents",
+        "d": "By disconnecting the battery during acceleration"
       },
       "explanations": {
-        "a": "Vehicle base mass is an independent user input and does not automatically decrease.",
-        "b": "Adding passengers adds payload weight, which directly increases the total simulation mass.",
-        "c": "The mass breakdown shows that passenger counts dynamically affect the overall mass.",
-        "d": "Passenger count alters the vehicle's mass, not its geometric aerodynamic drag coefficient."
-      },
-      "correctAnswer": "b",
-      "difficulty": "beginner"
-    },
-    {
-      "question": "Q3. Which of the following constants in the simulation is set to a baseline value of 0.24?",
-      "answers": {
-        "a": "Rolling Friction Coefficient (&mu;)",
-        "b": "Air Density (&rho;)",
-        "c": "Frontal Area (A)",
-        "d": "Drag Coefficient (C<sub>d</sub>)"
-      },
-      "explanations": {
-        "a": "The rolling friction coefficient is set as a constant of 0.012.",
-        "b": "Air density is defined as 1.225 kg/m&sup3;.",
-        "c": "The frontal area of the EV is defined as 2.2 m&sup2;.",
-        "d": "According to the Constants Legend, the Drag Coefficient (C<sub>d</sub>) is equal to 0.24."
-      },
-      "correctAnswer": "d",
-      "difficulty": "beginner"
-    },
-    {
-      "question": "Q4. What is the primary objective of Stage 2 (Milestone 2) in this electric vehicle simulation workspace?",
-      "answers": {
-        "a": "To measure mechanical engine displacement and oil consumption rules.",
-        "b": "To simulate live battery telemetry, cell temperature heatmaps, and dynamic energy integration.",
-        "c": "To modify purely exterior body shell colors and aesthetic styling elements.",
-        "d": "To test structural chassis deformation during high-speed frontal crash configurations."
-      },
-      "explanations": {
-        "a": "The simulation tracks electric vehicles and electrical telemetry, not internal combustion engine oil consumption.",
-        "b": "Stage 2 explicitly focuses on live battery telemetry, cell heatmaps, and dynamic energy integration under varied profiles.",
-        "c": "The panel is functional and intended for engineering parameter tests, not aesthetic styling options.",
-        "d": "Crash deformations are part of structural safety tests, whereas this is a power, thermal, and energy simulation."
-      },
-      "correctAnswer": "b",
-      "difficulty": "beginner"
-    },
-    {
-      "question": "Q5. How is the dynamic energy integration (E) mathematical relationship structured inside the live verdict sub-panel?",
-      "answers": {
-        "a": "Energy = Power &divide; Time",
-        "b": "Energy = Power &times; Time",
-        "c": "Energy = Power + Time",
-        "d": "Energy = Force &divide; Speed"
-      },
-      "explanations": {
-        "a": "Dividing power by time does not yield energy; the units do not align.",
-        "b": "The simulation uses the integration formula E = P<sub>avg</sub> &times; t to compute total watt-hours consumed.",
-        "c": "Adding power directly to time is a mathematically invalid operation due to mismatched physical dimensions.",
-        "d": "Power is force multiplied by speed, whereas energy requires a time element."
+        "a": "Running cooling pumps unnecessarily wastes auxiliary electrical energy.",
+        "b": "Correct. Predictive algorithms use terrain and traffic data to minimize unnecessary acceleration and maximize regen.",
+        "c": "Regen during descents captures gravity-assisted energy.",
+        "d": "Disconnecting the battery would cut power to the motor completely."
       },
       "correctAnswer": "b",
       "difficulty": "intermediate"
     },
     {
-      "question": "Q6. When switching the terrain preset from 'Flat Expressway' to 'Steep Hill Climb (+12&deg; slope)', what calculation changes cause a massive spike in total tractive force?",
+      "question": "Q4. What parameter does the Eco-Score index evaluate in the simulation UI?",
       "answers": {
-        "a": "The gravity force component becomes negative.",
-        "b": "The gravity force component (F<sub>gravity</sub>) shifts from zero to a positive value.",
-        "c": "The air density variable drops down to zero.",
-        "d": "The drag coefficient doubles instantly to resist movement."
+        "a": "Tire tread wear rate",
+        "b": "Smoothness of acceleration, braking efficiency, and adherence to eco-velocity targets",
+        "c": "Ambient air temperature",
+        "d": "High-voltage cable resistance"
       },
       "explanations": {
-        "a": "A negative gravity force happens during downward slopes, not uphill climbs.",
-        "b": "On flat ground (0&deg;), sin(0&deg;) = 0, making gravity force zero. At +12&deg;, gravity introduces a large positive resistance force.",
-        "c": "Air density remains an atmospheric constant of 1.225 kg/m&sup3; in this environment.",
-        "d": "The drag coefficient is an aerodynamic shape constant (0.24) and does not change based on ground slopes."
+        "a": "Tire wear is a long-term mechanical metric, not the eco-score driver feedback metric.",
+        "b": "Correct. The Eco-Score rewards smooth throttle inputs, high regen ratios, and steady speeds.",
+        "c": "Ambient temperature affects battery efficiency but is an environmental factor.",
+        "d": "Cable resistance is a hardware characteristic."
       },
       "correctAnswer": "b",
       "difficulty": "intermediate"
     },
     {
-      "question": "Q7. Which driving profile selection is characterized by high speed and harsh braking, requiring a user-adjustable brake frequency parameter?",
+      "question": "Q5. What strategy yields the optimal energy recovery ratio during deceleration?",
       "answers": {
-        "a": "Eco-Driving Profile",
-        "b": "City Traffic Cycle",
-        "c": "Aggressive Driving Profile",
-        "d": "Custom Sandbox"
+        "a": "Slamming on the mechanical friction brake pedal instantly",
+        "b": "Applying gradual, gentle braking within the MGU regenerative force limit",
+        "c": "Accelerating hard right before coming to a stop",
+        "d": "Shifting into neutral at high speeds"
       },
       "explanations": {
-        "a": "The Eco-Driving profile is characterized by stable speeds and low stress.",
-        "b": "City Traffic involves typical stop-and-go behavior but is not explicitly defined as high-speed harsh behavior.",
-        "c": "The Aggressive Driving profile explicitly combines high speeds with harsh braking and high thermal strains.",
-        "d": "The Custom Sandbox gives full manual control but isn't the specific predefined high-stress option."
+        "a": "Hard braking forces the system to use friction brakes, wasting kinetic energy as heat.",
+        "b": "Correct. Gentle braking keeps deceleration force within the motor regen limit, maximizing energy capture.",
+        "c": "Accelerating before stopping wastes additional battery energy.",
+        "d": "Shifting to neutral disengages regenerative harvesting."
       },
-      "correctAnswer": "c",
+      "correctAnswer": "b",
       "difficulty": "intermediate"
-    },
-    {
-      "question": "Q8. If a vehicle is traveling on a 'Downhill Descent (-10&deg; slope)', how does the gravity force (F<sub>gravity</sub>) alter the total tractive force calculation?",
-      "answers": {
-        "a": "It acts as a negative force component, reducing the total required tractive force.",
-        "b": "It multiplies the aerodynamic drag force by a factor of ten.",
-        "c": "It forces the rolling friction coefficient to instantly drop to zero.",
-        "d": "It changes the vehicle mass to a negative value."
-      },
-      "explanations": {
-        "a": "Because sin(-10&deg;) is negative, gravity assists vehicle movement, subtracting from the environmental resistance.",
-        "b": "Gravity is added linearly to rolling and drag forces; it does not act as an aerodynamic multiplier.",
-        "c": "The rolling friction coefficient remains at its set constant of 0.012 regardless of slope direction.",
-        "d": "Physical mass is an absolute positive quantity and does not shift polarity based on hills."
-      },
-      "correctAnswer": "a",
-      "difficulty": "advanced"
-    },
-    {
-      "question": "Q9. What is the mathematical consequence of vehicle speed (v) on the aerodynamic drag force (F<sub>drag</sub>) calculation?",
-      "answers": {
-        "a": "Drag force scales linearly with speed (v).",
-        "b": "Drag force has no mathematical dependency on speed changes.",
-        "c": "Drag force scales quadratically with the square of the speed (v&sup2;).",
-        "d": "Drag force is inversely proportional to speed."
-      },
-      "explanations": {
-        "a": "Motor power scales linearly with speed, but drag force scales with its square.",
-        "b": "Speed is a primary driver of aerodynamic drag changes within the formula.",
-        "c": "The mathematical formula is F<sub>drag</sub> = 0.5 &times; &rho; &times; C<sub>d</sub> &times; A &times; v&sup2;, meaning drag changes with the square of velocity.",
-        "d": "As speed increases, aerodynamic drag increases rather than decreases."
-      },
-      "correctAnswer": "c",
-      "difficulty": "advanced"
-    },
-    {
-      "question": "Q10. In the simulation framework, how does the 'Static Theoretical Formula' comparison logic differ from the 'Dynamic Simulation Output'?",
-      "answers": {
-        "a": "The theoretical formula completely ignores gravity entirely for all calculations.",
-        "b": "The dynamic simulation is static, whereas the theoretical calculations handle random road anomalies.",
-        "c": "The static formula uses fixed snapshot parameters, while the dynamic simulation tracks real-time profile cycles, regenerative braking, and thermal fluctuations.",
-        "d": "The static formula measures battery fluid movement, while the dynamic simulation ignores the battery."
-      },
-      "explanations": {
-        "a": "The static formula explicitly includes gravity via m &times; g &times; sin(&theta;) to establish a clean baseline.",
-        "b": "This swaps the definitions; the simulation is the dynamic system and the formula represents the static baseline.",
-        "c": "Static formulas evaluate a snapshot condition, whereas dynamic telemetry integrations track changes over continuous drive cycles.",
-        "d": "There is no fluid movement tracking feature in either tracking column; both track electrical energy and mechanical metrics."
-      },
-      "correctAnswer": "c",
-      "difficulty": "advanced"
     }
   ]
 }

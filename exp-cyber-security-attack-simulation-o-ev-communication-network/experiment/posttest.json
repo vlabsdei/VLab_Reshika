@@ -1,0 +1,175 @@
+{
+  "version": 2.0,
+  "questions": [
+    {
+      "question": "Q1. What is the standard nominal bus speed for High-Speed CAN networks in modern electric vehicles?",
+      "answers": {
+        "a": "9600 bps",
+        "b": "500 kbps",
+        "c": "10 Gbps",
+        "d": "100 MHz"
+      },
+      "explanations": {
+        "a": "9600 bps is serial UART speed.",
+        "b": "Correct. High-Speed CAN operates at 500 kbps up to 1 Mbps.",
+        "c": "10 Gbps is high-performance fiber optic speed.",
+        "d": "100 MHz is RF frequency scale."
+      },
+      "correctAnswer": "b",
+      "difficulty": "beginner"
+    },
+    {
+      "question": "Q2. Which field in a standard CAN frame determines arbitration priority on the bus?",
+      "answers": {
+        "a": "Data Payload Field",
+        "b": "CAN Identifier (ID)",
+        "c": "Cyclic Redundancy Check (CRC)",
+        "d": "End of Frame (EOF)"
+      },
+      "explanations": {
+        "a": "Data payload contains the message content.",
+        "b": "Correct. Lower numerical CAN ID values win arbitration over higher numerical IDs.",
+        "c": "CRC is used for error detection.",
+        "d": "EOF marks frame termination."
+      },
+      "correctAnswer": "b",
+      "difficulty": "beginner"
+    },
+    {
+      "question": "Q3. What consequence occurs when a Man-in-the-Middle (MiTM) attack intercepts and modifies throttle position sensor frames?",
+      "answers": {
+        "a": "The motor inverter receives false torque commands, causing unexpected acceleration or deceleration",
+        "b": "The battery pack instantly cools down to sub-zero temperatures",
+        "c": "The vehicle's headlights change colors",
+        "d": "The CAN bus physically converts from electrical to optical signaling"
+      },
+      "explanations": {
+        "a": "Correct. Altering throttle frames misleads the motor controller regarding actual driver intent.",
+        "b": "MiTM attacks alter digital frames, not thermal cooling physics directly.",
+        "c": "Headlights are managed on secondary LIN/CAN body nodes.",
+        "d": "Physical signaling medium remains unchanged."
+      },
+      "correctAnswer": "a",
+      "difficulty": "intermediate"
+    },
+    {
+      "question": "Q4. How does an anomaly-based Intrusion Detection System identify un-cataloged zero-day attacks?",
+      "answers": {
+        "a": "By comparing live traffic behavior against statistical baseline models of normal communication",
+        "b": "By checking hardcoded virus signature lists from 10 years ago",
+        "c": "By shutting down the vehicle engine every 5 minutes",
+        "d": "By requiring biometric thumbprint scans from the driver"
+      },
+      "explanations": {
+        "a": "Correct. Anomaly detection monitors deviation in message frequency, timing, and sequence from learned normal baselines.",
+        "b": "Static signatures cannot catch zero-day unknown attack patterns.",
+        "c": "Periodic shutdowns disrupt vehicle operation.",
+        "d": "Biometrics authenticate human drivers, not internal ECU bus frames."
+      },
+      "correctAnswer": "a",
+      "difficulty": "intermediate"
+    },
+    {
+      "question": "Q5. What safety action should a Secure Vehicle Control Unit take upon detecting persistent spoofing attacks on critical motor control frames?",
+      "answers": {
+        "a": "Ignore the errors and continue running",
+        "b": "Transition to a restricted safe-state fail-soft mode and alert the driver",
+        "c": "Increase motor speed to maximum limit",
+        "d": "Clear all memory fault logs permanently"
+      },
+      "explanations": {
+        "a": "Ignoring attacks compromises vehicle occupant safety.",
+        "b": "Correct. ISO 26262 functional safety mandates transitioning to a safe state (e.g. limp-home mode or controlled stop).",
+        "c": "Increasing speed under attack increases hazard severity.",
+        "d": "Clearing logs destroys diagnostic forensic evidence."
+      },
+      "correctAnswer": "b",
+      "difficulty": "intermediate"
+    },
+    {
+      "question": "Q6. What protocol extension adds payload encryption and authentication fields to automotive networks?",
+      "answers": {
+        "a": "SecOC (Secure Onboard Communication)",
+        "b": "HTTP/1.1",
+        "c": "FTP",
+        "d": "Telnet"
+      },
+      "explanations": {
+        "a": "Correct. AUTOSAR SecOC adds Message Authentication Codes (MAC) and freshness values to CAN frames.",
+        "b": "HTTP is a web protocol.",
+        "c": "FTP is a file transfer protocol.",
+        "d": "Telnet is an unencrypted legacy remote terminal protocol."
+      },
+      "correctAnswer": "a",
+      "difficulty": "advanced"
+    },
+    {
+      "question": "Q7. What term describes an attack where an adversary records legitimate CAN traffic and re-transmits it later to execute unauthorized actions?",
+      "answers": {
+        "a": "Replay Attack",
+        "b": "Buffer Overflow",
+        "c": "SQL Injection",
+        "d": "Cross-Site Scripting"
+      },
+      "explanations": {
+        "a": "Correct. Replay attacks resend previously valid authenticated messages without needing secret key knowledge.",
+        "b": "Buffer overflow is a memory corruption flaw.",
+        "c": "SQL injection targets relational databases.",
+        "d": "XSS targets web browsers."
+      },
+      "correctAnswer": "a",
+      "difficulty": "advanced"
+    },
+    {
+      "question": "Q8. How does fresh counter verification prevent Replay Attacks in automotive networks?",
+      "answers": {
+        "a": "By ensuring each transmitted message includes a unique incrementing sequence counter",
+        "b": "By changing the CAN bus physical wire color",
+        "c": "By reducing battery current output",
+        "d": "By disconnecting the OBD-II diagnostic port"
+      },
+      "explanations": {
+        "a": "Correct. Receiver nodes reject messages containing stale or repeated sequence counters.",
+        "b": "Wire color has no effect on cryptographic verification.",
+        "c": "Current output is electrical power, not cryptographic counter.",
+        "d": "OBD-II port is diagnostic access interface."
+      },
+      "correctAnswer": "a",
+      "difficulty": "advanced"
+    },
+    {
+      "question": "Q9. What physical layer hardware feature makes CAN bus resistant to external electromagnetic interference (EMI)?",
+      "answers": {
+        "a": "Unshielded single strand copper",
+        "b": "Balanced differential signaling over twisted pair wires (CAN_H and CAN_L)",
+        "c": "High-voltage AC power lines",
+        "d": "Infrared light line-of-sight beams"
+      },
+      "explanations": {
+        "a": "Unshielded single strand wire is highly susceptible to noise.",
+        "b": "Correct. Differential voltage ($V_{\\text{diff}} = V_{\\text{CAN\_H}} - V_{\\text{CAN\_L}}$) cancels out common-mode EMI noise.",
+        "c": "High voltage AC lines induce interference rather than resisting it.",
+        "d": "Infrared requires line-of-sight inside closed harnesses."
+      },
+      "correctAnswer": "b",
+      "difficulty": "advanced"
+    },
+    {
+      "question": "Q10. What is the primary role of an OBD-II dongle firewall in protecting an EV's internal networks?",
+      "answers": {
+        "a": "To filter external diagnostic requests and prevent unauthorized access to internal powertrain CAN buses",
+        "b": "To replace the EV battery charger",
+        "c": "To clean the windshield automatically",
+        "d": "To regulate motor coolant temperature"
+      },
+      "explanations": {
+        "a": "Correct. OBD-II firewalls isolate the external diagnostic interface from critical powertrain control networks.",
+        "b": "EV chargers are high-power AC/DC converters.",
+        "c": "Windshield wipers are body controls.",
+        "d": "Coolant temperature is managed by thermal pumps."
+      },
+      "correctAnswer": "a",
+      "difficulty": "advanced"
+    }
+  ]
+}

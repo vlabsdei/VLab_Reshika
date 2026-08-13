@@ -1,0 +1,90 @@
+{
+  "version": 2.0,
+  "questions": [
+    {
+      "question": "Q1. What does State of Health (SoH) represent in a lithium-ion battery pack?",
+      "answers": {
+        "a": "The instantaneous electrical charge currently remaining in the cells.",
+        "b": "The performance capability of the battery relative to its brand-new specifications.",
+        "c": "The rate of volumetric cooling fluid flowing across the bottom plate loop.",
+        "d": "The structural mechanical force holding the modules inside the chassis."
+      },
+      "explanations": {
+        "a": "Instantaneous charge is represented by State of Charge (SoC).",
+        "b": "Correct. State of Health (SoH) compares maximum deliverable capacity to baseline new capacity.",
+        "c": "Cooling fluid flow is a thermal management metric.",
+        "d": "Mechanical clamping force is a structural packaging property."
+      },
+      "correctAnswer": "b",
+      "difficulty": "beginner"
+    },
+    {
+      "question": "Q2. Which boundary threshold typically defines the End-of-Life (EOL) condition for electric vehicle battery packs?",
+      "answers": {
+        "a": "When SoH drops to 90%",
+        "b": "When SoH drops to 85%",
+        "c": "When SoH drops to 70%",
+        "d": "When SoH drops to 50%"
+      },
+      "explanations": {
+        "a": "90% SoH indicates early stage aging.",
+        "b": "85% SoH represents active degradation but not automotive retirement.",
+        "c": "Correct. 70% to 80% SoH is widely established as automotive End-of-Life (EOL) threshold.",
+        "d": "50% SoH is well beyond EV retirement standards into second-life applications."
+      },
+      "correctAnswer": "c",
+      "difficulty": "beginner"
+    },
+    {
+      "question": "Q3. Continuous growth of the Solid Electrolyte Interphase (SEI) layer directly impacts the battery pack by doing which of the following?",
+      "answers": {
+        "a": "Increasing total cyclable lithium ions and reducing core heat flux.",
+        "b": "Consuming active lithium ions and driving capacity fade.",
+        "c": "Lowering internal resistance and improving thermal safety margins.",
+        "d": "Accelerating coolant velocity within the liquid cooling plates."
+      },
+      "explanations": {
+        "a": "SEI growth consumes active lithium, reducing cyclable ions.",
+        "b": "Correct. SEI layer growth consumes mobile lithium ions and increases internal impedance, causing capacity fade.",
+        "c": "SEI thickening increases internal resistance, not lowering it.",
+        "d": "Coolant velocity is controlled by external cooling pumps."
+      },
+      "correctAnswer": "b",
+      "difficulty": "intermediate"
+    },
+    {
+      "question": "Q4. What is Joule heating (thermal flux) inside a battery pack directly caused by?",
+      "answers": {
+        "a": "Passage of electrical current through the internal cell resistance.",
+        "b": "External ambient temperature matching standard laboratory baseline conditions.",
+        "c": "The mechanical expansion of mounting flanges on the chassis frame.",
+        "d": "The conversion of cyclable lithium back into gaseous electrolytes."
+      },
+      "explanations": {
+        "a": "Correct. Joule heating is calculated as P_loss = I^2 * R_int.",
+        "b": "Ambient temperature is an external boundary condition.",
+        "c": "Mechanical expansion does not generate electrical resistive heat.",
+        "d": "Electrolyte gassing is a degradation symptom, not the source of resistive heating."
+      },
+      "correctAnswer": "a",
+      "difficulty": "beginner"
+    },
+    {
+      "question": "Q5. How is a C-rate of 3C contextually defined regarding a battery pack's operation?",
+      "answers": {
+        "a": "It takes 3 hours to discharge or charge the battery fully.",
+        "b": "The battery pack operates at exactly 3 times the baseline resistance.",
+        "c": "A fast charging rate that fully charges the battery in 20 minutes under maximum current.",
+        "d": "The thermal dissipation scaling index reaches a value of 3.0x."
+      },
+      "explanations": {
+        "a": "A 3-hour charge corresponds to C/3 rate.",
+        "b": "C-rate defines current scale relative to nominal capacity, not internal resistance.",
+        "c": "Correct. 3C rate discharges/charges full capacity in 1/3 of an hour (20 minutes).",
+        "d": "Thermal scaling is an operational byproduct, not the definition of C-rate."
+      },
+      "correctAnswer": "c",
+      "difficulty": "intermediate"
+    }
+  ]
+}

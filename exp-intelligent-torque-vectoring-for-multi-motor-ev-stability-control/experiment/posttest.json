@@ -1,0 +1,90 @@
+{
+  "version": 2.0,
+  "questions": [
+    {
+      "question": "Q1. What is the total duration of the evaluation countdown timer before the final report modal triggers?",
+      "answers": {
+        "a": "30.00 seconds",
+        "b": "45.00 seconds",
+        "c": "60.00 seconds",
+        "d": "90.00 seconds"
+      },
+      "explanations": {
+        "a": "Incorrect. The countdown is longer than 30 seconds.",
+        "b": "Correct. The simulation starts with a standalone center timer panel set exactly to 45.00s.",
+        "c": "Incorrect. The timer is calibrated to 45 seconds, not 60.",
+        "d": "Incorrect. The session runs for 45 seconds before freezing physics."
+      },
+      "correctAnswer": "b",
+      "difficulty": "beginner"
+    },
+    {
+      "question": "Q2. Which visual feedback directly represents active tire smoke particles during an unvectored spinout?",
+      "answers": {
+        "a": "Bright green neon lines ahead of the chassis",
+        "b": "Flashing red tail lamps",
+        "c": "Warm cocoa smoke dust expanding and fading away",
+        "d": "Solid black grid blocks on the ground plane"
+      },
+      "explanations": {
+        "a": "Incorrect. Green lines represent the vehicle's predictive trajectory pathway.",
+        "b": "Incorrect. Flashing red tail lamps represent a critical slip state or warning overlay, not particle generation.",
+        "c": "Correct. The canvas renders a warm cocoa dust particle effect (`rgba(229, 220, 214, ...)`) that dynamically expands in size and fades in alpha opacity during active unvectored slipping.",
+        "d": "Incorrect. The grid lines are light slate gray and remain stationary relative to world coordinates."
+      },
+      "correctAnswer": "c",
+      "difficulty": "intermediate"
+    },
+    {
+      "question": "Q3. What is the default base motor torque value when initializing or resetting the simulation?",
+      "answers": {
+        "a": "75 Nm",
+        "b": "150 Nm",
+        "c": "300 Nm",
+        "d": "400 Nm"
+      },
+      "explanations": {
+        "a": "Incorrect. 75 Nm is the nominal split torque delivered to an individual wheel when the base torque is at its default setting.",
+        "b": "Correct. The range slider initializes at a default base motor torque of 150 Nm.",
+        "c": "Incorrect. 300 Nm is within the adjustable range but is not the default value.",
+        "d": "Incorrect. 400 Nm is the maximum upper limit of the torque range slider."
+      },
+      "correctAnswer": "b",
+      "difficulty": "beginner"
+    },
+    {
+      "question": "Q4. In Scenario B (Power Slide Cornering), what are the locked programmatic values for torque and steering?",
+      "answers": {
+        "a": "Torque = 200 Nm, Steering = 25°",
+        "b": "Torque = 150 Nm, Steering = 0°",
+        "c": "Torque = 400 Nm, Steering = 45°",
+        "d": "Torque = 400 Nm, Steering = -45°"
+      },
+      "explanations": {
+        "a": "Incorrect. These are the fixed operational configurations for Scenario A (Black Ice Curve).",
+        "b": "Incorrect. These are the standard sandbox default values.",
+        "c": "Correct. Scenario B locks the surface friction to 0.80, applies max torque at 400 Nm, and locks steering at a hard right turning lock of 45°.",
+        "d": "Incorrect. The programmatic lock forces positive steering angle values (+45°), not negative values."
+      },
+      "correctAnswer": "c",
+      "difficulty": "intermediate"
+    },
+    {
+      "question": "Q5. What color layout does an individual card background transition to when highlighted by an active engineering scenario?",
+      "answers": {
+        "a": "Gourmet cream with a soft cocoa border",
+        "b": "Dark cocoa chocolate background with high-contrast cream text",
+        "c": "Pistachio green with glowing neon edges",
+        "d": "Transparent radial slate gradient"
+      },
+      "explanations": {
+        "a": "Incorrect. This is the default style of a standard HUD card before any active selection scenario highlight is triggered.",
+        "b": "Correct. Selecting an engineering scenario activates stylesheet rules which swap the card background to the primary dark cocoa chocolate text color and force internal typography into high-contrast cream.",
+        "c": "Incorrect. Green is used for nominal stability statuses, not the background card highlight.",
+        "d": "Incorrect. The radial gradient is applied strictly to the canvas ground background layout."
+      },
+      "correctAnswer": "b",
+      "difficulty": "advanced"
+    }
+  ]
+}

@@ -1,0 +1,90 @@
+{
+  "version": 2.0,
+  "questions": [
+    {
+      "question": "Q1. What is the primary communication bus protocol used between internal Electronic Control Units (ECUs) in Electric Vehicles?",
+      "answers": {
+        "a": "Controller Area Network (CAN)",
+        "b": "Universal Serial Bus (USB)",
+        "c": "Bluetooth Low Energy (BLE)",
+        "d": "Simple Mail Transfer Protocol (SMTP)"
+      },
+      "explanations": {
+        "a": "Correct. CAN bus is the standard automotive robust differential bus protocol for inter-ECU data exchange.",
+        "b": "USB is consumer peripheral interface, not real-time ECU bus.",
+        "c": "BLE is short-range wireless, unfit for real-time safety critical motor control.",
+        "d": "SMTP is an application layer email transmission protocol."
+      },
+      "correctAnswer": "a",
+      "difficulty": "beginner"
+    },
+    {
+      "question": "Q2. In a CAN bus Denial of Service (DoS) attack, how does an attacker block legitimate ECU messages?",
+      "answers": {
+        "a": "By flooding the bus continuously with dominant bits (ID 0x000)",
+        "b": "By cutting the physical copper twisted pair wires",
+        "c": "By increasing the battery voltage to 800V",
+        "d": "By disconnecting the high-voltage interlock loop"
+      },
+      "explanations": {
+        "a": "Correct. Low numerical CAN IDs have higher arbitration priority, so continuous 0x000 frames starve all other nodes.",
+        "b": "Cutting wires is a physical sabotage, not a bus Denial of Service attack vector.",
+        "c": "Battery voltage adjustments do not govern arbitration bit priority.",
+        "d": "HVIL is a physical safety circuit, not network arbitration."
+      },
+      "correctAnswer": "a",
+      "difficulty": "beginner"
+    },
+    {
+      "question": "Q3. What does CAN message spoofing involve?",
+      "answers": {
+        "a": "Injecting forged CAN frames with valid IDs to fake sensor readings or control commands",
+        "b": "Encrypting all payload data with 256-bit AES keys",
+        "c": "Lowering the transmission baud rate from 500 kbps to 10 kbps",
+        "d": "Replacing motor copper windings with aluminum wire"
+      },
+      "explanations": {
+        "a": "Correct. Spoofing injects malicious messages pretending to originate from legitimate ECUs like BMS or VCU.",
+        "b": "Encryption is a security countermeasure, not an attack.",
+        "c": "Baud rate changes cause bus-off errors rather than spoofing control messages.",
+        "d": "Wire material is a physical motor construction factor."
+      },
+      "correctAnswer": "a",
+      "difficulty": "intermediate"
+    },
+    {
+      "question": "Q4. Why are standard unencrypted CAN bus networks vulnerable to cyber attacks?",
+      "answers": {
+        "a": "CAN frames lack built-in sender authentication and encryption mechanisms",
+        "b": "CAN bus cables transmit signals faster than the speed of light",
+        "c": "CAN controllers refuse to process messages with even-numbered IDs",
+        "d": "CAN bus only operates when the vehicle is connected to Wi-Fi"
+      },
+      "explanations": {
+        "a": "Correct. Traditional CAN protocol broadcasts plain text frames without origin verification or payload encryption.",
+        "b": "Signal propagation speed obeys electromagnetic physics.",
+        "c": "CAN arbitration processes any valid 11-bit or 29-bit identifier regardless of parity.",
+        "d": "CAN bus is an offline internal vehicle wired network."
+      },
+      "correctAnswer": "a",
+      "difficulty": "intermediate"
+    },
+    {
+      "question": "Q5. What is the main function of an automotive Intrusion Detection System (IDS)?",
+      "answers": {
+        "a": "To detect abnormal message frequencies, payload anomalies, and illegal CAN IDs",
+        "b": "To increase vehicle horsepower automatically",
+        "c": "To charge the battery pack faster during regen",
+        "d": "To control tire pressure levels"
+      },
+      "explanations": {
+        "a": "Correct. IDS monitors bus traffic patterns, timing, and signatures to flag and isolate malicious network activity.",
+        "b": "Horsepower is governed by motor inverter limits.",
+        "c": "Regenerative charging rate is governed by motor and BMS limits.",
+        "d": "Tire pressure is monitored by TPMS sensors."
+      },
+      "correctAnswer": "a",
+      "difficulty": "advanced"
+    }
+  ]
+}
