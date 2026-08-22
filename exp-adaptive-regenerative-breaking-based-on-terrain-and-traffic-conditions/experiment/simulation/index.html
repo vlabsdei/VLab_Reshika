@@ -3,15 +3,338 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Adaptive Regenerative Braking Simulation</title>
-    <link rel="stylesheet" href="css/main.css">
+    <title>Experiment 9: Adaptive Regenerative Braking Simulation</title>
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;500&family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="./css/main.css">
 </head>
-<body>
-    <div id="app">
-        <h1>Adaptive Regenerative Braking Simulation</h1>
-        <p>Interactive lab simulation workspace for analyzing terrain grade and traffic impacts on regenerative braking.</p>
-        <canvas id="simCanvas" width="800" height="400"></canvas>
+<body class="lock-scroll">
+    <!-- Sticky header at top for objective statement and navigation between phases -->
+    <header class="app-header">
+        <div class="objective-text">
+            <strong>Objective</strong> Analyze regenerative braking energy recovery efficiency and vehicle deceleration stability under varying environmental parameters.
+        </div>
+        <div class="phase-toggle-container">
+            <button class="toggle-btn active" id="toggle-phase1">Phase 1: Simulation</button>
+            <button class="toggle-btn" id="toggle-phase2" disabled>Phase 2: Math</button>
+        </div>
+    </header>
+
+    <div class="page-viewport">
+        <div class="page-wrapper" id="page-wrapper">
+            <!-- Screen area for Phase 1: Simulation model dashboard -->
+            <section id="phase-1" class="phase-screen phase1-container">
+        <div class="app-container">
+        <!-- Column 1: Left controls panel for student inputs -->
+        <aside class="column controls-column">
+
+            <div class="column-content">
+                <form id="sim-form" onsubmit="event.preventDefault();">
+                    <!-- Speed Input -->
+                    <div class="control-group">
+                        <div class="control-header">
+                            <label for="input-speed">Vehicle Speed (v)</label>
+                            <span class="value-display" id="val-speed">70 km/h</span>
+                        </div>
+                        <input type="range" id="input-speed" min="20" max="120" value="70" class="slider">
+                        <div class="slider-labels">
+                            <span>20 km/h</span>
+                            <span>120 km/h</span>
+                        </div>
+                    </div>
+
+                    <!-- Slope Input -->
+                    <div class="control-group">
+                        <div class="control-header">
+                            <label for="input-slope">Road Slope Angle</label>
+                            <span class="value-display" id="val-slope">0°</span>
+                        </div>
+                        <input type="range" id="input-slope" min="-15" max="15" value="0" class="slider">
+                        <div class="slider-labels">
+                            <span>-15° Down</span>
+                            <span>+15° Up</span>
+                        </div>
+                    </div>
+
+                    <!-- Brake Force Input -->
+                    <div class="control-group">
+                        <div class="control-header">
+                            <label for="input-brake">Brake Force (Fb)</label>
+                            <span class="value-display" id="val-brake">100 N</span>
+                        </div>
+                        <input type="range" id="input-brake" min="100" max="2000" value="100" step="50" class="slider">
+                        <div class="slider-labels">
+                            <span>100 N</span>
+                            <span>2000 N</span>
+                        </div>
+                    </div>
+
+                    <!-- Terrain Type -->
+                    <div class="control-group">
+                        <label for="input-terrain">Terrain Surface Grip</label>
+                        <select id="input-terrain" class="select-input">
+                            <option value="dry" selected>Dry (mu = 0.85)</option>
+                            <option value="wet">Wet (mu = 0.40)</option>
+                            <option value="slippery_ice">Slippery Ice (mu = 0.10)</option>
+                        </select>
+                    </div>
+
+                    <!-- Traffic Condition -->
+                    <div class="control-group">
+                        <label for="input-traffic">Traffic Condition</label>
+                        <select id="input-traffic" class="select-input">
+                            <option value="free_flow" selected>Free Flow (Continuous Regen)</option>
+                            <option value="stop_go">Stop & Go (Frequent Blending)</option>
+                            <option value="heavy_congestion">Heavy Congestion (Harsh Transitions)</option>
+                        </select>
+                    </div>
+
+                    <button type="button" id="btn-reset" class="btn btn-secondary" style="margin-top: 10px;">
+                        Reset Parameters
+                    </button>
+                </form>
+            </div>
+        </aside>
+
+        <!-- Column 2: Center visualizer panel for the 2D car canvas and summary table -->
+        <main class="column visualizer-column">
+            <!-- Container card for the visualizer canvas -->
+            <div class="card canvas-card">
+                <div class="canvas-container">
+                    <canvas id="flow-canvas"></canvas>
+                </div>
+            </div>
+            <!-- Card to display the summary table of parameters -->
+            <div class="card analytics-card bottom-panel">
+                <h4>System Parameters Summary</h4>
+                <div class="table-container">
+                    <table class="analytics-table">
+                        <thead>
+                            <tr>
+                                <th>Parameter</th>
+                                <th>Value</th>
+                                <th>Safe Range</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>Friction Coefficient (mu)</td>
+                                <td id="tbl-mu">0.85</td>
+                                <td>0.10 - 0.85</td>
+                            </tr>
+                            <tr>
+                                <td>Max Road Grip (Fmax)</td>
+                                <td id="tbl-fmax">12,507 N</td>
+                                <td>Based on normal load</td>
+                            </tr>
+                            <tr>
+                                <td>Deceleration Rate</td>
+                                <td id="tbl-decel">0.67 m/s²</td>
+                                <td>&le; 8.0 m/s²</td>
+                            </tr>
+                            <tr>
+                                <td>Regen Allocation</td>
+                                <td id="tbl-regen-alloc">100%</td>
+                                <td>Max 1200 N MGU</td>
+                            </tr>
+                            <tr>
+                                <td>Stop Duration</td>
+                                <td id="tbl-duration">29.17 s</td>
+                                <td>Depends on parameters</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </main>
+
+        <!-- Column 3: Right telemetry panel to show real-time physics data -->
+        <aside class="column telemetry-column">
+
+            <div class="column-content telemetry-content">
+                <!-- Stacked status cards for telemetry variables -->
+                <div class="telemetry-stack">
+                    <!-- Card showing calculated kinetic energy before braking -->
+                    <div class="card telemetry-card">
+                        <div class="card-icon blue">KE</div>
+                        <div class="card-content">
+                            <span class="card-label">Initial Kinetic Energy</span>
+                            <h3 class="card-value" id="tel-ke">0.00 <span class="unit">J</span></h3>
+                            <p class="card-detail">Baseline: 1500 kg mass</p>
+                        </div>
+                    </div>
+
+                    <!-- Card showing cumulative recovered energy -->
+                    <div class="card telemetry-card">
+                        <div class="card-icon green">REC</div>
+                        <div class="card-content">
+                            <span class="card-label">Recovered Energy</span>
+                            <h3 class="card-value" id="tel-recovered">0.00 <span class="unit">J</span></h3>
+                            <p class="card-detail" id="tel-rec-ratio">Recovery efficiency: 82.0%</p>
+                        </div>
+                    </div>
+
+                    <!-- Card showing braking recovery efficiency percentage -->
+                    <div class="card telemetry-card">
+                        <div class="card-icon teal-icon">EFF</div>
+                        <div class="card-content">
+                            <span class="card-label">Braking Efficiency</span>
+                            <h3 class="card-value" id="tel-efficiency">0.0 <span class="unit">%</span></h3>
+                            <p class="card-detail" id="tel-efficiency-desc">Regen force allocation</p>
+                        </div>
+                    </div>
+
+                    <!-- Card showing state of charge (SOC) percentage gain -->
+                    <div class="card telemetry-card">
+                        <div class="card-icon emerald">SOC</div>
+                        <div class="card-content">
+                            <span class="card-label">Battery Charge Gain</span>
+                            <h3 class="card-value" id="tel-battery">0.0000 <span class="unit">%</span></h3>
+                            <p class="card-detail">60 kWh battery pack</p>
+                        </div>
+                    </div>
+
+                    <!-- Card showing tire stability and slip alarms -->
+                    <div class="card telemetry-card" id="card-stability">
+                        <div class="card-icon green-icon" id="stability-icon">OK</div>
+                        <div class="card-content">
+                            <span class="card-label">Stability Status</span>
+                            <h3 class="card-value" id="tel-stability">Stable</h3>
+                            <p class="card-detail" id="tel-slip-ratio">Tire slip safety margin: 100%</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </aside>
     </div>
-    <script src="js/main.js"></script>
+</section>
+
+<!-- Screen area for Phase 2: Math and insights -->
+<section id="phase-2" class="phase-screen phase2-container">
+    <div class="phase2-header">
+        <div class="phase2-title-area">
+            <span class="phase-badge">Phase 2</span>
+            <h2>Mathematical Verification & Experimental Conclusions</h2>
+        </div>
+    </div>
+    
+    <div class="phase2-content">
+        <!-- Top section with formula cards placed side by side -->
+        <div class="equations-row">
+            <!-- Card 1: Kinetic Energy formula and substitution -->
+            <div class="card equation-card">
+                <h3>1. Kinetic Energy (KE) Calculation</h3>
+                <p class="formula-desc">Kinetic energy represents the total energy possessed by the vehicle due to its motion. This is the maximum theoretical energy available for recovery during deceleration.</p>
+                <div class="formula-block">
+                    <div class="formula-latex">
+                        <span class="math-expr">KE = <span class="fraction"><span class="numerator">1</span><span class="denominator">2</span></span> m v<sup>2</sup></span>
+                    </div>
+                    <div class="formula-derivation">
+                        <p><strong>Inferred Values:</strong></p>
+                        <ul>
+                            <li>Vehicle Mass (m): <span class="math-value">1500 kg</span> (Constant)</li>
+                            <li>Current Speed (v): <span class="math-value" id="val-speed-ms">19.44 m/s</span> (<span id="val-speed-kmh-copy">70</span> km/h)</li>
+                        </ul>
+                        <div class="formula-substitution">
+                            <span>Substitution: </span>
+                            <code id="formula-ke-substitution">0.5 &times; 1500 &times; (19.44)<sup>2</sup></code>
+                        </div>
+                        <div class="formula-result">
+                            <span>Result (Initial KE): </span>
+                            <span class="highlight-value" id="formula-ke-result">283,457 J</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Card 2: Regenerative Recovery formula and substitution -->
+            <div class="card equation-card">
+                <h3>2. Regenerative Energy Recovery</h3>
+                <p class="formula-desc">The recovered energy depends on the initial kinetic energy and the final efficiency (&eta;), which shifts dynamically based on slope, grip, and traffic flow.</p>
+                <div class="formula-block">
+                    <div class="formula-latex">
+                        <span class="math-expr">E<sub>recovered</sub> = KE &times; &eta;</span>
+                    </div>
+                    <div class="formula-derivation">
+                        <p><strong>Inferred Values:</strong></p>
+                        <ul>
+                            <li>Initial Kinetic Energy (KE): <span class="math-value" id="val-ke-copy">283,457 J</span></li>
+                            <li>Regenerative Efficiency (&eta;): <span class="math-value" id="val-efficiency-copy">82.0%</span></li>
+                        </ul>
+                        <div class="formula-substitution">
+                            <span>Substitution: </span>
+                            <code id="formula-rec-substitution">283,457 J &times; 0.820</code>
+                        </div>
+                        <div class="formula-result">
+                            <span>Result (Recovered Energy): </span>
+                            <span class="highlight-value" id="formula-rec-result">232,435 J</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Card 3: SOC percentage gain formula and substitution -->
+            <div class="card equation-card">
+                <h3>3. Battery Charge Gain (&Delta;SOC)</h3>
+                <p class="formula-desc">Calculates the percentage increase in the battery's State of Charge (SOC) by comparing recovered energy to the total battery capacity.</p>
+                <div class="formula-block">
+                    <div class="formula-latex">
+                        <span class="math-expr">&Delta;SOC = <span class="fraction"><span class="numerator">E<sub>recovered</sub></span><span class="denominator">E<sub>battery</sub></span></span> &times; 100</span>
+                    </div>
+                    <div class="formula-derivation">
+                        <p><strong>Inferred Values:</strong></p>
+                        <ul>
+                            <li>Recovered Energy (E<sub>recovered</sub>): <span class="math-value" id="val-rec-copy2">232,435 J</span></li>
+                            <li>Battery Capacity (E<sub>battery</sub>): <span class="math-value">216,000,000 J (60 kWh)</span></li>
+                        </ul>
+                        <div class="formula-substitution">
+                            <span>Substitution: </span>
+                            <code id="formula-soc-substitution">232,435 / 216,000,000 &times; 100</code>
+                        </div>
+                        <div class="formula-result">
+                            <span>Result (SOC Gain): </span>
+                            <span class="highlight-value" id="formula-soc-result">0.1076%</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Bottom section showing engineering conclusions and insights -->
+        <div class="conclusion-row">
+            <div class="card conclusion-card" id="conclusion-status-card">
+                <div class="conclusion-header">
+                    <div class="status-badge" id="conclusion-badge">STABLE</div>
+                    <h3>Experimental Conclusion</h3>
+                </div>
+                <div class="conclusion-body">
+                    <p id="conclusion-text">The vehicle was decelerated in a stable manner. Due to high surface grip, the braking force did not exceed the road traction limit, permitting full recovery efficiency.</p>
+                    <hr class="card-divider">
+                    <h4>Key Engineering Insights</h4>
+                    <ul class="insights-list">
+                        <li>
+                            <strong>Safety Margins:</strong> 
+                            <span id="insight-safety">Maintaining braking force below road grip is critical to prevent wheel slip.</span>
+                        </li>
+                        <li>
+                            <strong>Environmental Influence:</strong> 
+                            <span id="insight-env">Road grade (slope) changes the normal load and gravity assistance, shifting the regen duration.</span>
+                        </li>
+                        <li>
+                            <strong>System Efficiency:</strong> 
+                            <span id="insight-regen">Traffic density determines the level of continuous vs. transitionary brake blending.</span>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+        </div>
+    </div>
+
+<script src="./js/main.js"></script>
 </body>
 </html>

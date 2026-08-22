@@ -3,15 +3,322 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Wireless Dynamic EV Charging Simulation</title>
-    <link rel="stylesheet" href="css/main.css">
+    <meta name="description" content="Two-phase engineering diagnostic virtual lab simulation for Experiment 6: Wireless Dynamic EV Charging on Smart Roads. Analyze snapshots and physical clearances.">
+    <title>Wireless Dynamic EV Charging on Smart Roads - Virtual Lab</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Outfit:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <!-- KaTeX CDN for Academic Equation Rendering -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/katex.min.css">
+    <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/katex.min.js"></script>
+    <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/contrib/auto-render.min.js" onload="renderMathInElement(document.body);"></script>
+    <!-- Stylesheet -->
+    <link rel="stylesheet" href="./cs/main.css">
 </head>
 <body>
-    <div id="app">
-        <h1>Wireless Dynamic EV Charging on Smart Roads</h1>
-        <p>Simulate inductive coupling efficiency, alignment offset decay, and dynamic energy capture.</p>
-        <canvas id="simCanvas" width="800" height="400"></canvas>
+    <div class="app-container">
+        <!-- Tab Controls (Two-Phase Switching) -->
+        <nav class="phase-tabs" aria-label="Laboratory Phases">
+            <button type="button" class="tab-btn active" id="tab-phase1">
+                <span class="tab-num">I</span> Phase 1: Live Lab Test
+            </button>
+            <button type="button" class="tab-btn" id="tab-phase2">
+                <span class="tab-num">II</span> Phase 2: Check the Math
+            </button>
+            <button type="button" class="tab-btn" id="btn-open-guide" title="Show Pre-Simulation Guide">
+                <span class="tab-num">?</span> How it Works
+            </button>
+        </nav>
+
+
+        <!-- PHASE 1 VIEWPORT (Active by default) -->
+        <div id="phase1-container" class="phase-container">
+            <!-- Full-Width Battery SoC Dashboard -->
+            <section class="card battery-dashboard-card" aria-label="Battery Status Dashboard">
+                <div class="dashboard-flex-row">
+                    <div class="dashboard-metric">
+                        <span class="dashboard-label">Energy Captured</span>
+                        <span class="dashboard-value" id="metric-energy">0.00 kJ</span>
+                    </div>
+                    <div class="dashboard-metric">
+                        <span class="dashboard-label">Time Spent Charging</span>
+                        <span class="dashboard-value" id="metric-charging-time">0.00s</span>
+                    </div>
+                    
+                    <div class="dashboard-progress-container">
+                        <div class="battery-indicator-wrapper">
+                            <div class="battery-outer-shell">
+                                <div class="battery-fill-level" id="battery-level-bar" style="width: 0%"></div>
+                            </div>
+                            <div class="battery-tip-stub"></div>
+                        </div>
+                        <span class="soc-text" id="metric-soc">SoC: 0.0%</span>
+                    </div>
+
+                    <div class="dashboard-actions">
+                        <span id="snapshot-status" class="snapshot-notification"></span>
+                        <button type="button" id="btn-snapshot" class="btn btn-primary" title="Save Current State Values">
+                            Save Snapshot
+                        </button>
+                        <button type="button" id="btn-reset-battery" class="btn btn-danger" title="Reset Battery Charge">
+                            Reset Battery
+                        </button>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Main Layout (Sliders Left, Canvas Right) -->
+            <div class="lab-workspace-grid">
+                <!-- Left Sidebar: Controls only -->
+                <section class="left-sidebar" aria-label="Simulation Controls">
+                    <!-- Sliders Panel -->
+                    <div class="card control-card">
+                        <div class="card-header">
+                            <span class="header-num">01</span>
+                            <h2>Adjust the Settings</h2>
+                        </div>
+                        <p class="section-description">Play around with the sliders below to see how alignment, vehicle height, and speed affect charging efficiency!</p>
+                        
+                        <!-- Slider: Alignment Offset -->
+                        <div class="slider-container">
+                            <div class="slider-meta">
+                                <label for="slider-offset">Off-Center Alignment (<span class="math-symbol">x</span>)</label>
+                                <span class="value-badge"><span id="val-offset">0.0</span> cm</span>
+                            </div>
+                            <input type="range" id="slider-offset" min="-20" max="20" step="0.1" value="0.0" aria-valuemin="-20" aria-valuemax="20" aria-valuenow="0">
+                            <div class="slider-bounds">
+                                <span>20.0 cm Left</span>
+                                <span>Centered</span>
+                                <span>20.0 cm Right</span>
+                            </div>
+                        </div>
+
+                        <!-- Slider: Gap Distance -->
+                        <div class="slider-container">
+                            <div class="slider-meta">
+                                <label for="slider-gap">Ground Clearance / Height (<span class="math-symbol">z</span>)</label>
+                                <span class="value-badge"><span id="val-gap">15.0</span> cm</span>
+                            </div>
+                            <input type="range" id="slider-gap" min="5" max="30" step="0.1" value="15.0" aria-valuemin="5" aria-valuemax="30" aria-valuenow="15">
+                            <div class="slider-bounds">
+                                <span>5.0 cm - Sedan Profile</span>
+                                <span>30.0 cm - Van Profile</span>
+                            </div>
+                        </div>
+
+                        <!-- Slider: Vehicle Speed -->
+                        <div class="slider-container">
+                            <div class="slider-meta">
+                                <label for="slider-speed">Driving Speed (<span class="math-symbol">v</span>)</label>
+                                <span class="value-badge"><span id="val-speed">50</span> km/h</span>
+                            </div>
+                            <input type="range" id="slider-speed" min="10" max="100" step="1" value="50" aria-valuemin="10" aria-valuemax="100" aria-valuenow="50">
+                            <div class="slider-bounds">
+                                <span>10 km/h (Slow)</span>
+                                <span>100 km/h (Fast)</span>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Right Side: Canvas Visualizer only -->
+                <section class="right-workspace" aria-label="Simulation Display">
+                    <!-- HTML5 Canvas Visualizer -->
+                    <div class="card canvas-card">
+                        <div class="canvas-header">
+                            <div class="canvas-header-title">
+                                <h2 id="canvas-title-text">Visualizer / Radar View</h2>
+                                <span class="status-badge" id="status-display">Active</span>
+                            </div>
+                            <div class="legend">
+                                <span class="legend-item"><span class="legend-dot road-coil-dot"></span>Coils in the Road</span>
+                                <span class="legend-item"><span class="legend-dot receiver-dot"></span>Car Pickup Plate</span>
+                                <span class="legend-item"><span class="legend-dot flux-dot"></span>Magnetic Fields</span>
+                            </div>
+                        </div>
+                        <div class="canvas-container">
+                            <canvas id="simulation-canvas" width="800" height="300"></canvas>
+                        </div>
+                    </div>
+                </section>
+            </div>
+        </div>
+
+        <!-- PHASE 2 VIEWPORT (Hidden by default) -->
+        <div id="phase2-container" class="phase-container hidden">
+            <!-- Math Formulations Card -->
+            <section class="card math-card">
+                <div class="card-header math-card-header">
+                    <div class="card-header-left" style="display: flex; align-items: center; gap: 0.75rem;">
+                        <span class="header-num">02</span>
+                        <h2>How the Math Works</h2>
+                    </div>
+                    <div id="math-source-indicator" class="math-source-indicator">
+                        <span class="source-badge live">Live Simulation</span>
+                    </div>
+                </div>
+                <p class="math-intro-text">Check out these formulas! They show how our simulation calculates efficiency, power, and total energy in real-time as you adjust settings:</p>
+                
+                <div class="math-grid">
+                    <!-- Formula 1: Efficiency -->
+                    <div class="formula-box">
+                        <span class="formula-title">1. Efficiency Formula (\(\eta\))</span>
+                        <div class="latex-container" id="eq-efficiency">
+                            % Rendered LaTeX
+                        </div>
+                        <p class="formula-caption">Calculates the percentage of power transferred based on how far off-center (x) the car is and how high (z) the car sits.</p>
+                    </div>
+
+                    <!-- Formula 2: Power Received -->
+                    <div class="formula-box">
+                        <span class="formula-title">2. Received Power Formula (\(P_{\text{received}}\))</span>
+                        <div class="latex-container" id="eq-power">
+                            % Rendered LaTeX
+                        </div>
+                        <p class="formula-caption">Shows how much of the original 120 kW transmitted power actually reaches the car's battery.</p>
+                    </div>
+
+                    <!-- Formula 3: Continuous Integration -->
+                    <div class="formula-box full-width-formula">
+                        <span class="formula-title">3. Total Energy Captured Formula (\(\Delta E\))</span>
+                        <div class="latex-container" id="eq-energy">
+                            % Rendered LaTeX
+                        </div>
+                        <p class="formula-caption">Integrates the power received over the time the car spends directly over the road coils to find total energy captured: \(\Delta E = \int P_{\text{received\_inst}} \cdot dt\)</p>
+                    </div>
+                </div>
+            </section>
+
+            <div class="phase2-side-by-side">
+                <!-- Diagnostic Snapshots & Inferred Values Panel -->
+                <section class="card snapshots-card" id="snapshots-analysis-card">
+                    <div class="card-header" style="display: flex; justify-content: space-between; align-items: center; width: 100%;">
+                        <div style="display: flex; align-items: center; gap: 0.75rem;">
+                            <span class="header-num">03</span>
+                            <h2>Saved Snapshots & Smart Analytics</h2>
+                        </div>
+                        <button type="button" class="info-btn" id="btn-toggle-change-log" title="View Parameter Change & Event Log">i</button>
+                    </div>
+                    <p class="math-intro-text">Here are the snapshots you saved. Let's analyze the numbers to see how different vehicle setups affect performance:</p>
+                    
+                    <div class="table-container">
+                        <table class="log-table" id="snapshots-table">
+                            <thead>
+                                <tr>
+                                    <th>Snapshot ID</th>
+                                    <th>Time</th>
+                                    <th>Offset (x)</th>
+                                    <th>Air Gap (z)</th>
+                                    <th>Speed (v)</th>
+                                    <th>Nominal Efficiency</th>
+                                    <th>Peak Power</th>
+                                    <th>Battery Energy</th>
+                                    <th>SoC</th>
+                                </tr>
+                            </thead>
+                            <tbody id="snapshots-body"></tbody>
+                        </table>
+                    </div>
+                    <div id="no-snapshots-msg" class="empty-table-msg">
+                        You haven't saved any snapshots yet! Go back to Phase 1 and click the 'Save Snapshot' button to save some logs.
+                    </div>
+
+                    <div class="inferred-analysis-grid">
+                        <!-- Analytical Summary Stats -->
+                        <div class="analysis-box">
+                            <span class="formula-title">Quick Stats Summary</span>
+                            <ul class="stats-list">
+                                <li>Total Snapshots: <span class="stat-value" id="stat-count">0</span></li>
+                                <li>Avg Efficiency: <span class="stat-value" id="stat-avg-eff">0.0%</span></li>
+                                <li>Total Energy Captured: <span class="stat-value" id="stat-total-energy">0.00 kJ</span></li>
+                            </ul>
+                        </div>
+
+                        <!-- Sensitivity and Optimization Inferences -->
+                        <div class="analysis-box">
+                            <span class="formula-title">What the Data Tells Us</span>
+                            <ul class="stats-list">
+                                <li>Best Setup Found: <span class="stat-value" id="stat-opt-set">None</span></li>
+                                <li>Height Sensitivity (Air Gap Loss): <span class="stat-value" id="stat-gap-sensitivity">No data</span></li>
+                                <li>Alignment Sensitivity (Offset Loss): <span class="stat-value" id="stat-offset-sensitivity">No data</span></li>
+                            </ul>
+                        </div>
+                    </div>
+                 </section>
+    
+                <!-- Mathematical Model Verification Panel -->
+                <section class="card verification-card" id="verification-card">
+                    <div class="card-header">
+                        <span class="header-num">04</span>
+                        <h2>Verify the Math</h2>
+                    </div>
+                    <div id="verification-container">
+                        <div class="empty-table-msg" style="border: none; border-radius: var(--radius-md); padding: 2rem; margin: 0;">
+                            Click on any snapshot in the table above to verify that the formulas calculate the exact same efficiency and power values.
+                        </div>
+                    </div>
+                </section>
+            </div>
+
+            <!-- Parameter Event Log Card -->
+            <section class="card change-log-card hidden" id="change-log-card">
+                <div class="card-header">
+                    <span class="header-num">05</span>
+                    <h2>Settings Change Log</h2>
+                </div>
+                <p class="math-intro-text">Here is the history of slider changes and events in this session (newest at the top):</p>
+                
+                <div class="table-container" style="max-height: 250px; overflow-y: auto;">
+                    <table class="log-table" id="change-log-table">
+                        <thead>
+                            <tr>
+                                <th>Event Time</th>
+                                <th>Event Type</th>
+                                <th>Previous Value</th>
+                                <th>New Value</th>
+                                <th>Current SoC</th>
+                                <th>Current Energy</th>
+                            </tr>
+                        </thead>
+                        <tbody id="change-log-body"></tbody>
+                    </table>
+                </div>
+                <div id="no-changes-msg" class="empty-table-msg">
+                    No settings changed yet. Switch to Phase 1 and move the sliders to log calibration events.
+                </div>
+            </section>
+
+        </div>
     </div>
-    <script src="js/main.js"></script>
+
+    <!-- Pre-Simulation Guide Modal Overlay -->
+    <div id="intro-modal" class="modal-overlay">
+        <div class="modal-content">
+            <header class="modal-header-section">
+                <h2>How Wireless Charging on Smart Roads Works</h2>
+                <h3>Quick Intro Guide</h3>
+            </header>
+            <div class="modal-body-section">
+                <div class="info-section">
+                    <h4>1. Magnetic Induction & Asphalt</h4>
+                    <p>Power coils are buried right under the road concrete. Hence they are topped with a layer of asphalt. Asphalt is an insulator, which means it stops electrical current from passing through. The magnetic fields however pass straight through the asphalt to the car's pickup plate without losing power or heating up the road.</p>
+                </div>
+                <div class="info-section">
+                    <h4>2. Smart Coils (Only ON When Needed)</h4>
+                    <p>The copper coils in the road are spaced 2.8 meters apart. To save electricity and avoid constant radiation, sensors in the road turn on ONLY when the car is directly over a particular coil. The coils behind and ahead stay completely off.</p>
+                </div>
+                <div class="info-section">
+                    <h4>3. Perfecting Your Setup</h4>
+                    <p>The golden plate under the car catches the magnetic fields and turns them into electricity. To get the fastest charge, keep the car centered (low offset) and as close to the road as possible (low clearance).</p>
+                </div>
+            </div>
+            <footer class="modal-footer-section">
+                <button type="button" class="btn btn-primary" id="btn-close-intro">Got it!</button>
+            </footer>
+        </div>
+    </div>
+
+    <!-- Script Entry Point -->
+    <script src="./js/main.js"></script>
 </body>
 </html>

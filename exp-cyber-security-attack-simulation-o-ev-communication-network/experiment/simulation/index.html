@@ -1,17 +1,527 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Cyber Security Attack Simulation on EV Network</title>
-    <link rel="stylesheet" href="css/main.css">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Cyber Security Attack Simulation</title>
+  <!-- Google Fonts: Plus Jakarta Sans for UI, JetBrains Mono for Technical details -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="./css/main.css">
+  <style>
+    /* Inline CSS to prevent browser-caching issues and guarantee immediate display of custom tooltips */
+    .component-tooltip {
+      display: block !important;
+      position: absolute !important;
+      bottom: 48px !important;
+      left: 50% !important;
+      transform: translateX(-50%) !important;
+      background-color: #212529 !important;
+      color: #ffffff !important;
+      padding: 0.4rem 0.7rem !important;
+      border-radius: 5px !important;
+      font-family: 'Plus Jakarta Sans', -apple-system, sans-serif !important;
+      font-size: 0.72rem !important;
+      font-weight: 600 !important;
+      white-space: nowrap !important;
+      pointer-events: none !important;
+      opacity: 0 !important;
+      visibility: hidden !important;
+      transition: opacity 0.15s ease-in-out, visibility 0.15s ease-in-out !important;
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15) !important;
+      z-index: 9999 !important;
+      text-align: center !important;
+    }
+
+    .component-tooltip::after {
+      content: "" !important;
+      position: absolute !important;
+      top: 100% !important;
+      left: 50% !important;
+      transform: translateX(-50%) !important;
+      border-width: 4px !important;
+      border-style: solid !important;
+      border-color: #212529 transparent transparent transparent !important;
+    }
+
+    .hardware-block:hover .component-tooltip {
+      opacity: 1 !important;
+      visibility: visible !important;
+    }
+
+    .hardware-block {
+      position: absolute !important;
+      overflow: visible !important;
+      z-index: 100 !important;
+      pointer-events: auto !important;
+      cursor: pointer !important;
+    }
+  </style>
 </head>
 <body>
-    <div id="app">
-        <h1>Cyber Security Attack Simulation on EV Network</h1>
-        <p>Simulate CAN bus spoofing, Denial of Service, and IDS firewall protection.</p>
-        <canvas id="simCanvas" width="800" height="400"></canvas>
-    </div>
-    <script src="js/main.js"></script>
+
+  <div class="app-container">
+    <!-- Header with Objective -->
+    <header class="app-header">
+      <div class="app-title-group">
+        <p class="app-objective"><strong>Objective:</strong> To simulate and analyze cyber security attacks on EV communication networks.</p>
+      </div>
+      <nav class="tab-navigation">
+        <button class="tab-btn active" data-tab="workspace-tab">Schematic Workspace</button>
+        <button class="tab-btn" data-tab="calculations-tab">Calculations &amp; Formulas</button>
+      </nav>
+    </header>
+
+    <!-- Tab Panels Container -->
+    <main class="tab-content-container">
+
+
+
+      <!-- Tab 2: Simulation Workspace (Main Dashboard) -->
+      <section id="workspace-tab" class="tab-panel active">
+        <div class="workspace-grid">
+          
+          <!-- Left Panel: Controls & Inputs -->
+          <aside class="panel left-panel">
+            <div class="panel-body">
+              
+              <!-- Security Defence Level Selector -->
+              <div class="control-group">
+                <label class="control-label">Security Defence Level</label>
+                <div class="presets-grid">
+                  <button class="btn-preset active" id="preset-defense-none" data-defense="none">No Defense (Vulnerable)</button>
+                  <button class="btn-preset" id="preset-defense-basic" data-defense="basic">Basic Encryption</button>
+                  <button class="btn-preset" id="preset-defense-ids" data-defense="ids">Intrusion Detection (IDS)</button>
+                  <button class="btn-preset" id="preset-defense-secoc" data-defense="secoc">Secure Onboard (SecOC)</button>
+                </div>
+              </div>
+
+              <hr style="border: none; border-top: 1px solid var(--border-color); margin: 0.25rem 0;">
+
+              <!-- Slider 1: Attack Intensity -->
+              <div class="control-group">
+                <div class="control-label">
+                  <span>Attack Injection Intensity</span>
+                  <span class="control-value"><span id="val-intensity">0</span>%</span>
+                </div>
+                <input type="range" id="slider-intensity" min="0" max="100" step="5" value="0">
+              </div>
+
+              <!-- Slider 2: Packet Rate -->
+              <div class="control-group">
+                <div class="control-label">
+                  <span>CAN Packet Injection Rate</span>
+                  <span class="control-value"><span id="val-packet-rate">10</span> pps</span>
+                </div>
+                <input type="range" id="slider-packet-rate" min="10" max="500" step="10" value="10">
+              </div>
+
+              <!-- Selector: Baseline Driving Profile -->
+              <div class="control-group">
+                <div class="control-label">
+                  <span>Baseline Driving Profile</span>
+                </div>
+                <select id="select-driving-profile">
+                  <option value="eco">Eco Mode (Low Frequency - 10 pps)</option>
+                  <option value="normal" selected>Normal Mode (Standard - 30 pps)</option>
+                  <option value="sport">Sport Mode (High Frequency - 80 pps)</option>
+                  <option value="custom">Custom Mode (Manual Rate)</option>
+                </select>
+              </div>
+
+
+              <hr style="border: none; border-top: 1px solid var(--border-color); margin: 0.25rem 0;">
+
+              <!-- Reset Action -->
+              <button id="btn-reset" class="btn-action">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M21.5 2v6h-6M21.34 15.57a10 10 0 1 1-.57-8.38l5.67-5.67"/>
+                </svg>
+                Reset Attack Simulation
+              </button>
+            </div>
+          </aside>
+
+          <!-- Center Panel: DOM-based Schematic Visualizer -->
+          <section class="panel center-panel">
+            
+            <div class="visualizer-container" id="visualizer-pane">
+              <!-- Grid background -->
+              <div class="blueprint-grid-overlay"></div>
+
+              <!-- Packet Flow Legend (Top-Left Canvas) -->
+              <div id="flow-packet-legend" class="packet-legend">
+                <div class="packet-legend-title">Packet Flow Legend</div>
+                <div class="packet-legend-item">
+                  <span class="packet-legend-dot traction"></span>
+                  <span class="packet-legend-text">Normal Traction Telemetry</span>
+                </div>
+                <div class="packet-legend-item">
+                  <span class="packet-legend-dot aux"></span>
+                  <span class="packet-legend-text">Normal Aux Power / Charging</span>
+                </div>
+                <div class="packet-legend-item">
+                  <span class="packet-legend-dot malicious"></span>
+                  <span class="packet-legend-text">Malicious Attack Payload</span>
+                </div>
+              </div>
+
+              <!-- Top-Down EV Chassis Blueprint Frame -->
+              <div class="ev-chassis-xray">
+                <!-- Top Floating Attack Vector Banner -->
+                <div id="attack-vector-banner" class="attack-vector-banner">
+                  ⚠️ Cyber Attack Vector: Source (CP) ➔ Target (PDU)
+                </div>
+                <!-- EV Car Outline Background -->
+                <svg class="car-outline-svg" viewBox="0 0 100 100" preserveAspectRatio="none">
+                  <path d="M 3,86 L 11,86 A 7,7 0 0,1 25,86 L 70,86 A 7,7 0 0,1 84,86 L 97,86 C 97,80 97,70 95,65 C 95,62 92,60 88,60 C 80,60 72,42 62,38 L 42,38 C 32,38 26,58 20,64 L 8,72 C 5,74 3,80 3,86 Z" class="car-outline-path" />
+                </svg>
+
+                <!-- SVG Overlay for Orthogonal Wiring Cables & Flow indicators -->
+                <svg class="schematic-svg-overlay" viewBox="0 0 100 100" preserveAspectRatio="none" id="schematic-svg">
+                  <defs>
+                    <!-- Acceleration Arrow (Blue, pointing to motor) -->
+                    <marker id="arrow-accel" viewBox="0 0 10 10" refX="6" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+                      <path d="M 2 2 L 7 5 L 2 8" fill="none" stroke="#0284c7" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="fading-arrow" />
+                    </marker>
+                    <!-- Regen Arrow (Green, pointing back to battery) -->
+                    <marker id="arrow-regen" viewBox="0 0 10 10" refX="4" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+                      <path d="M 8 2 L 3 5 L 8 8" fill="none" stroke="#22c55e" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="fading-arrow" />
+                    </marker>
+                    <!-- Grid Charging Arrow (Amber, pointing to OBC and Battery) -->
+                    <marker id="arrow-charge" viewBox="0 0 10 10" refX="6" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+                      <path d="M 2 2 L 7 5 L 2 8" fill="none" stroke="#f59e0b" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="fading-arrow" />
+                    </marker>
+                    <!-- Marker for Attack flow (red arrows) -->
+                    <marker id="arrow-attack" viewBox="0 0 10 10" refX="6" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+                      <path d="M 2 2 L 7 5 L 2 8" fill="none" stroke="#dc2626" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="fading-arrow" />
+                    </marker>
+                  </defs>
+
+                  <!-- High-voltage Orthogonal Cabling Backgrounds -->
+                  <g class="cables-bg-group">
+                    <!-- Traction cables -->
+                    <path id="path-battery-front" d="M 50,78 L 50,62 L 20,62 L 20,75" class="cable-bg" />
+                    <path id="path-battery-rear" d="M 50,78 L 50,62 L 75,62 L 75,75" class="cable-bg" />
+                    <!-- Charging cables -->
+                    <path id="path-port-pdu" d="M 85,50 L 35,50 L 35,45" class="cable-bg" />
+                    <path id="path-pdu-battery" d="M 35,45 L 35,62 L 50,62 L 50,78" class="cable-bg" />
+                  </g>
+
+                  <!-- Cores -->
+                  <g class="cables-core-group">
+                    <path d="M 50,78 L 50,62 L 20,62 L 20,75" class="cable-core" />
+                    <path d="M 50,78 L 50,62 L 75,62 L 75,75" class="cable-core" />
+                    <path d="M 85,50 L 35,50 L 35,45" class="cable-core" />
+                    <path d="M 35,45 L 35,62 L 50,62 L 50,78" class="cable-core" />
+                  </g>
+
+                  <!-- Active Flow Line Overlays -->
+                  <g class="cables-flow-group">
+                    <path id="flow-battery-front" d="M 50,78 L 50,62 L 20,62 L 20,75" class="cable-flow" />
+                    <path id="flow-battery-rear" d="M 50,78 L 50,62 L 75,62 L 75,75" class="cable-flow" />
+                    <path id="flow-port-pdu" d="M 85,50 L 35,50 L 35,45" class="cable-flow" />
+                    <path id="flow-pdu-battery" d="M 35,45 L 35,62 L 50,62 L 50,78" class="cable-flow" />
+                  </g>
+
+                  <!-- Spawning group for flow particles (managed by main.js) -->
+                  <g id="particle-group"></g>
+                </svg>
+                
+                <!-- Side-Profile wheels -->
+                <div class="wheel front-left"></div>
+                <div class="wheel rear-right"></div>
+
+                <!-- 1. Front Motor (Top-Left) -->
+                <div id="front-motor" class="hardware-block" title="Front Motor &amp; Inverter">
+                  <span>FM</span>
+                  <div class="state-glow"></div>
+                  <div class="component-tooltip">Front Motor &amp; Inverter</div>
+                </div>
+
+                <!-- 2. Battery Pack (Middle Floor) -->
+                <div id="battery-pack" class="hardware-block primary-reservoir" title="Battery Pack (BMS)">
+                  <span>BMS</span>
+                  <div class="state-glow"></div>
+                  <div class="component-tooltip">Battery Pack (BMS)</div>
+                </div>
+
+                <!-- 3. Power Distribution Unit Block -->
+                <div id="pdu" class="hardware-block auxiliary" title="Power Distribution Unit">
+                  <span>PDU</span>
+                  <div class="state-glow"></div>
+                  <div class="component-tooltip">Power Distribution Unit</div>
+                </div>
+
+                <!-- 3.5. On-Board Charger Block -->
+                <div id="obc" class="hardware-block auxiliary" title="On-Board Charger">
+                  <span>OBC</span>
+                  <div class="state-glow"></div>
+                  <div class="component-tooltip">On-Board Charger (AC/DC)</div>
+                </div>
+
+                <!-- 3.2. Secure Gateway / CAN Firewall Block -->
+                <div id="security-gateway" class="hardware-block security-shield" title="Secure Gateway Firewall">
+                  <span id="gateway-symbol">🛡️</span>
+                  <div class="state-glow"></div>
+                  <div class="component-tooltip" id="gateway-tooltip">Secure Gateway Firewall</div>
+                </div>
+
+                <!-- 4. Rear Motor Block (Right Axle) -->
+                <div id="rear-motor" class="hardware-block" title="Rear Motor">
+                  <span>RM</span>
+                  <div class="state-glow"></div>
+                  <div class="component-tooltip">Rear Motor</div>
+                </div>
+
+                <!-- 5. Charge Port (Rear Fender Top Right) -->
+                <div id="charging-port" class="hardware-block connector" title="High-Voltage Charging Port">
+                  <span>CP</span>
+                  <div class="state-glow"></div>
+                  <div class="component-tooltip">High-Voltage Charging Port</div>
+                </div>
+
+
+              </div>
+
+
+              <!-- Visualizer Info Trigger Button -->
+              <button id="btn-info" class="info-trigger-btn" title="Show Port Vulnerability Info">i</button>
+
+              <!-- Interactive Info Overlay (Covering just the canvas) -->
+              <div id="info-overlay" class="info-overlay active">
+                <div class="info-content">
+                  <h2>High-Voltage Charging Port Vulnerability</h2>
+                  <p>
+                    Modern EVs utilize communication protocols like ISO 15118 or DIN 70121 over Power Line Communication (PLC) to negotiate charging parameters with the station (EVSE).
+                  </p>
+                  <p>
+                    Because the Charging Port (CP) connects directly to the internal powertrain networks (via the OBC and PDU), a compromised supply station can bypass external physical barriers and inject malicious CAN frames (e.g. spoofed commands or DoS floods). This compromises the vehicle's network integrity without physical access.
+                  </p>
+                  <button id="btn-close-info" class="btn-action">Got It, Let's Start!</button>
+                </div>
+              </div>
+
+              <!-- Interactive Component Details Popup Overlay -->
+              <div id="component-popup-overlay" class="component-popup-overlay">
+                <div class="popup-card">
+                  <button id="popup-close-btn" class="popup-close-btn">&times;</button>
+                  <h3 id="popup-title">Component Nomenclature</h3>
+                  <div class="popup-media-container" id="popup-svg-container">
+                    <!-- Dynamic injected SVG HUD diagram goes here -->
+                  </div>
+                  <div id="popup-description">Detailed system nomenclature and characteristics.</div>
+                </div>
+              </div>
+            </div>
+          </section>
+
+          <!-- Right Panel: Analytics & Logs -->
+          <aside class="panel right-panel">
+              <div class="panel-body">
+              <!-- Dynamic Telemetry Grid -->
+              <div class="telemetry-grid">
+                <!-- Vehicle Speed -->
+                <div class="telemetry-card cluster-card">
+                  <span class="telemetry-title">Vehicle Speed</span>
+                  <div class="telemetry-val-wrapper">
+                    <span id="inst-speed" class="telemetry-value">0</span>
+                    <span class="telemetry-unit">km/h</span>
+                  </div>
+                  <div class="gauge-bar-track">
+                    <div id="inst-speed-bar" class="gauge-bar-fill speed-fill" style="width: 0%;"></div>
+                  </div>
+                </div>
+
+                <!-- Battery Power -->
+                <div class="telemetry-card cluster-card">
+                  <span class="telemetry-title">Battery Power</span>
+                  <div class="telemetry-val-wrapper">
+                    <span id="telemetry-power" class="telemetry-value">0.0</span>
+                    <span class="telemetry-unit">kW</span>
+                  </div>
+                  <div class="gauge-bar-track">
+                    <div id="inst-power-bar" class="gauge-bar-fill power-fill" style="width: 0%;"></div>
+                  </div>
+                </div>
+
+                <!-- Battery SoC -->
+                <div class="telemetry-card cluster-card">
+                  <span class="telemetry-title">Battery Charge (SoC)</span>
+                  <div class="telemetry-val-wrapper">
+                    <span id="inst-soc" class="telemetry-value">80.0%</span>
+                  </div>
+                  <div class="gauge-bar-track">
+                    <div id="inst-soc-bar" class="gauge-bar-fill soc-fill" style="width: 80%;"></div>
+                  </div>
+                </div>
+
+                <!-- CAN Bus Security Integrity -->
+                <div class="telemetry-card cluster-card">
+                  <span class="telemetry-title">CAN Bus Integrity</span>
+                  <div class="telemetry-val-wrapper">
+                    <span id="inst-network-status" class="telemetry-value status-secure">SECURE</span>
+                  </div>
+                  <div class="gauge-bar-track">
+                    <div id="inst-status-bar" class="gauge-bar-fill secure-fill" style="width: 100%;"></div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </aside>
+
+        </div>
+
+        <!-- Drivetrain Security & Health Conclusion Panel -->
+        <div class="conclusion-panel" id="security-conclusion-panel">
+          <div class="conclusion-title">System Security &amp; Drivetrain Status</div>
+          <div class="conclusion-grid">
+            
+            <div class="conclusion-card">
+              <span class="card-label">Security Threat Level</span>
+              <div class="card-status-badge" id="conclusion-threat-badge">SECURE</div>
+            </div>
+
+            <div class="conclusion-card">
+              <span class="card-label">Network Message Integrity</span>
+              <div class="card-value-wrapper">
+                <span id="conclusion-integrity-val" class="card-value">100%</span>
+              </div>
+            </div>
+
+            <div class="conclusion-card">
+              <span class="card-label">Drivetrain Health State</span>
+              <div class="card-value-wrapper">
+                <span id="conclusion-health-val" class="card-value">NOMINAL</span>
+              </div>
+            </div>
+
+            <div class="conclusion-card advisory-card">
+              <span class="card-label">System Recommendation</span>
+              <p id="conclusion-advisory-text" class="advisory-text">Drivetrain is fully protected. Authentication checks are active.</p>
+            </div>
+
+          </div>
+        </div>
+      </section>
+
+      <!-- Tab 3: Calculations & Formulas -->
+      <section id="calculations-tab" class="tab-panel">
+        <div class="calc-container">
+          <!-- Formula Card 1: Total Electrical Power -->
+          <div class="formula-card">
+            <h3>1. Total Electrical Power Draw (DC Bus)</h3>
+            <p>
+              The electrical power (<span class="math-var">P</span><sub>elec</sub>) consumed or generated by the battery is the product of battery voltage (<span class="math-var">V</span><sub>bat</sub>) and battery current (<span class="math-var">I</span><sub>bat</sub>):
+            </p>
+            <div class="formula-expression">
+              <span class="math-var">P</span><sub>elec</sub> = (<span class="math-var">V</span><sub>bat</sub> &times; <span class="math-var">I</span><sub>bat</sub>) / 1000 kW
+            </div>
+            
+            <div class="step-block">
+              <h4>Current Evaluation:</h4>
+              <div class="step-line">
+                <span class="step-label">Battery Voltage (<span class="math-var">V</span><sub>bat</sub>):</span>
+                <span class="step-math"><span id="math-vbat" class="step-result">375 V</span></span>
+              </div>
+              <div class="step-line">
+                <span class="step-label">Battery Current (<span class="math-var">I</span><sub>bat</sub>):</span>
+                <span class="step-math"><span id="math-ibat" class="step-result">0.0 A</span></span>
+              </div>
+              <div class="step-line" style="border-top: 1px solid var(--border-color); padding-top: 0.5rem; margin-top: 0.5rem;">
+                <span class="step-label">Calculated Net Power (<span class="math-var">P</span><sub>elec</sub>):</span>
+                <span class="step-math"><span id="math-pelec-formula">(375 × 0.0) / 1000</span> = <span id="math-pelec" class="step-result">0.00 kW</span></span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Formula Card 2: Mechanical Power & Torque -->
+          <div class="formula-card">
+            <h3>2. Mechanical Power Output (Motors)</h3>
+            <p>
+              Mechanical power (<span class="math-var">P</span><sub>mech</sub>) produced by each active electric motor is determined from the electromagnetic torque (<span class="math-var">T</span><sub>motor</sub> in Nm) and shaft angular speed (<span class="math-var">N</span><sub>motor</sub> in RPM):
+            </p>
+            <div class="formula-expression">
+              <span class="math-var">P</span><sub>mech</sub> = (<span class="math-var">T</span><sub>motor</sub> &times; <span class="math-var">N</span><sub>motor</sub>) / 9549 kW
+            </div>
+
+            <div class="step-block">
+              <h4>Current Evaluation (Front &amp; Rear Combined):</h4>
+              <div class="step-line">
+                <span class="step-label">Active Configuration:</span>
+                <span class="step-math"><span id="math-config" class="step-result">Dual Motor (AWD)</span></span>
+              </div>
+              <div class="step-line">
+                <span class="step-label">Front Motor Torque &amp; Speed:</span>
+                <span class="step-math"><span id="math-tf-val">0 Nm</span> @ <span id="math-nf-val">0 RPM</span></span>
+              </div>
+              <div class="step-line">
+                <span class="step-label">Rear Motor Torque &amp; Speed:</span>
+                <span class="step-math"><span id="math-tr-val">0 Nm</span> @ <span id="math-nr-val">0 RPM</span></span>
+              </div>
+              <div class="step-line" style="border-top: 1px solid var(--border-color); padding-top: 0.5rem; margin-top: 0.5rem;">
+                <span class="step-label">Total Combined Mech Power (<span class="math-var">P</span><sub>mech</sub>):</span>
+                <span class="step-math"><span id="math-pmech-formula">0.0 + 0.0</span> = <span id="math-pmech" class="step-result">0.00 kW</span></span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Formula Card 3: Dynamic Efficiency -->
+          <div class="formula-card">
+            <h3>3. Overall Powertrain Conversion Efficiency</h3>
+            <p>
+              Powertrain conversion efficiency (<span class="math-var">&eta;</span>) takes into account conduction copper losses and switching losses in the IGBT inverters and core iron losses in the stator windings.
+            </p>
+            <div class="formula-expression" style="text-align: left; padding-left: 2rem; font-size: 0.85rem; line-height: 1.6;">
+              Traction Mode: <span class="math-var">&eta;</span> = (<span class="math-var">P</span><sub>mech</sub> / <span class="math-var">P</span><sub>elec</sub>) &times; 100%<br>
+              Regen Mode: <span class="math-var">&eta;</span> = (<span class="math-var">P</span><sub>elec</sub> / <span class="math-var">P</span><sub>mech</sub>) &times; 100%<br>
+              Charging Mode: <span class="math-var">&eta;</span> = (<span class="math-var">P</span><sub>bat_input</sub> / <span class="math-var">P</span><sub>grid_input</sub>) &times; 100%
+            </div>
+
+            <div class="step-block">
+              <h4>Current Evaluation:</h4>
+              <div class="step-line">
+                <span class="step-label">Active Flow Direction:</span>
+                <span class="step-math"><span id="math-flow-dir" class="step-result">Idle</span></span>
+              </div>
+              <div class="step-line">
+                <span class="step-label">Stator &amp; Inverter Losses:</span>
+                <span class="step-math"><span id="math-losses" class="step-result">0.0 kW</span></span>
+              </div>
+              <div class="step-line" style="border-top: 1px solid var(--border-color); padding-top: 0.5rem; margin-top: 0.5rem;">
+                <span class="step-label">Net System Efficiency (<span class="math-var">&eta;</span>):</span>
+                <span class="step-math"><span id="math-eff-formula">N/A</span> = <span id="math-eff-val" class="step-result">94.5%</span></span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Formula Card 4: Battery SOC Depletion -->
+          <div class="formula-card">
+            <h3>4. Battery State of Charge (SoC) Depletion / Charge Rate</h3>
+            <p>
+              The rate of charge change in battery cells over time is derived from the current (<span class="math-var">I</span><sub>bat</sub>) and battery capacity (<span class="math-var">Q</span><sub>cap</sub> = 100 Ah):
+            </p>
+            <div class="formula-expression">
+              d(<span class="math-var">SoC</span>)/dt = -<span class="math-var">I</span><sub>bat</sub> / (3600 &times; <span class="math-var">Q</span><sub>cap</sub>) &times; 100% per second
+            </div>
+
+            <div class="step-block">
+              <h4>Current Evaluation:</h4>
+              <div class="step-line">
+                <span class="step-label">Discharge/Charge Rate (d(<span class="math-var">SoC</span>)/dt):</span>
+                <span class="step-math"><span id="math-soc-formula">- (0.0 / 360000) × 100</span> = <span id="math-soc-rate" class="step-result">0.00% / sec</span></span>
+              </div>
+            </div>
+          </div>
+
+
+        </div>
+      </section>
+
+    </main>
+  </div>
+
+  <script src="./js/main.js"></script>
 </body>
 </html>

@@ -1,17 +1,172 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Vehicle-to-Grid Smart Energy Exchange Simulation</title>
-    <link rel="stylesheet" href="css/main.css">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Vehicle-to-Grid (V2G) Smart Energy Exchange Simulation</title>
+  <link rel="stylesheet" href="./css/main.css">
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/controls/OrbitControls.js"></script>
 </head>
 <body>
-    <div id="app">
-        <h1>Vehicle-to-Grid (V2G) Smart Energy Exchange</h1>
-        <p>Simulate bidirectional power flow between EV battery and smart utility grid.</p>
-        <canvas id="simCanvas" width="800" height="400"></canvas>
+  <div class="lab-container">
+    
+    <!-- Objective Description -->
+    <section class="lab-objective">
+      <p style="margin: 0;"><strong>Objective:</strong> Study bidirectional Vehicle-to-Grid (V2G) and Grid-to-Vehicle (G2V) energy exchange under automated state machine transitions.</p>
+    </section>
+
+    <!-- BMS Safety Override Alert Banner -->
+    <div id="safetyAlert" class="safety-alert hidden">
+      <strong>[BMS OVERRIDE ACTIVE]</strong> Battery has reached the 50% SOC safety threshold. Discharging is suspended. Substation demand switched to charging (G2V) mode.
     </div>
-    <script src="js/main.js"></script>
+
+    <!-- Telemetry Metrics top bar (spanning the entire screen width) -->
+    <div class="metrics-top-bar">
+      <div class="telemetry-box">
+        <span class="telemetry-label">Calculated Power</span>
+        <span class="telemetry-val" id="teleCalcPower">4,400 W</span>
+      </div>
+      <div class="telemetry-box">
+        <span class="telemetry-label">Grid Target</span>
+        <span class="telemetry-val" id="teleTargetPower">11,500 W</span>
+      </div>
+      <div class="telemetry-box">
+        <span class="telemetry-label">Inverter Efficiency</span>
+        <span class="telemetry-val" id="teleEfficiency">98.2%</span>
+      </div>
+      <div class="telemetry-box">
+        <span class="telemetry-label">Net Transferred Power</span>
+        <span class="telemetry-val" id="teleNetPower">4,321 W</span>
+      </div>
+      <div class="telemetry-box" id="tempBox">
+        <span class="telemetry-label">Inverter Temp</span>
+        <span class="telemetry-val" id="teleTemp" style="color: var(--text-main);">25.0 °C</span>
+      </div>
+    </div>
+
+    <!-- MAIN WORKSPACE: Controls on Left, Visualiser on Right -->
+    <div class="top-row-layout">
+      
+      <!-- LEFT SECTION: Environmental Parameters (Sliders) -->
+      <section class="controls-card">
+        <div class="controls-header" style="display: flex; justify-content: space-between; align-items: center; border-bottom: 2px solid var(--border-color); padding-bottom: 8px; margin-bottom: 4px;">
+          <h3 style="border: none; padding: 0; margin: 0;">Controls</h3>
+          <span id="syncStatusBadge" class="badge badge-unlocked">DISCONNECTED</span>
+        </div>
+        
+        <!-- Simulation State Panel -->
+        <div id="statePanel" class="state-panel state-standby">
+          <div class="state-dot"></div>
+          <span id="stateLabel" class="state-text">STATE: DISCONNECTED</span>
+        </div>
+        
+        <!-- Autonomous Grid Status Display -->
+        <div class="control-group">
+          <label class="control-label">Grid Clock & Status</label>
+          <div id="gridStatusDisplay" class="grid-status-display" style="padding: 12px; border-radius: 4px; background: #1e293b; color: #fff; font-family: 'Times New Roman', Times, serif; font-size: 13px; font-weight: bold; text-align: center; border: 1px solid #334155; transition: background 0.3s ease;">
+            Time: --:-- | INITIALIZING
+          </div>
+        </div>
+
+        <!-- Voltage Slider -->
+        <div class="control-group">
+          <div class="control-label-row">
+            <label for="voltageSlider">Inverter AC Voltage</label>
+            <span class="control-value" id="voltageVal">220 V</span>
+          </div>
+          <input type="range" id="voltageSlider" min="180" max="260" value="220" step="1">
+          <div class="control-limits">
+            <span>180 V</span>
+            <span>260 V</span>
+          </div>
+        </div>
+
+        <!-- Current Slider -->
+        <div class="control-group">
+          <div class="control-label-row">
+            <label id="currentLabel" for="currentSlider">Discharging Current</label>
+            <span class="control-value" id="currentVal">20 A</span>
+          </div>
+          <input type="range" id="currentSlider" min="5" max="60" value="20" step="1">
+          <div class="control-limits">
+            <span>5 A</span>
+            <span id="currentSliderLimitLabel">60 A</span>
+          </div>
+        </div>
+
+        <!-- Battery SOC Slider -->
+        <div class="control-group">
+          <div class="control-label-row">
+            <label for="socSlider">EV State of Charge</label>
+            <span class="control-value" id="socVal">90%</span>
+          </div>
+          <input type="range" id="socSlider" min="20" max="100" value="90" step="1">
+          <div class="control-limits">
+            <span>20%</span>
+            <span>100%</span>
+          </div>
+        </div>
+
+
+
+        <!-- Governing Relation Panel -->
+        <div class="header-formula" style="padding: 8px 12px; display: flex; flex-direction: row; justify-content: space-between; align-items: center; border: 1px solid var(--border-color); background-color: var(--bg-main); border-radius: 4px; margin-top: 4px; margin-bottom: 2px;">
+          <span class="formula-label" style="font-size: 9px; font-weight: 600; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.05em; line-height: 1;">Governing Relation</span>
+          <span class="formula-math" style="font-size: 13px; font-family: var(--font-mono); font-weight: 700; color: var(--text-main); line-height: 1;">P = V &times; I</span>
+        </div>
+
+        <!-- Sync Switch Action Button Layout -->
+        <div class="sync-action-wrapper" style="display: flex; flex-direction: column; gap: 8px;">
+          <button id="syncPhaseBtn" class="btn btn-ready"> Connect Bidirectional Umbilical</button>
+          <button id="stopSyncBtn" class="btn btn-disabled" disabled>Disengage Grid Tie</button>
+        </div>
+      </section>
+
+      <!-- RIGHT SECTION: MAIN LAB WORKBENCH (3D Visualizer & Telemetry Graph) -->
+      <main class="lab-workbench">
+        <div id="canvas3dContainer" style="width: 100%; height: 400px; position: relative; background-color: #f8fafc;"></div>
+        <div class="graph-sub-panel" style="padding: 20px; border-top: 2px solid var(--border-color); background-color: #ffffff; width: 100%;">
+          <svg id="telemetryChart" viewBox="0 0 400 180" width="100%" height="240" preserveAspectRatio="none" style="background: #ffffff; border: 1px solid #cbd5e1; border-radius: 4px; display: block;"></svg>
+        </div>
+      </main>
+
+    </div>
+
+    <!-- BOTTOM ROW: Test Bench Log Records (Spanning the entire screen) -->
+    <section class="controls-card" style="width: 100%;">
+      <h3>Test Bench Log Records</h3>
+      
+      <div class="history-log-panel">
+        <div class="log-table-wrapper">
+          <table class="log-table">
+            <thead>
+              <tr>
+                <th>Timestamp</th>
+                <th>Mode</th>
+                <th>Set V</th>
+                <th>Set I</th>
+                <th>Net Power</th>
+                <th>Result</th>
+              </tr>
+            </thead>
+            <tbody id="logTableBody">
+              <tr class="empty-row">
+                <td colspan="6">No telemetry records logged. Tune sliders and engage synchronization to capture data.</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        <div class="log-actions">
+          <button id="clearLogBtn" class="btn btn-secondary">Clear Records</button>
+          <button id="resetBenchBtn" class="btn btn-outline">Reset Bench</button>
+        </div>
+      </div>
+    </section>
+
+  </div>
+
+  <script src="./js/main.js"></script>
 </body>
 </html>
